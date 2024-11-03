@@ -1,42 +1,36 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 import 'echarts-gl';
+import { LazyRGBColor } from './ColorPicker';
 
 type Props = {
-    selectedColors: Set<string>
+    selectedColors: LazyRGBColor[]
 }
 
-const selectedColors = new Set<string>(['#34a848']);
-
 const ECharts3DScatter = (
-    // {selectedColors}: Props
+    {selectedColors}: Props
 ) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log('use effect called')
-    let counter = 0
     if (chartRef.current) {
       const chart = echarts.init(chartRef.current);
         // Not sure how charts play with Hex vs RGB so I'm doing this awful mashup.
       const data = [];
 
-      for (let r = 0; r < 256; r += 4) {
-        for (let g = 0; g < 256; g += 4) {
-          for (let b = 0; b < 256; b += 4) {
+      for (let r = 0; r < 256; r += 16) {
+        for (let g = 0; g < 256; g += 16) {
+          for (let b = 0; b < 256; b += 16) {
             const color = `${r},${g},${b}`;
-      
-            if (selectedColors.has(color)) {
-                console.log(counter, 'match', color);
-                counter += 1
-            }
-      
-            // const rgbaColor = `rgba(${r}, ${g}, ${b}, ${selectedColors.has(hexColor) ? 1 : 1})`;
-            data.push([r, g, b, `rgb(${color})`]);
+            data.push([r, g, b, `rgba(${color}, 0.1)`]);
           }
         }
       }
-      console.log('selected colors should be a const?????', selectedColors)
+      console.log('selected', selectedColors)
+      selectedColors.forEach((color) => {
+        const {red, green, blue} = color
+        data.push([red, green, blue, `rgba(${red},${green},${blue}, 1)`]);
+      })
 
       const option = {
         tooltip: {},
@@ -82,7 +76,7 @@ const ECharts3DScatter = (
       };
     }
   }, [
-    // selectedColors
+    selectedColors
 ]);
 
   return <div ref={chartRef} style={{ width: '500px', height: '500px' }} />;
