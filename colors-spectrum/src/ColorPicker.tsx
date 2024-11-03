@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SketchPicker } from 'react-color';
-import { mix } from 'polished';
-import { use } from 'echarts';
+import { mix, parseToRgb} from 'polished';
 
 const convertHex3ToHex6 = (hex: string): string => {
-  // So lazy lol.
   if (hex.length === 4 && hex[0] === '#') {
     const r = hex[1];
     const g = hex[2];
@@ -15,42 +13,40 @@ const convertHex3ToHex6 = (hex: string): string => {
   return hex;
 };
 
-// Example usage:
-console.log(convertHex3ToHex6('#abc')); // Output: #aabbcc
-console.log(convertHex3ToHex6('#123')); // Output: #112233
-console.log(convertHex3ToHex6('#ff0000')); // Output: #ff0000 (unchanged)
-
 type Props = {
   colorChangeCallback: (colors: Set<string>) => void
 }
 
 const ColorInterpolator = ({colorChangeCallback}: Props) => {
-  const [startColor, setStartColor] = useState('#ff0000');
-  const [endColor, setEndColor] = useState('#0000ff');
+  const [startColor, setStartColor] = useState('rgb(255, 0, 0)');
+  const [endColor, setEndColor] = useState('rgb(0, 0, 255)');
   const [increments, setIncrements] = useState(5);
   const [colors, setColors] = useState<string[]>([]);
 
   const handleStartColorChange = useCallback((color: any) => {
-    setStartColor(color.hex);
+    const { r, g, b } = color.rgb;
+    setStartColor(`rgb(${r}, ${g}, ${b})`);
   }, []);
 
   const handleEndColorChange = useCallback((color: any) => {
-    setEndColor(color.hex);
-  }, [])
+    const { r, g, b } = color.rgb;
+    setEndColor(`rgb(${r}, ${g}, ${b})`);
+  }, []);
 
   const handleIncrementsChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setIncrements(parseInt(event.target.value, 10));
-  }, [])
+  }, []);
 
   const generateColors = useCallback(() => {
     const colors = [];
     for (let i = 0; i <= increments; i++) {
       const ratio = i / increments;
       const color = mix(ratio, startColor, endColor);
-      colors.push(convertHex3ToHex6(color));
+      colors.push(Object.values(parseToRgb(color)).join(','));
     }
-    colorChangeCallback(new Set(colors))
-    setColors(colors)
+    console.log(colors)
+    colorChangeCallback(new Set(colors));
+    setColors(colors);
   }, [colorChangeCallback, endColor, increments, startColor]);
 
   useEffect(() => {
