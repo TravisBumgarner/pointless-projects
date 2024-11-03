@@ -55,7 +55,7 @@ const ECharts3DScatter = (
         grid3D: {
           viewControl: {
             projection: 'perspective'
-          }
+          },
         },
         series: [
           {
@@ -79,7 +79,7 @@ const ECharts3DScatter = (
     selectedColors
 ]);
 
-  return <div ref={chartRef} style={{ width: '500px', height: '500px' }} />;
+    return <div ref={chartRef} style={{ width: '100%', height: '100%' }} />;
 };
 
 export default ECharts3DScatter;

@@ -57,7 +57,6 @@ const ColorInterpolator = ({colorChangeCallback}: Props) => {
 
   return (
     <Container>
-      <PickerContainer>
         <div>
           <h3>Start Color</h3>
           <CompactPicker color={startColor} onChange={handleStartColorChange} />
@@ -70,7 +69,6 @@ const ColorInterpolator = ({colorChangeCallback}: Props) => {
           <h3>Increments</h3>
           <input type="number" value={increments} onChange={handleIncrementsChange} min="1" />
         </div>
-      </PickerContainer>
       <ColorsContainer>
         {colors.map((color, index) => (
           <ColorBox key={index} style={{ backgroundColor: color }}>
@@ -83,23 +81,14 @@ const ColorInterpolator = ({colorChangeCallback}: Props) => {
 };
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 250px;
   padding: 20px;
-`;
-
-const PickerContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  margin-bottom: 20px;
 `;
 
 const ColorsContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
+  flex-direction: column;
 `;
 
 const ColorBox = styled.div`
