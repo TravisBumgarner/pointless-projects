@@ -48,7 +48,7 @@ const ColorGraph = () => {
 };
 
 const ColorGraphWrapped = () => {
-    return (<Canvas style={{width: 1000, height: 1000}}>
+    return (<Canvas style={{width: 500, height: 500}}>
         <ColorGraph />
     </Canvas>)
 }

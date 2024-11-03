@@ -1,14 +1,24 @@
+import { useCallback, useState } from 'react';
 import './App.css';
-import ColorGraph from './ColorGraph';
 import ColorInterpolator from './ColorPicker';
 import ECharts3DScatter from './ECharts';
 
+
+
 function App() {
+
+  const [selectedColors, setSelectedColors] = useState<Set<string>>(new Set());
+  console.log(selectedColors)
+  const colorChangeCallback  = useCallback((colors: Set<string>) => {
+    // This should not mutate but make a new reference. 
+    setSelectedColors(colors)
+  }, [])
+
   return (
     <>
-    <ECharts3DScatter />
-    <ColorGraph/>
-    <ColorInterpolator />
+    <ColorInterpolator colorChangeCallback={colorChangeCallback} />
+    <ECharts3DScatter selectedColors={selectedColors}/>
+    {/* <ColorGraph/> */}
     </>
   );
 }

@@ -1,34 +1,61 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SketchPicker } from 'react-color';
 import { mix } from 'polished';
+import { use } from 'echarts';
 
-const ColorInterpolator = () => {
+const convertHex3ToHex6 = (hex: string): string => {
+  // So lazy lol.
+  if (hex.length === 4 && hex[0] === '#') {
+    const r = hex[1];
+    const g = hex[2];
+    const b = hex[3];
+    return `#${r}${r}${g}${g}${b}${b}`;
+  }
+  return hex;
+};
+
+// Example usage:
+console.log(convertHex3ToHex6('#abc')); // Output: #aabbcc
+console.log(convertHex3ToHex6('#123')); // Output: #112233
+console.log(convertHex3ToHex6('#ff0000')); // Output: #ff0000 (unchanged)
+
+type Props = {
+  colorChangeCallback: (colors: Set<string>) => void
+}
+
+const ColorInterpolator = ({colorChangeCallback}: Props) => {
   const [startColor, setStartColor] = useState('#ff0000');
   const [endColor, setEndColor] = useState('#0000ff');
   const [increments, setIncrements] = useState(5);
+  const [colors, setColors] = useState<string[]>([]);
 
-  const handleStartColorChange = (color: any) => {
+  const handleStartColorChange = useCallback((color: any) => {
     setStartColor(color.hex);
-  };
+  }, []);
 
-  const handleEndColorChange = (color: any) => {
+  const handleEndColorChange = useCallback((color: any) => {
     setEndColor(color.hex);
-  };
+  }, [])
 
-  const handleIncrementsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIncrementsChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setIncrements(parseInt(event.target.value, 10));
-  };
+  }, [])
 
-  const generateColors = () => {
+  const generateColors = useCallback(() => {
     const colors = [];
     for (let i = 0; i <= increments; i++) {
       const ratio = i / increments;
       const color = mix(ratio, startColor, endColor);
-      colors.push(color);
+      colors.push(convertHex3ToHex6(color));
     }
-    return colors;
-  };
+    colorChangeCallback(new Set(colors))
+    setColors(colors)
+  }, [colorChangeCallback, endColor, increments, startColor]);
+
+  useEffect(() => {
+    generateColors();
+  }, [generateColors]);
 
   return (
     <Container>
@@ -47,7 +74,7 @@ const ColorInterpolator = () => {
         </div>
       </PickerContainer>
       <ColorsContainer>
-        {generateColors().map((color, index) => (
+        {colors.map((color, index) => (
           <ColorBox key={index} style={{ backgroundColor: color }}>
             {color}
           </ColorBox>
