@@ -1,58 +1,37 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { CompactPicker } from 'react-color';
+import { CompactPicker, RGBColor } from 'react-color';
 import { mix, parseToRgb } from 'polished';
+import { generateColors, rgbToString } from './utilities';
+import ColorDisplay from './ColorDisplay';
+import { PickedColors } from './types';
 
-// I can't be bothered.
-export type LazyRGBColor = {
-  red: number;
-  green: number;
-  blue: number;
-}
 
 type Props = {
-  colorChangeCallback: (colors: LazyRGBColor[]) => void
+  colorChangeCallback: (colors: PickedColors) => void
 }
 
+
 const ColorInterpolator = ({colorChangeCallback}: Props) => {
-  const [startColor, setStartColor] = useState('rgb(255, 0, 0)');
-  const [endColor, setEndColor] = useState('rgb(0, 0, 255)');
+  const [startColor, setStartColor] = useState({r: 0, g: 0, b: 0});
+  const [endColor, setEndColor] = useState({r: 255, g: 255, b: 255});
   const [increments, setIncrements] = useState(5);
-  const [colors, setColors] = useState<any[]>([]);
 
   const handleStartColorChange = useCallback((color: any) => {
-    const { r, g, b } = color.rgb;
-    setStartColor(`rgb(${r}, ${g}, ${b})`);
+    setStartColor(color.rgb);
   }, []);
 
   const handleEndColorChange = useCallback((color: any) => {
-    const { r, g, b } = color.rgb;
-    setEndColor(`rgb(${r}, ${g}, ${b})`);
+    setEndColor(color.rgb);
   }, []);
 
   const handleIncrementsChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setIncrements(parseInt(event.target.value, 10));
-  }, []);
-
-  const generateColors = useCallback(() => {
-    const colors = [];
-    const rgbArray: LazyRGBColor[] = [];
-    for (let i = 0; i <= increments; i++) {
-      const ratio = i / increments;
-      const color = mix(ratio, startColor, endColor);
-      const rgbColor = parseToRgb(color);
-      
-      rgbArray.push(rgbColor as unknown as LazyRGBColor)
-      const stringColor = `rgb(${rgbColor.red}, ${rgbColor.green}, ${rgbColor.blue})`;
-      colors.push(stringColor);
-    }
-    colorChangeCallback(rgbArray);
-    setColors(colors);
-  },  [colorChangeCallback, endColor, increments, startColor]);
+}, []);
 
   useEffect(() => {
-    generateColors();
-  }, [generateColors, startColor, endColor, increments]);
+    colorChangeCallback({startColor, endColor, increments});
+  }, [startColor, endColor, increments, colorChangeCallback]);
 
   return (
     <Container>
@@ -68,13 +47,7 @@ const ColorInterpolator = ({colorChangeCallback}: Props) => {
           <h3>Increments</h3>
           <input type="number" value={increments} onChange={handleIncrementsChange} min="1" />
         </div>
-      <ColorsContainer>
-        {colors.map((color, index) => (
-          <ColorBox key={index} style={{ backgroundColor: color }}>
-            {color}
-          </ColorBox>
-        ))}
-      </ColorsContainer>
+        <ColorDisplay column colors={generateColors({startColor, endColor, increments})} />
     </Container>
   );
 };
@@ -84,21 +57,6 @@ const Container = styled.div`
   padding: 20px;
 `;
 
-const ColorsContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-`;
 
-const ColorBox = styled.div`
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5px;
-  color: #fff;
-  font-weight: bold;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-`;
 
 export default ColorInterpolator;

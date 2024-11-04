@@ -1,10 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 import 'echarts-gl';
-import { LazyRGBColor } from './ColorPicker';
+import { RGBColor } from 'react-color';
+import ColorDisplay from './ColorDisplay';
+import { generateColors } from './utilities';
+import { PickedColors } from './types';
+import styled from 'styled-components';
 
 type Props = {
-    selectedColors: LazyRGBColor[]
+    selectedColors: PickedColors
 }
 
 const ECharts3DScatter = (
@@ -26,10 +30,10 @@ const ECharts3DScatter = (
           }
         }
       }
-      console.log('selected', selectedColors)
-      selectedColors.forEach((color) => {
-        const {red, green, blue} = color
-        data.push([red, green, blue, `rgba(${red},${green},${blue}, 1)`]);
+
+      generateColors(selectedColors).forEach((color) => {
+        const {r, g, b} = color
+        data.push([r, g, b, `rgba(${r},${g},${b}, 1)`]);
       })
 
       const option = {
@@ -79,7 +83,21 @@ const ECharts3DScatter = (
     selectedColors
 ]);
 
-    return <div ref={chartRef} style={{ width: '100%', height: '100%' }} />;
+    return <Wrapper>
+    <div ref={chartRef} style={{ width: '100%', height: '100%', flex: 1 }} />
+    <ColorDisplay colors={generateColors(selectedColors)} />
+    </Wrapper>
 };
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+`
 
 export default ECharts3DScatter;

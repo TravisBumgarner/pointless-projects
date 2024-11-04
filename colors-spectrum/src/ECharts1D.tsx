@@ -10,10 +10,10 @@ type Color = 'r' | 'g' | 'b';
 
 type Props = {
   selectedColors: PickedColors;
-  projectionColorKeys: [Color, Color]
+  projectionColorKey: Color
 }
 
-const ECharts2DScatter = ({ selectedColors, projectionColorKeys }: Props) => {
+const ECharts1DScatter = ({ selectedColors, projectionColorKey }: Props) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [projectionColors, setProjectionColors] = React.useState<RGBColor[]>([]);
 
@@ -32,10 +32,10 @@ const ECharts2DScatter = ({ selectedColors, projectionColorKeys }: Props) => {
       const newProjectionColors: RGBColor[] = []
       generateColors(selectedColors).forEach((color) => {
         // sloopy slooopy
-        const projectedColor = {r: projectionColorKeys.includes('r') ? color.r : 0, g: projectionColorKeys.includes('g') ? color.g : 0, b: projectionColorKeys.includes('b') ? color.b : 0};
-        const projectionColor = `rgba(${projectionColorKeys.includes('r') ? color.r : 0},${projectionColorKeys.includes('g') ? color.g : 0},${projectionColorKeys.includes('b') ? color.b : 0}, 1)` 
+        const projectedColor = {r: projectionColorKey === 'r' ? color.r : 0, g: projectionColorKey === 'g' ? color.g : 0, b: projectionColorKey === 'b' ? color.b : 0};
+        const projectionColor = `rgba(${projectionColorKey ==='r' ? color.r : 0},${projectionColorKey ==='g' ? color.g : 0},${projectionColorKey ==='b' ? color.b : 0}, 1)` 
         newProjectionColors.push(projectedColor);
-        data.push([color[projectionColorKeys[0]], color[projectionColorKeys[1]], projectionColor]);
+        data.push([color[projectionColorKey], 0, projectionColor]);
       });
 
       setProjectionColors(newProjectionColors);
@@ -44,15 +44,14 @@ const ECharts2DScatter = ({ selectedColors, projectionColorKeys }: Props) => {
         tooltip: {},
         xAxis: {
           type: 'value',
-          name: projectionColorKeys[0],
+          name: projectionColorKey,
           min: 0,
           max: 255
         },
         yAxis: {
           type: 'value',
-          name: projectionColorKeys[1],
-          min: 0,
-          max: 255
+          min: -5,
+          max: 5
         },
         grid: {
           left: '10%',
@@ -78,7 +77,7 @@ const ECharts2DScatter = ({ selectedColors, projectionColorKeys }: Props) => {
         chart.dispose();
       };
     }
-  }, [selectedColors, projectionColorKeys]);
+  }, [selectedColors, projectionColorKey]);
 
   return <Wrapper>
   <div ref={chartRef} style={{ width: '300px', height: '300px' }} />
@@ -90,4 +89,4 @@ const ECharts2DScatter = ({ selectedColors, projectionColorKeys }: Props) => {
 const Wrapper = styled.div`
 `
 
-export default ECharts2DScatter;
+export default ECharts1DScatter;
