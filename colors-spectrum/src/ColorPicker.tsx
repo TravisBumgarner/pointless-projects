@@ -46,7 +46,6 @@ const ColorInterpolator = ({colorChangeCallback}: Props) => {
       const stringColor = `rgb(${rgbColor.red}, ${rgbColor.green}, ${rgbColor.blue})`;
       colors.push(stringColor);
     }
-    console.log('???', rgbArray)
     colorChangeCallback(rgbArray);
     setColors(colors);
   },  [colorChangeCallback, endColor, increments, startColor]);
