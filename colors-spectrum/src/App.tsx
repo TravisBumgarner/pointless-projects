@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import './App.css';
 import ColorInterpolator, { LazyRGBColor } from './ColorPicker';
-import ECharts3DScatter from './ECharts';
+import ECharts3DScatter from './ECharts3D';
 import styled from 'styled-components';
+import ECharts2DScatter from './ECharts2D';
 
 
 
@@ -19,11 +20,11 @@ function App() {
     <ColorInterpolator colorChangeCallback={colorChangeCallback} />
     <ChartContainer>
 
-    <ECharts3DScatter 
-    selectedColors={selectedColors}
-    />
-          </ChartContainer>
-
+    {/* <ECharts3DScatter selectedColors={selectedColors}/> */}
+    </ChartContainer>
+    <ECharts2DScatter selectedColors={selectedColors} projectionColors={['red', 'green']} />
+    <ECharts2DScatter selectedColors={selectedColors} projectionColors={['green', 'blue']} />
+    <ECharts2DScatter selectedColors={selectedColors} projectionColors={['red', 'blue']} />
     </Wrapper>
   );
 }

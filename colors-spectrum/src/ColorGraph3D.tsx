@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
-const ColorGraph = () => {
+const ColorGraph3D = () => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useEffect(() => {
@@ -47,10 +47,10 @@ const ColorGraph = () => {
   );
 };
 
-const ColorGraphWrapped = () => {
+const ColorGraph3DWrapped = () => {
     return (<Canvas style={{width: 500, height: 500}}>
-        <ColorGraph />
+        <ColorGraph3D />
     </Canvas>)
 }
 
-export default ColorGraphWrapped;
+export default ColorGraph3DWrapped;
