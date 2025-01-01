@@ -1,8 +1,3 @@
-# Steps
-# Import photo
-# Extract 3 interesting colors
-# Create output string
-# Create web app and React component that can read in. 
 import os
 import cv2
 import numpy as np
@@ -12,23 +7,21 @@ import base64
 import json
 import pillow_avif # Actually used.
 
-
 def some_hash(image_path, num_colors=5):
-    # Check the file extension
     extension = image_path.split('.')[-1].lower()
     
     if extension == 'avif':
-        # Load the image using Pillow for AVIF format
         image = Image.open(image_path)
-        image = image.convert('RGB')  # Convert to RGB
-        image = np.array(image)  # Convert to a NumPy array
+        image = image.convert('RGB') 
+        image = np.array(image)
         aspect_ratio = image.shape[1] / image.shape[0]
     else:
-        # Load the image using OpenCV for other formats
         image = cv2.imread(image_path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
         aspect_ratio = image.shape[1] / image.shape[0]
+    
     pixels = image.reshape(-1, 3)
+    
     kmeans = KMeans(n_clusters=num_colors)
     kmeans.fit(pixels)
     colors = kmeans.cluster_centers_.astype(int)
@@ -41,7 +34,7 @@ def some_hash(image_path, num_colors=5):
     return {'encoded_string': encoded_string, 'aspect_ratio': aspect_ratio}
 
 def read_files(input_dir):
-    INCLUDED_FILES = ['jpg', 'png', 'avif']
+    SUPPORTED_EXTENSIONS = ['jpg', 'png', 'avif']
 
     files = []
     for filename in os.listdir(input_dir):
@@ -49,7 +42,7 @@ def read_files(input_dir):
             continue
         
         extension = filename.split('.')[-1]
-        if not extension in INCLUDED_FILES:
+        if not extension in SUPPORTED_EXTENSIONS:
             continue
 
         files.append(filename)
