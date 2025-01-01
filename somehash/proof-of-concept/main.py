@@ -5,11 +5,11 @@
 # Create web app and React component that can read in. 
 import os
 import cv2
-import pillow_avif
 import numpy as np
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
 from PIL import Image
+import base64
+import pillow_avif # Actually used.
 
 
 def some_hash(image_path, num_colors=5):
@@ -26,22 +26,17 @@ def some_hash(image_path, num_colors=5):
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
     
-    # Reshape the image to a 2D array of pixels
     pixels = image.reshape(-1, 3)
-    
-    # Apply K-means clustering
     kmeans = KMeans(n_clusters=num_colors)
     kmeans.fit(pixels)
-    
-    # Get the colors
     colors = kmeans.cluster_centers_.astype(int)
     
-    # Display the colors
-    plt.figure(figsize=(8, 6))
-    plt.imshow([colors])
-    plt.axis('off')
-    plt.show()
-
+    color_string = ', '.join([f'({r}, {g}, {b})' for r, g, b in colors])
+    
+    encoded_bytes = base64.b64encode(color_string.encode('utf-8'))
+    encoded_string = encoded_bytes.decode('utf-8')
+    
+    return encoded_string
 
 def read_files(input_dir):
     INCLUDED_FILES = ['jpg', 'png', 'avif']
