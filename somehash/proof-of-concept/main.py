@@ -22,11 +22,12 @@ def some_hash(image_path, num_colors=5):
         image = Image.open(image_path)
         image = image.convert('RGB')  # Convert to RGB
         image = np.array(image)  # Convert to a NumPy array
+        aspect_ratio = image.shape[1] / image.shape[0]
     else:
         # Load the image using OpenCV for other formats
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
-    
+        aspect_ratio = image.shape[1] / image.shape[0]
     pixels = image.reshape(-1, 3)
     kmeans = KMeans(n_clusters=num_colors)
     kmeans.fit(pixels)
@@ -37,7 +38,7 @@ def some_hash(image_path, num_colors=5):
     encoded_bytes = base64.b64encode(color_string.encode('utf-8'))
     encoded_string = encoded_bytes.decode('utf-8')
     
-    return encoded_string
+    return {'encoded_string': encoded_string, 'aspect_ratio': aspect_ratio}
 
 def read_files(input_dir):
     INCLUDED_FILES = ['jpg', 'png', 'avif']
