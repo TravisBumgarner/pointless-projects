@@ -9,6 +9,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from PIL import Image
 import base64
+import json
 import pillow_avif # Actually used.
 
 
@@ -31,7 +32,7 @@ def some_hash(image_path, num_colors=5):
     kmeans.fit(pixels)
     colors = kmeans.cluster_centers_.astype(int)
     
-    color_string = ', '.join([f'({r}, {g}, {b})' for r, g, b in colors])
+    color_string = '_'.join([f'{r}-{g}-{b}' for r, g, b in colors])
     
     encoded_bytes = base64.b64encode(color_string.encode('utf-8'))
     encoded_string = encoded_bytes.decode('utf-8')
@@ -66,4 +67,6 @@ def main(dir: str):
 
 if __name__ == "__main__":
     input_dir = "./input"
-    print(main(input_dir))
+    output = main(input_dir)
+    with open("./react-app/src/output.json", "w") as f:
+        json.dump(output, f)
