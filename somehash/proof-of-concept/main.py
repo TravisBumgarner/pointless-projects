@@ -6,6 +6,7 @@ from PIL import Image
 import base64
 import json
 import pillow_avif # Actually used.
+import matplotlib.pyplot as plt
 
 def some_hash(image_path, num_colors=5):
     extension = image_path.split('.')[-1].lower()

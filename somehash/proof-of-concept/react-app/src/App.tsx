@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import output from "./output.json";
-
 function base64_to_rgb(base64: string) {
   const decoded = atob(base64);
   const colors = decoded.split("_").map((color) => {
@@ -14,12 +13,40 @@ function base64_to_rgb(base64: string) {
 
 const SHARED_WIDTH = 500;
 
-const Preview = styled.div<{ colors: string[]; aspect_ratio: number }>`
-  background: ${({ colors }) =>
-    `linear-gradient(to right, ${colors.join(", ")})`};
-  height: ${SHARED_WIDTH}px;
-  width: ${({ aspect_ratio }) => SHARED_WIDTH * aspect_ratio}px;
-`;
+const randomArrayItem = (array: any[]) => {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+const Column = ({color: initialColor}: {color: string}) => {
+  const [color, setColor] = useState('white');
+  const timeout =  useMemo(() => Math.random() * 500, [])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setColor(initialColor)
+    }, timeout)
+  }, [initialColor, timeout])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setColor('transparent')
+    }, timeout + 250)
+  }, [timeout])  
+
+  return <div style={{flexGrow: 1, backgroundColor: color}}></div>;
+}
+
+const Preview = ({ colors, aspect_ratio }: { colors: string[]; aspect_ratio: number }) => {
+  const COLUMNS = SHARED_WIDTH / 2;
+  const COLORS = Array.from({length: COLUMNS}, () => randomArrayItem(colors))
+
+  return <div style={{position: 'absolute', top: 0, left: 0, height: SHARED_WIDTH, width: SHARED_WIDTH * aspect_ratio, display: 'flex', flexDirection: 'row'}}>
+    {COLORS.map((color) => {
+      return <Column color={color} />;
+    })}
+  </div>;
+}
+
 
 const StyledImage = styled.img<{ aspect_ratio: number }>`
   height: ${SHARED_WIDTH}px;
@@ -36,22 +63,8 @@ const Image = ({
   colors: string[];
   aspect_ratio: number;
 }) => {
-  const [showPreview, setShowPreview] = useState(true);
-  const imageRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    if (imageRef.current) {
-      imageRef.current.addEventListener("mouseover", () => {
-        setShowPreview(false);
-      });
-      imageRef.current.addEventListener("mouseout", () => {
-        setShowPreview(true);
-      });
-    }
-  }, []);
-
   return (
-    <div ref={imageRef} style={{ display: "inline-block", marginBottom: 75 }}>
+    <div style={{ display: "inline-block", marginBottom: 75 }}>
       <div style={{ marginBottom: 10 }}>
         {colors.map((color) => {
           return (
@@ -68,15 +81,14 @@ const Image = ({
           );
         })}
       </div>
-      {showPreview ? (
-        <Preview colors={colors} aspect_ratio={aspect_ratio} />
-      ) : (
+      <div style={{position: 'relative'}}>
         <StyledImage
           aspect_ratio={aspect_ratio}
           alt={filename}
           src={filename}
         />
-      )}
+        <Preview colors={colors} aspect_ratio={aspect_ratio} />
+      </div>
     </div>
   );
 };

@@ -1,3 +1,4 @@
 *.avif
 *.jpg
 *.png
+venv/
