@@ -1,0 +1,9 @@
+asgiref==3.8.1
+Django==5.1.4
+django-filter==24.3
+djangorestframework==3.15.2
+Markdown==3.7
+packaging==24.2
+pywatchman==2.0.0
+sqlparse==0.5.3
+wheel @ file:///opt/homebrew/Cellar/python%403.13/3.13.0_1/libexec/wheel-0.44.0-py3-none-any.whl#sha256=f49b82715dce6365f75eddcb0a9bb47d0d46feaf14bbc739dfcbd677b7073f5b
