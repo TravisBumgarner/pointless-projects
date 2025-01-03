@@ -1,0 +1,6 @@
+pillow-avif-plugin==1.4.6
+scikit-learn==1.6.0
+scipy==1.14.1
+opencv-python==4.10.0.84
+pillow==11.0.0
+numpy==2.2.1

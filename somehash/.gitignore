@@ -1,4 +1,6 @@
 *.avif
 *.jpg
 *.png
-venv/
+somehash-venv/
+public/
+node_modules/
