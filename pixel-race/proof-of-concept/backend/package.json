@@ -1,0 +1,22 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "start": "node dist/index.js",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.21.2"
+    },
+    "devDependencies": {
+        "vite": "^5.1.4",
+        "vite-plugin-node": "^3.1.0",
+        "@types/express": "^4.17.21",
+        "@types/node": "^20.11.19",
+        "typescript": "^5.3.3"
+    }
+}

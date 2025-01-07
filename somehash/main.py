@@ -7,9 +7,9 @@ import base64
 import json
 import pillow_avif # Plugin for handling AVIF files.
 
-def some_hash(image_path, num_colors=5):
+def read_image(image_path):
     extension = image_path.split('.')[-1].lower()
-    
+
     if extension == 'avif':
         image = Image.open(image_path)
         image = image.convert('RGB') 
@@ -19,8 +19,13 @@ def some_hash(image_path, num_colors=5):
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
         aspect_ratio = image.shape[1] / image.shape[0]
-    
     pixels = image.reshape(-1, 3)
+
+    return pixels, aspect_ratio
+    
+
+def some_hash(image_path, num_colors=5):
+    pixels, aspect_ratio = read_image(image_path)
     
     kmeans = KMeans(n_clusters=num_colors)
     kmeans.fit(pixels)
