@@ -15,6 +15,10 @@ function sendToClients(message) {
     clients.forEach(client => client.res.write(`data: ${JSON.stringify(message)}\n\n`));
 }
 
+function sendToClient(client: { id: number; res: Response }, message: string) {
+    client.res.write(`data: ${JSON.stringify(message)}\n\n`);
+}
+
 // Endpoint to handle SSE connections
 app.get('/events', (req: Request, res: Response) => {
     // Set the headers for SSE
