@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getPaint, postPaint } from "./api";
 import { CANVAS_GRID_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH } from "./consts";
 import { Point } from "./types";
+import useEventSource from "./useEventSource";
 
 const COLORS = [
   "#000000",
@@ -17,21 +18,28 @@ const COLORS = [
 ];
 
 const PaintApp = () => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-
-    const paintCanvas = (points: Point[]) => {
-        console.log('painting', points);
-        const canvas = canvasRef.current;
-        const context = canvas!.getContext("2d")!;
-        points.forEach((point) => {
-            context.fillStyle = point.color;
-            context.fillRect(point.x, point.y, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
-        });
-    }
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { lastMessage } = useEventSource();
+  
+  const paintCanvas = (points: Point[]) => {
+    const canvas = canvasRef.current;
+    const context = canvas!.getContext("2d")!;
+    points.forEach((point) => {
+      context.fillStyle = point.color;
+      context.fillRect(point.x, point.y, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
+    });
+  };
 
   useEffect(() => {
     getPaint().then(paintCanvas);
   }, []);
+
+  useEffect(() => {
+    if (lastMessage) {
+        console.log("lastMessage", lastMessage);
+      paintCanvas(lastMessage);
+    }
+  }, [lastMessage]);
 
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
 
@@ -43,6 +51,7 @@ const PaintApp = () => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     const rect = canvas?.getBoundingClientRect();
+    if (!rect) return;
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 

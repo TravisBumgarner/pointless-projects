@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
+import { Point } from './types';
+import { decodePoints } from './utilities';
 
-interface Message {
-    [key: string]: unknown; // Define the structure of your message here
-}
 
 const URL = "http://localhost:8000/events";
 
 const useEventSource = () => {
-    const [lastMessage, setLastMessage] = useState<Message | null>(null);
+    const [lastMessage, setLastMessage] = useState<Point[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isConnected, setIsConnected] = useState<boolean>(false);
 
@@ -21,8 +20,9 @@ const useEventSource = () => {
         const eventSource = new EventSource(URL);
 
         eventSource.onmessage = (event) => {
-            const message: Message = JSON.parse(event.data);
-            setLastMessage(message);
+            const message = JSON.parse(event.data);
+            const points = decodePoints(message);
+            setLastMessage(points);
         };
 
         eventSource.onopen = () => {

@@ -16,10 +16,6 @@ function sendToClients(message: any) {
     clients.forEach(client => client.res.write(`data: ${JSON.stringify(message)}\n\n`));
 }
 
-function sendToClient(client: { id: number; res: Response }, message: string) {
-    client.res.write(`data: ${JSON.stringify(message)}\n\n`);
-}
-
 app.get('/ok', (req: Request, res: Response) => {
     res.send('OK');
 });
@@ -45,11 +41,6 @@ app.get('/events', (req: Request, res: Response) => {
 
     console.log('Client connected');
     res.write('data: {"status": "connected"}\n\n'); // Send a connected message to the client
-
-    // Optionally, send periodic updates (e.g., broadcasting a time every 5 seconds)
-    setInterval(() => {
-        sendToClients({ message: 'This is a broadcast message', timestamp: new Date() });
-    }, 10000);
 });
 
 const canvasData: Record<string, string> = {};
@@ -64,7 +55,7 @@ app.post('/paint', (req: Request, res: Response) => {
         canvasData[index] = color;
     });
 
-    // TODO: Handle the points data as needed
+    sendToClients(encodedPoints);
     res.json({ success: true });
 });
 
