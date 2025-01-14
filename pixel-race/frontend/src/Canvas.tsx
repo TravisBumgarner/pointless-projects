@@ -36,7 +36,6 @@ const PaintApp = () => {
 
   useEffect(() => {
     if (lastMessage) {
-        console.log("lastMessage", lastMessage);
       paintCanvas(lastMessage);
     }
   }, [lastMessage]);
