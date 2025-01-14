@@ -2,7 +2,7 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 // Enable CORS if needed
 app.use(cors());
@@ -44,7 +44,7 @@ app.get('/events', (req: Request, res: Response) => {
     // Optionally, send periodic updates (e.g., broadcasting a time every 5 seconds)
     setInterval(() => {
         sendToClients({ message: 'This is a broadcast message', timestamp: new Date() });
-    }, 5000);
+    }, 10000);
 });
 
 // Start the server
