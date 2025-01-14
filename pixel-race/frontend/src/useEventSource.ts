@@ -4,7 +4,7 @@ interface Message {
     [key: string]: unknown; // Define the structure of your message here
 }
 
-const URL = "http://localhost:8080/events";
+const URL = "http://localhost:8000/events";
 
 const useEventSource = () => {
     const [lastMessage, setLastMessage] = useState<Message | null>(null);
