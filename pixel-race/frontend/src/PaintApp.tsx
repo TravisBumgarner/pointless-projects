@@ -7,12 +7,23 @@ const COLORS = [
 
 const PaintApp = () => {
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
+  const [isDrawing, setIsDrawing] = useState(false);
 
   const handleColorClick = (color: string) => {
     setSelectedColor(color);
   };
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleMouseDown = () => {
+    setIsDrawing(true);
+  };
+
+  const handleMouseUp = () => {
+    setIsDrawing(false);
+  };
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const context = canvas.getContext("2d")!;
     const rect = canvas.getBoundingClientRect();
@@ -20,7 +31,7 @@ const PaintApp = () => {
     const y = event.clientY - rect.top;
 
     context.fillStyle = selectedColor;
-    context.fillRect(x, y, 5, 5); // Paint on click
+    context.fillRect(x, y, 5, 5);
   };
 
   return (
@@ -31,6 +42,8 @@ const PaintApp = () => {
         height="500"
         style={{ border: "1px solid black" }}
         onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
       ></canvas>
       <div style={{ display: "flex", marginTop: "10px" }}>
         {COLORS.map((color) => (
@@ -51,4 +64,4 @@ const PaintApp = () => {
   );
 };
 
-export default PaintApp;
+export default PaintApp; 
