@@ -4,30 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSE Example</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Server-Sent Events (SSE) Demo</h1>
     <div id="messages"></div>
-
-    <script>
-        const eventSource = new EventSource('http://localhost:3000/events');
-
-        // Listen for incoming messages
-        eventSource.onmessage = function(event) {
-            const message = JSON.parse(event.data);
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML += `<p>${message.message} - ${message.timestamp}</p>`;
-        };
-
-        // Handle connection open
-        eventSource.onopen = function() {
-            console.log("Connected to SSE server");
-        };
-
-        // Handle connection error
-        eventSource.onerror = function() {
-            console.error("Error with SSE connection");
-        };
-    </script>
+    <canvas id="canvas"></canvas>
+    <script src="script.ts"></script>
 </body>
 </html>
