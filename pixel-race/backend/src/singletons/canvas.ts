@@ -11,8 +11,8 @@ class Canvas {
         return Canvas.instance;
     }
 
-    public update(points: Record<string, string>) {
-        Object.entries(points).forEach(([index, color]) => {
+    public update(points: [number, string][]) {
+        points.forEach(([index, color]) => {
             this.data[index] = color;
         });
     }

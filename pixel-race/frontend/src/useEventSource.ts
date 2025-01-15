@@ -7,14 +7,14 @@ const URL = "http://localhost:8000/events";
 
 const useEventSource = () => {
     const [lastMessage, setLastMessage] = useState<Point[] | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
     const [isConnected, setIsConnected] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (error) {
-            alert("An error occurred. Please refresh the page."); 
-        }
-    }, [error])
+    // useEffect(() => {
+    //     if (error) {
+    //         alert("An error occurred. Please refresh the page."); 
+    //     }
+    // }, [error])
 
     useEffect(() => {
         const eventSource = new EventSource(URL);
@@ -30,7 +30,8 @@ const useEventSource = () => {
         };
 
         eventSource.onerror = () => {
-            setError("Error with SSE connection");
+            // setError("Error with SSE connection");
+            console.error("Error with SSE connection");
             eventSource.close();
         };
 

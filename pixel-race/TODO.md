@@ -1,4 +1,9 @@
 - [ ] Shorten JSON payloads
-- [ ] Add backend validation
+- [x] Add backend validation
 - [ ] Batch messages to clients
 - [ ] Queuing System
+- [ ] Write some API tests
+    - [ ] Post valid data length
+    - [ ] post invalid data length
+    - [ ] Invalid numbers (maybe move canvas size to shared between fe/be)
+    - [ ] Invalid chars (move colors to shared?)

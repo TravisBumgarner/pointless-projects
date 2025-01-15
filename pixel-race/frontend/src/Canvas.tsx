@@ -1,22 +1,73 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getPaint, postPaint } from "./api";
 import { CANVAS_GRID_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH } from "./consts";
-import { Point } from "./types";
+import { ColorKey, Point } from "./types";
 import useEventSource from "./useEventSource";
 
-const COLORS = [
-  "#000000",
-  "#FFFFFF",
-  "#FF0000",
-  "#00FF00",
-  "#0000FF",
-  "#FFFF00",
-  "#00FFFF",
-  "#FF00FF",
-  "#FFA500",
-  "#800080",
-];
-
+const COLOR_MAP: { [key: string]: string } = {
+  "a": "#f9ebea",
+  "b": "#f2d7d5",
+  "c": "#e6b0aa",
+  "d": "#d98880",
+  "e": "#cd6155",
+  "f": "#c0392b",
+  "g": "#a93226",
+  "h": "#922b21",
+  "i": "#7b241c",
+  "j": "#641e16",
+  "k": "#fdedec",
+  "l": "#fadbd8",
+  "m": "#f5b7b1",
+  "n": "#f1948a",
+  "o": "#ec7063",
+  "p": "#e74c3c",
+  "q": "#cb4335",
+  "r": "#b03a2e",
+  "s": "#943126",
+  "t": "#78281f",
+  "u": "#f5eef8",
+  "v": "#ebdef0",
+  "w": "#d7bde2",
+  "x": "#c39bd3",
+  "y": "#af7ac5",
+  "z": "#9b59b6",
+  "A": "#884ea0",
+  "B": "#76448a",
+  "C": "#633974",
+  "D": "#512e5f",
+  "E": "#f4ecf7",
+  "F": "#e8daef",
+  "G": "#d2b4de",
+  "H": "#bb8fce",
+  "I": "#a569bd",
+  "J": "#8e44ad",
+  "K": "#7d3c98",
+  "L": "#6c3483",
+  "M": "#5b2c6f",
+  "N": "#4a235a",
+  "O": "#eaf2f8",
+  "P": "#d4e6f1",
+  "Q": "#a9cce3",
+  "R": "#7fb3d5",
+  "S": "#5499c7",
+  "T": "#2980b9",
+  "U": "#2471a3",
+  "V": "#1f618d",
+  "W": "#1a5276",
+  "X": "#154360",
+  "Y": "#e8f8f5",
+  "Z": "#d1f2eb",
+  "0": "#a3e4d7",
+  "1": "#76d7c4",
+  "2": "#48c9b0",
+  "3": "#1abc9c",
+  "4": "#17a589",
+  "5": "#148f77",
+  "6": "#117864",
+  "7": "#0e6251",
+  "8": "#fef9e7",
+  "9": "#fcf3cf",
+};
 const PaintApp = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { lastMessage } = useEventSource();
@@ -25,7 +76,7 @@ const PaintApp = () => {
     const canvas = canvasRef.current;
     const context = canvas!.getContext("2d")!;
     points.forEach((point) => {
-      context.fillStyle = point.color;
+      context.fillStyle = COLOR_MAP[point.colorKey];
       context.fillRect(point.x, point.y, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
     });
   };
@@ -40,10 +91,11 @@ const PaintApp = () => {
     }
   }, [lastMessage]);
 
-  const [selectedColor, setSelectedColor] = useState(COLORS[0]);
 
-  const handleColorClick = (color: string) => {
-    setSelectedColor(color);
+  const [selectedColorKey, setSelectedColorKey] = useState<ColorKey>("A");
+
+  const handleColorClick = (char: ColorKey) => {
+    setSelectedColorKey(char);
   };
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -57,14 +109,14 @@ const PaintApp = () => {
     const snappedX = Math.floor(x / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
     const snappedY = Math.floor(y / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
 
-    context!.fillStyle = selectedColor;
+    context!.fillStyle = COLOR_MAP[selectedColorKey];
     context!.fillRect(snappedX, snappedY, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
 
-    postPaint([{ x: snappedX, y: snappedY, color: selectedColor }]);
+    postPaint([{ x: snappedX, y: snappedY, colorKey: selectedColorKey }]);
   };
 
   return (
-    <div>
+    <div >
       <canvas
         ref={canvasRef}
         width={CANVAS_WIDTH}
@@ -72,15 +124,15 @@ const PaintApp = () => {
         style={{ border: "1px solid black" }}
         onMouseDown={handleMouseDown}
       ></canvas>
-      <div style={{ display: "flex", marginTop: "10px" }}>
-        {COLORS.map((color) => (
+      <div style={{ width: CANVAS_WIDTH, display: "flex", marginTop: "10px", flexWrap: "wrap" }}>
+        {Object.keys(COLOR_MAP).sort().map((char) => (
           <div
-            key={color}
-            onClick={() => handleColorClick(color)}
+            key={char}
+            onClick={() => handleColorClick(char as ColorKey)}
             style={{
               width: "50px",
               height: "50px",
-              backgroundColor: color,
+              backgroundColor: COLOR_MAP[char],
               border: "1px solid black",
               cursor: "pointer",
             }}
