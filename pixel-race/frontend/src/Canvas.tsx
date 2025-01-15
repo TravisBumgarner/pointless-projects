@@ -130,8 +130,8 @@ const PaintApp = () => {
             key={char}
             onClick={() => handleColorClick(char as ColorKey)}
             style={{
-              width: "50px",
-              height: "50px",
+              width: "25px",
+              height: "25px",
               backgroundColor: COLOR_MAP[char],
               border: "1px solid black",
               cursor: "pointer",

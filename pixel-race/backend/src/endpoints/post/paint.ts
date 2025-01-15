@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import Canvas from "../../singletons/canvas";
-import Clients from "../../singletons/clients";
-
-const canvas = Canvas.getInstance();
-const clients = Clients.getInstance();
+import { canvas } from "../../singletons/canvas";
+import { clients } from "../../singletons/clients";
 
 const EncodedPointSchema = z.string().regex(/^\d+_[A-Za-z0-9]$/);
 const EncodedPointArraySchema = z.array(EncodedPointSchema).min(1).max(5);

@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
-import Clients from "../../singletons/clients";
-
-const clients = Clients.getInstance();
+import { clients } from "../../singletons/clients";
 
 export const events = (req: Request, res: Response) => {
   res.setHeader("Content-Type", "text/event-stream");

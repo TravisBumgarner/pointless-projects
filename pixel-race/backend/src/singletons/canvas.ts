@@ -1,15 +1,5 @@
-class Canvas {
-    private static instance: Canvas;
+export class Canvas {
     data: Record<string, string> = {};
-
-    private constructor() {}
-
-    public static getInstance(): Canvas {
-        if (!Canvas.instance) {
-            Canvas.instance = new Canvas();
-        }
-        return Canvas.instance;
-    }
 
     public update(points: [number, string][]) {
         points.forEach(([index, color]) => {
@@ -22,5 +12,4 @@ class Canvas {
     }
 }
 
-export default Canvas;
-
+export const canvas = new Canvas();
