@@ -1,6 +1,6 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
-import endpoints from './endpoints/index.js';
+import endpoints from './endpoints';
 const app = express();
 const port = 8000;
 

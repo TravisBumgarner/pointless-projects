@@ -1,3 +1,4 @@
 import { paint } from './paint';
-
-export default { paint };
+import { queue } from './queue';
+    
+export default { paint, queue };

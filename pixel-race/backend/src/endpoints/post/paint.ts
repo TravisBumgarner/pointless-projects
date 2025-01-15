@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { z } from "zod";
+import { MessageType } from "../../../../shared/types";
 import { canvas } from "../../singletons/canvas";
 import { clients } from "../../singletons/clients";
+import { queue } from "../../singletons/queue";
 
 const EncodedPointSchema = z.string().regex(/^\d+_[A-Za-z0-9]$/);
 const EncodedPointArraySchema = z.array(EncodedPointSchema).min(1).max(5);
@@ -26,9 +28,10 @@ export const paint = (req: Request, res: Response) => {
 
     canvas.update(points); // Ensure the update method accepts string[]
 
-    clients.messageAll(points);
+    clients.messageAll({t: MessageType.Paint, p: points, q: queue.size()});
     res.json({ success: true });
   } catch (error) {
     res.status(400).json({ error: "Invalid input format." });
   }
 };
+

@@ -19,3 +19,14 @@ export const postPaint = async (data: Point[]) => {
     });
     return response.json();
 }
+
+export const postQueue = async (name: string) => {
+    const response = await fetch(`${API_URL}/queue`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name }),
+    });
+    return response.json();
+}

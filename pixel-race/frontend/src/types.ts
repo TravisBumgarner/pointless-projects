@@ -12,5 +12,16 @@ export type Point = {
     colorKey: ColorKey;
 }
 
+export enum EventType {    
+    Paint = 'paint',
+}
+
+type PaintEvent = {
+    points: Point[];
+    queue: number;
+    type: EventType.Paint;
+}
+
+export type Event = PaintEvent;
 
 export type EncodedPoint = `${number}_${ColorKey}`;

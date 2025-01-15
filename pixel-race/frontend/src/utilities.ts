@@ -2,6 +2,8 @@ import { CANVAS_GRID_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH } from "./consts";
 import { ColorKey, EncodedPoint, Point } from "./types";
 
 export const decodePoints = (data: Record<string, string>): Point[] => {
+    console.log(data);
+
     const rows = CANVAS_HEIGHT / CANVAS_GRID_SIZE;
     const cols = CANVAS_WIDTH / CANVAS_GRID_SIZE;
 

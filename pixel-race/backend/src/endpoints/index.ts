@@ -1,4 +1,4 @@
-import get from './get/index.js';
-import post from './post/index.js';
+import get from './get';
+import post from './post';
 
 export default { post, get };

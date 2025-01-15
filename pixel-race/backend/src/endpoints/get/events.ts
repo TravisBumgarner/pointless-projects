@@ -14,5 +14,5 @@ export const events = (req: Request, res: Response) => {
     clients.removeClient(res);
   });
 
-  res.write('data: {"status": "connected"}\n\n');
+  res.write(JSON.stringify({ t: "system", m: "connected" }));
 };
