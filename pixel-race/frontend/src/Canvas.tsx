@@ -72,6 +72,7 @@ const COLOR_MAP: { [key: string]: string } = {
 const PaintApp = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const eventData = useEventStore((state) => state.eventData);
+  
   const paintCanvas = (points: Point[]) => {
     const canvas = canvasRef.current;
     const context = canvas!.getContext("2d")!;

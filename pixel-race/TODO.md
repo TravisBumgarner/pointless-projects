@@ -7,3 +7,4 @@
     - [ ] post invalid data length
     - [ ] Invalid numbers (maybe move canvas size to shared between fe/be)
     - [ ] Invalid chars (move colors to shared?)
+- [] Somehow track all painting history
