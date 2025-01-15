@@ -1,24 +1,22 @@
 {
-    "name": "backend",
-    "version": "1.0.0",
-    "main": "dist/server.js",
-    "type": "module",
-    "scripts": {
-        "build": "node build.mjs",
-        "dev": "node build.mjs && node dist/server.js",
-        "start": "node dist/server.js"
-    },
-    "dependencies": {
-        "cors": "^2.8.5",
-        "express": "^4.21.2"
-    },
-    "devDependencies": {
-        "@types/cors": "^2.8.17",
-        "@types/express": "^4.17.21",
-        "@types/node": "^22.10.6",
-        "esbuild": "^0.24.2",
-        "nodemon": "^3.1.9",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.7.3"
-    }
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/server.js\""
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.6",
+    "esbuild": "^0.24.2",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "tsc-watch": "^6.2.1",
+    "typescript": "^5.7.3"
+  }
 }

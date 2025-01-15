@@ -6,6 +6,7 @@
         "dev": "concurrently -n \"Backend,Frontend\" -c \"blue.green\" \"cd backend && yarn run dev\" \"cd frontend && yarn run dev\""
     },
     "dependencies": {
-        "concurrently": "^9.1.2"
+        "concurrently": "^9.1.2",
+        "zod": "^3.24.1"
     }
 }
