@@ -1,14 +1,31 @@
 import { create } from 'zustand';
-import { Event } from './types';
+import { PointEncoded, SSEMessage } from '../../shared';
+import { PointXY } from './types';
+import { decodePoints } from './utilities';
 
 interface EventState {
-  eventData: Event | null;
-  setEventData: (data: Event | null) => void;
+  eventData: SSEMessage | null;
+  setEventData: (data: SSEMessage | null) => void;
+  queue: number;
+  setQueue: (queue: number) => void;
+  points: PointXY[];
+  setPoints: (points: PointEncoded[]) => void;
+  clientId: string | null;
+  setClientId: (clientId: string | null) => void;
 }
 
-const useEventStore = create<EventState>((set) => ({
+const useStore = create<EventState>((set) => ({
   eventData: null,
-  setEventData: (data: Event | null) => set({ eventData: data }),
+  setEventData: (data: SSEMessage | null) => set({ eventData: data }),
+  queue: 0,
+  setQueue: (queue: number) => set({ queue }),
+  points: [],
+  setPoints: (points: PointEncoded[]) => {
+    const pointsXY = decodePoints(points);
+    set({ points: pointsXY});
+  },
+  clientId: null,
+  setClientId: (clientId: string | null) => set({ clientId }),
 }));
 
-export default useEventStore;
+export default useStore;

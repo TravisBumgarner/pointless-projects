@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
+import { SSEMessageType } from "../../../../shared";
 import { clients } from "../../singletons/clients";
+import { queue } from "../../singletons/queue";
 
 export const events = (req: Request, res: Response) => {
   res.setHeader("Content-Type", "text/event-stream");
@@ -12,7 +14,9 @@ export const events = (req: Request, res: Response) => {
 
   req.on("close", () => {
     clients.removeClient(clientId);
+    queue.remove(clientId);
+    clients.messageAll({ t: SSEMessageType.Queue, m: queue.size() });
   });
 
-  res.write(JSON.stringify({ t: "auth", m: clientId }));
+  clients.messageOne(clientId, { t: SSEMessageType.Auth, m: clientId });
 };

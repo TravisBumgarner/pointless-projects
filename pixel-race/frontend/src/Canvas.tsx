@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { getPaint, postPaint } from "./api";
+import { ColorKey } from "../../shared";
+import { postPaint } from "./api";
 import { CANVAS_GRID_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH } from "./consts";
-import useEventStore from "./store";
-import { ColorKey, EventType, Point } from "./types";
+import useStore from "./store";
+import { PointXY } from "./types";
 
 const COLOR_MAP: { [key: string]: string } = {
   "a": "#f9ebea",
@@ -71,9 +72,9 @@ const COLOR_MAP: { [key: string]: string } = {
 
 const PaintApp = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const eventData = useEventStore((state) => state.eventData);
+  const points = useStore((state) => state.points);
   
-  const paintCanvas = (points: Point[]) => {
+  const paintCanvas = (points: PointXY[]) => {
     const canvas = canvasRef.current;
     const context = canvas!.getContext("2d")!;
     points.forEach((point) => {
@@ -83,14 +84,8 @@ const PaintApp = () => {
   };
 
   useEffect(() => {
-    getPaint().then(paintCanvas);
-  }, []);
-
-  useEffect(() => {
-    if (eventData?.type === EventType.Paint) {
-      paintCanvas(eventData.points);
-    }
-  }, [eventData]);
+    paintCanvas(points);
+  }, [points]);
 
 
   const [selectedColorKey, setSelectedColorKey] = useState<ColorKey>("A");

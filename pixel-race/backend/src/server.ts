@@ -10,7 +10,7 @@ app.use(express.json());
 app.get('/ok', (_req: Request, res: Response) => res.send('OK'));
 
 app.get('/events', endpoints.get.events);
-app.get('/canvas', endpoints.get.canvas);
+app.get('/init', endpoints.get.init);
 
 app.post('/paint', endpoints.post.paint);
 app.post('/queue', endpoints.post.queue);

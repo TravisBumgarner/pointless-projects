@@ -6,17 +6,28 @@ class Clients {
     private clients: Map<string, Response> = new Map();
 
     public addClient(client: Response) {
-        const id = uuidv4();
-        this.clients.set(id, client);
-        return id;
+        const clientId = uuidv4();
+        this.clients.set(clientId, client);
+        return clientId;
     }
 
-    public removeClient(id: string) {
-        this.clients.delete(id);
+    public removeClient(clientId: string) {
+        this.clients.delete(clientId);
     }
 
     public messageAll(message: SSEMessage) {
         this.clients.forEach(client => client.write(`data: ${JSON.stringify(message)}\n\n`));
+    }
+
+    public messageOne(clientId: string, message: SSEMessage) {
+        const client = this.clients.get(clientId);
+        if (client) {
+            client.write(`data: ${JSON.stringify(message)}\n\n`);
+        }
+    }
+
+    public hasConnection(clientId: string) {
+        return this.clients.has(clientId);
     }
 
     public size() {

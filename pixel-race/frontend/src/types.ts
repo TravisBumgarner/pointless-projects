@@ -6,15 +6,15 @@ export type PointXY = {
     colorKey: ColorKey;
 }
 
-export enum EventType {    
-    Paint = 'paint',
-}
+// export enum EventType {    
+//     Paint = 'paint',
+// }
 
-type PaintEvent = {
-    points: PointXY[];
-    queue: number;
-    type: EventType.Paint;
-}
+// type PaintEvent = {
+//     points: PointXY[];
+//     queue: number;
+//     type: EventType.Paint;
+// }
 
-export type Event = PaintEvent;
+// export type Event = PaintEvent;
 

@@ -15,3 +15,5 @@
     - [ ] Storing user connections 
     - [ ] Storing Queue
     - [ ] Storing Canvas
+- [ ] Auth
+    - [ ] Maybe encode UUID so it's not stored as plaintext?

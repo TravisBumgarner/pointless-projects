@@ -8,7 +8,8 @@ export type PointEncoded = `${number}_${ColorKey}`;
 export enum SSEMessageType {
     Paint = 'p',
     System = 's',
-    Auth = 'a'
+    Auth = 'a',
+    Queue = 'q'
 }
 
 export type PaintMessage = {
@@ -27,9 +28,14 @@ enum ConnectionStatus {
     Disconnected = "d"
 }
 
+export type QueueMessage = {
+    t: SSEMessageType.Queue;
+    m: number;
+}
+
 export type SystemMessage = {
     t: SSEMessageType.System;
     m: ConnectionStatus;
 }
 
-export type SSEMessage = PaintMessage | AuthMessage | SystemMessage;
+export type SSEMessage = PaintMessage | AuthMessage | SystemMessage | QueueMessage;

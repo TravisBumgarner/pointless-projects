@@ -1,11 +1,18 @@
+import { PointEncoded } from "../../shared";
 import { PointXY } from "./types";
-import { decodePoints, encodePoints } from "./utilities";
+import { encodePoints } from "./utilities";
 
 const API_URL = "http://localhost:8000";
 
-export const getPaint = async () => {
-    const response = await fetch(`${API_URL}/canvas`);
-    return decodePoints(await response.json());
+export const init = async () => {
+    const response = await fetch(`${API_URL}/init`);
+    const data = await response.json();
+
+    console.log(data);
+    return {
+        canvas: data.canvas as PointEncoded[],    
+        queue: data.queue as number
+    }
 }
 
 export const postPaint = async (data: PointXY[]) => {
@@ -20,13 +27,13 @@ export const postPaint = async (data: PointXY[]) => {
     return response.json();
 }
 
-export const postQueue = async (name: string) => {
+export const postQueue = async (clientId: string) => {
     const response = await fetch(`${API_URL}/queue`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ clientId }),
     });
-    return response.json();
+    return response.status === 200;
 }

@@ -1,26 +1,29 @@
 import { useEffect } from "react";
 import { SSEMessage, SSEMessageType } from "../../shared/types";
-import useEventStore from "./store";
-import { EventType } from "./types";
-import { decodePoints } from "./utilities";
+import useStore from "./store";
 
 const URL = "http://localhost:8000/events";
 
 const useEventSource = () => {
-  const setEventData = useEventStore((state) => state.setEventData);
-
+  const setClientId = useStore((state) => state.setClientId);
+  const setQueue = useStore((state) => state.setQueue);
+  const setPoints = useStore((state) => state.setPoints);
   useEffect(() => {
     const eventSource = new EventSource(URL);
 
     eventSource.onmessage = (event: MessageEvent) => {
       const message = JSON.parse(event.data) as SSEMessage;
-
-      console.log('message type', message.t);
       switch (message.t) {
+        case SSEMessageType.Auth: {
+          setClientId(message.m);
+          break;
+        }
+        case SSEMessageType.Queue: {
+          setQueue(message.m);
+          break;
+        }
         case SSEMessageType.Paint: {
-          console.log("message", message);
-          const points = decodePoints(message.p);
-          setEventData({ points, queue: message.q, type: EventType.Paint });
+          setPoints(message.p);
           break;
         }
         case SSEMessageType.System: {
@@ -46,7 +49,11 @@ const useEventSource = () => {
     return () => {
       eventSource.close(); // Clean up the connection on component unmount
     };
-  }, [setEventData]);
+  }, [
+    setClientId,
+    setQueue,
+    setPoints,
+  ]);
 };
 
 export default useEventSource;

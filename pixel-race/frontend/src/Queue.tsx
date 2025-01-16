@@ -1,21 +1,23 @@
-import { useEffect, useState } from "react";
 import { postQueue } from "./api";
-import useEventStore from "./store";
-import { EventType } from "./types";
+import useStore from "./store";
 
 const Queue = () => {
-    const [queue, setQueue] = useState(0);
-    const eventData = useEventStore((state) => state.eventData);
-
-    useEffect(() => {
-        if (eventData?.type === EventType.Paint) {
-            setQueue(eventData.queue);
-        }
-    }, [eventData]);
-
+    const clientId = useStore((state) => state.clientId);
+    const queue = useStore((state) => state.queue);
+    
     const joinQueue = async () => {
-        const response = await postQueue('John');
-        console.log(response);
+        console.log(clientId);
+        if (!clientId) {
+            alert("Something went wrong. Please refresh the page.");
+            return;
+        }
+        const success = await postQueue(clientId);
+        if(success){
+            alert("You have joined the queue.");
+        }
+        if (!success) {
+            alert("Something went wrong. Please refresh the page.");
+        }
     }
 
     return (<div>

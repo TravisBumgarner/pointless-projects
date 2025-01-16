@@ -1,7 +1,7 @@
-import { canvas } from "./canvas";
 import { events } from "./events";
+import { init } from "./init";
 
 export default {
     events,
-    canvas
+    init
 };

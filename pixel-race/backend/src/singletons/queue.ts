@@ -1,20 +1,28 @@
-class Queue {
-    private queue: string[] = [];
 
-    public join(name: string) {
-        this.queue.push(name);
+
+class Queue {
+    // Sets maintain insertion order in JS.
+    private queue: Set<string> = new Set();
+
+    public add(clientId: string) {
+        this.queue.add(clientId);
     }
 
-    public leave(name: string) {
-        this.queue = this.queue.filter(q => q !== name);
+    public remove(clientId: string) {
+        this.queue.delete(clientId);
     }
 
     public size() {
-        return this.queue.length;
+        return this.queue.size;
     }
 
     public getNext() {
-        return this.queue.shift();
+        const next = this.queue.values().next();
+        if (next.done) {
+            return null;
+        }
+        this.queue.delete(next.value);
+        return next.value;
     }
 }
 
