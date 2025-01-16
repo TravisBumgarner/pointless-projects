@@ -6,7 +6,6 @@ const Queue = () => {
     const queue = useStore((state) => state.queue);
     
     const joinQueue = async () => {
-        console.log(clientId);
         if (!clientId) {
             alert("Something went wrong. Please refresh the page.");
             return;

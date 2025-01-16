@@ -8,7 +8,6 @@ export const init = async () => {
     const response = await fetch(`${API_URL}/init`);
     const data = await response.json();
 
-    console.log(data);
     return {
         canvas: data.canvas as PointEncoded[],    
         queue: data.queue as number

@@ -3,8 +3,6 @@ import { CANVAS_GRID_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH } from "./consts";
 import { PointXY } from "./types";
 
 export const decodePoints = (data: PointEncoded[]): PointXY[] => {
-    console.log('dat', data);
-
     const rows = CANVAS_HEIGHT / CANVAS_GRID_SIZE;
     const cols = CANVAS_WIDTH / CANVAS_GRID_SIZE;
 

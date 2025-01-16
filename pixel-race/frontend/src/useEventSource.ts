@@ -27,7 +27,6 @@ const useEventSource = () => {
           break;
         }
         case SSEMessageType.System: {
-          console.log(message);
           break;
         }
         default: {
