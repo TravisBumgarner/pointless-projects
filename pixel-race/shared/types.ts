@@ -9,7 +9,8 @@ export enum SSEMessageType {
     Paint = 'p',
     System = 's',
     Auth = 'a',
-    Queue = 'q'
+    Queue = 'q',
+    UserInfo = 'u'
 }
 
 export type PaintMessage = {
@@ -38,4 +39,9 @@ export type SystemMessage = {
     m: ConnectionStatus;
 }
 
-export type SSEMessage = PaintMessage | AuthMessage | SystemMessage | QueueMessage;
+export type UserInfoMessage = {
+    t: SSEMessageType.UserInfo;
+    m: string;
+}
+
+export type SSEMessage = PaintMessage | AuthMessage | SystemMessage | QueueMessage | UserInfoMessage;

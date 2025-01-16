@@ -26,7 +26,12 @@ const useEventSource = () => {
           setPoints(message.p);
           break;
         }
+        case SSEMessageType.UserInfo: {
+          alert(message.m)
+          break;
+        }
         case SSEMessageType.System: {
+          console.log(message.m)
           break;
         }
         default: {

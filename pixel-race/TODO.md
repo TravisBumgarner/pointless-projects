@@ -1,7 +1,11 @@
-- [ ] Write supported messages in client.ts
-- [ ] Improve communication for establishing/closing SSE events.  
+- [x] Write supported messages in client.ts
+- [x] Improve communication for establishing/closing SSE events.  
+- [ ] Need to update points such that only most recent change to an (X,Y) point are saved locally. 
 - [ ] Queuing System
     - [x] Map it out.
+    - [ ] Let someone know they're next. 
+    - [ ] If someone doesn't paint within 5 seconds. 
+    - [ ] Only one at a time
 - [ ] Shorten JSON payloads
 - [x] Add backend validation
 - [ ] Batch messages to clients

@@ -14,16 +14,21 @@ export const init = async () => {
     }
 }
 
-export const postPaint = async (data: PointXY[]) => {
+export const postPaint = async (data: PointXY[], clientId: string) => {
     const encodedData = encodePoints(data);
+
+    const body = {
+        points: encodedData,
+        clientId: clientId
+    }
     const response = await fetch(`${API_URL}/paint`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(encodedData),
+        body: JSON.stringify(body),
     });
-    return response.json();
+    return response.status === 200;
 }
 
 export const postQueue = async (clientId: string) => {

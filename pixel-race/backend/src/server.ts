@@ -4,6 +4,8 @@ import endpoints from './endpoints';
 const app = express();
 const port = 8000;
 
+
+
 app.use(cors());
 app.use(express.json());
 
@@ -14,6 +16,7 @@ app.get('/init', endpoints.get.init);
 
 app.post('/paint', endpoints.post.paint);
 app.post('/queue', endpoints.post.queue);
+
 
 app.listen(port, () => {
     console.log(`SSE server running at http://localhost:${port}`);

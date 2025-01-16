@@ -7,19 +7,27 @@ import { queue } from "../../singletons/queue";
 
 const EncodedPointSchema = z.string().regex(/^\d+_[A-Za-z0-9]$/);
 const EncodedPointArraySchema = z.array(EncodedPointSchema).min(1).max(5);
+const ClientIdSchema = z.string().uuid();
 
 const validateOrThrow = (body: unknown) => {
-  const parsed = EncodedPointArraySchema.parse(body);
-  return parsed as PointEncoded[];
+  const parsed = z.object({
+    points: EncodedPointArraySchema,
+    clientId: ClientIdSchema
+  }).parse(body);
+  return parsed as { points: PointEncoded[], clientId: string };
 };
 
 export const paint = (req: Request, res: Response) => {
-
   try {
-    const encodedPoints = validateOrThrow(req.body);
-    canvas.update(encodedPoints);
+    const {points, clientId} = validateOrThrow(req.body);
+    
+    if (queue.getCurrentClientId() !== clientId) {
+      res.status(400).json({ error: "You are not the current painter." });
+      return;
+    }
 
-    clients.messageAll({t: SSEMessageType.Paint, p: encodedPoints, q: queue.size()});
+    canvas.update(points);
+    clients.messageAll({t: SSEMessageType.Paint, p: points, q: queue.size()});
     res.json({ success: true });
   } catch (error) {
     console.error(error);

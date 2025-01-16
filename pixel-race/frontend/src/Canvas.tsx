@@ -73,6 +73,8 @@ const COLOR_MAP: { [key: string]: string } = {
 const PaintApp = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const points = useStore((state) => state.points);
+  const [tempPoints, setTempPoints] = useState<PointXY[]>([]);
+  const clientId = useStore((state) => state.clientId);
   
   const paintCanvas = (points: PointXY[]) => {
     const canvas = canvasRef.current;
@@ -82,6 +84,20 @@ const PaintApp = () => {
       context.fillRect(point.x, point.y, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
     });
   };
+
+  const handlePaint = async () => {
+    if(!clientId) {
+      alert("You are not logged in.");
+      return
+    };
+
+    const hasPainted = await postPaint(tempPoints, clientId);
+    if(hasPainted) {  
+      setTempPoints([]);
+    } else {
+      alert("You are not the current painter.");
+    }
+  }
 
   useEffect(() => {
     paintCanvas(points);
@@ -93,6 +109,12 @@ const PaintApp = () => {
   const handleColorClick = (char: ColorKey) => {
     setSelectedColorKey(char);
   };
+
+  const clearTempPoints = () => {
+    setTempPoints([]);
+    canvasRef.current?.getContext("2d")?.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    paintCanvas(points);
+  }
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -108,11 +130,11 @@ const PaintApp = () => {
     context!.fillStyle = COLOR_MAP[selectedColorKey];
     context!.fillRect(snappedX, snappedY, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
 
-    postPaint([{ x: snappedX, y: snappedY, colorKey: selectedColorKey }]);
-  };
+    setTempPoints([...tempPoints, { x: snappedX, y: snappedY, colorKey: selectedColorKey }]);
+  }
 
   return (
-    <div >
+    <div>
       <canvas
         ref={canvasRef}
         width={CANVAS_WIDTH}
@@ -120,6 +142,8 @@ const PaintApp = () => {
         style={{ border: "1px solid black" }}
         onMouseDown={handleMouseDown}
       ></canvas>
+      <button disabled={tempPoints.length === 0} onClick={handlePaint}>Paint</button>
+      <button onClick={clearTempPoints}>Clear</button>
       <div style={{ width: CANVAS_WIDTH, display: "flex", marginTop: "10px", flexWrap: "wrap" }}>
         {Object.keys(COLOR_MAP).sort().map((char) => (
           <div
