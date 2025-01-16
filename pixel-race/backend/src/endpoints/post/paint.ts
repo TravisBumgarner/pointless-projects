@@ -13,21 +13,11 @@ const validateOrThrow = (body: unknown) => {
   return parsed as PointEncoded[];
 };
 
-const decodePoints = (encodedPoints: string[]): [number, string][] => {
-  return encodedPoints.map((encodedPoint) => {
-    const [index, colorKey] = encodedPoint.split("_");
-    return [parseInt(index), colorKey];
-  });
-};
-
 export const paint = (req: Request, res: Response) => {
 
   try {
     const encodedPoints = validateOrThrow(req.body);
-
-    const points = decodePoints(encodedPoints);
-
-    canvas.update(points);
+    canvas.update(encodedPoints);
 
     clients.messageAll({t: SSEMessageType.Paint, p: encodedPoints, q: queue.size()});
     res.json({ success: true });
