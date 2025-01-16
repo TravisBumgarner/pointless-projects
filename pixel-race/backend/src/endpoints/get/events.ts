@@ -8,11 +8,11 @@ export const events = (req: Request, res: Response) => {
 
   res.flushHeaders();
 
-  clients.addClient({ id: Date.now(), res });
+  const clientId = clients.addClient(res);
 
   req.on("close", () => {
-    clients.removeClient(res);
+    clients.removeClient(clientId);
   });
 
-  res.write(JSON.stringify({ t: "system", m: "connected" }));
+  res.write(JSON.stringify({ t: "auth", m: clientId }));
 };

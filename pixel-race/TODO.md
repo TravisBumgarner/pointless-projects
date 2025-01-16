@@ -1,10 +1,17 @@
+- [ ] Write supported messages in client.ts
+- [ ] Improve communication for establishing/closing SSE events.  
+- [ ] Queuing System
+    - [x] Map it out.
 - [ ] Shorten JSON payloads
 - [x] Add backend validation
 - [ ] Batch messages to clients
-- [ ] Queuing System
 - [ ] Write some API tests
     - [ ] Post valid data length
     - [ ] post invalid data length
     - [ ] Invalid numbers (maybe move canvas size to shared between fe/be)
     - [ ] Invalid chars (move colors to shared?)
 - [] Somehow track all painting history
+- [ ] How much memory are things going to take
+    - [ ] Storing user connections 
+    - [ ] Storing Queue
+    - [ ] Storing Canvas

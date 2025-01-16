@@ -1,4 +1,4 @@
-import { Point } from "./types";
+import { PointXY } from "./types";
 import { decodePoints, encodePoints } from "./utilities";
 
 const API_URL = "http://localhost:8000";
@@ -8,7 +8,7 @@ export const getPaint = async () => {
     return decodePoints(await response.json());
 }
 
-export const postPaint = async (data: Point[]) => {
+export const postPaint = async (data: PointXY[]) => {
     const encodedData = encodePoints(data);
     const response = await fetch(`${API_URL}/paint`, {
         method: "POST",

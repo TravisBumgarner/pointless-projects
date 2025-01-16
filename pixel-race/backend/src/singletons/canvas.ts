@@ -1,3 +1,7 @@
+const encodePoints = (data: Record<string, string>) => {
+    return Object.entries(data).map(([index, color]) => `${index}_${color}`);
+}
+
 export class Canvas {
     data: Record<string, string> = {};
 
@@ -7,8 +11,8 @@ export class Canvas {
         });
     }
 
-    public getCanvas() {
-        return this.data;
+    public getCanvas(encode: boolean = true) {
+        return encode ? encodePoints(this.data) : this.data;
     }
 }
 
