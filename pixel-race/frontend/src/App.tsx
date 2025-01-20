@@ -11,6 +11,7 @@ function App() {
   useEventSource();
   const setPoints = useStore((state) => state.setPoints);
   const setQueue = useStore((state) => state.setQueue);
+  const clientId = useStore((state) => state.clientId);
 
   useEffect(() => {
     init().then(({ canvas, queue }) => {
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <>
+    <h5>You are {clientId}</h5>
      <Queue />
      <Canvas  />
      <Alert />

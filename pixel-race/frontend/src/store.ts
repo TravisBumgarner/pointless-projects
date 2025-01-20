@@ -8,7 +8,6 @@ interface EventState {
   alerts: string[];
   placeInQueue: number | null;
 
-  hasAlerts: () => boolean;
   getAndRemoveNextAlert: () => string | null;
 
   setQueue: (queue: number) => void;

@@ -6,6 +6,8 @@ const Queue = () => {
     const queue = useStore((state) => state.queue);
     const setQueue = useStore((state) => state.setQueue);
     const addAlert = useStore((state) => state.addAlert);
+    const placeInQueue = useStore((state) => state.placeInQueue);
+    const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
     
     const joinQueue = async () => {
         if (!clientId) {
@@ -14,8 +16,13 @@ const Queue = () => {
         }
         const response = await postQueue(clientId);
         if(response.p !== null){
-            addAlert("You have joined the queue.");
+            if (response.p === 1) {
+                addAlert("You are the first in the queue.");
+            } else {
+                addAlert("You have joined the queue.");
+            }
             setQueue(response.p);
+            setPlaceInQueue(response.p);
         }
         if (!response) {
             addAlert("Something went wrong. Please refresh the page.");
@@ -23,7 +30,7 @@ const Queue = () => {
     }
 
     return (<div>
-        <h3>Queue Size: {queue}</h3>
+        <h3>Queue: {placeInQueue} / {queue}</h3>
         <div>
             <button onClick={joinQueue}>Join</button>
         </div>

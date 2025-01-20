@@ -43,12 +43,11 @@ const useEventSource = () => {
     };
 
     eventSource.onopen = () => {
-      // setIsConnected(true);
+      addAlert("Welcome!");
     };
 
     eventSource.onerror = () => {
-      // setError("Error with SSE connection");
-      console.error("Error with SSE connection");
+      addAlert("Connection to server lost.");
       eventSource.close();
     };
 
@@ -59,6 +58,7 @@ const useEventSource = () => {
     setClientId,
     setQueue,
     setPoints,
+    addAlert,
   ]);
 };
 
