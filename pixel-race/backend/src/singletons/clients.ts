@@ -15,6 +15,14 @@ class Clients {
         this.clients.delete(clientId);
     }
 
+    public messageAllExceptSender(senderId: string, message: SSEMessage) {
+        this.clients.forEach((client, clientId) => {
+            if (clientId !== senderId) {
+                client.write(`data: ${JSON.stringify(message)}\n\n`);
+            }
+        });
+    }
+
     public messageAll(message: SSEMessage) {
         this.clients.forEach(client => client.write(`data: ${JSON.stringify(message)}\n\n`));
     }

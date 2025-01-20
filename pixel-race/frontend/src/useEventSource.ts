@@ -8,7 +8,7 @@ const useEventSource = () => {
   const setClientId = useStore((state) => state.setClientId);
   const setQueue = useStore((state) => state.setQueue);
   const setPoints = useStore((state) => state.setPoints);
-  const setAlert = useStore((state) => state.setAlert);
+  const addAlert = useStore((state) => state.addAlert);
 
   useEffect(() => {
     const eventSource = new EventSource(URL);
@@ -29,7 +29,7 @@ const useEventSource = () => {
           break;
         }
         case SSEMessageType.UserInfo: {
-          setAlert(message.m)
+          addAlert(message.m)
           break;
         }
         case SSEMessageType.System: {

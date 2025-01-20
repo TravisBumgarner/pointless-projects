@@ -1,4 +1,4 @@
-import { PointMap } from "../../shared";
+import { PointMap, QueuePostResponse } from "../../shared";
 
 
 const API_URL = "http://localhost:8000";
@@ -28,7 +28,7 @@ export const postPaint = async (points: PointMap, clientId: string) => {
     return response.status === 200;
 }
 
-export const postQueue = async (clientId: string) => {
+export const postQueue = async (clientId: string): Promise<QueuePostResponse> => {
     const response = await fetch(`${API_URL}/queue`, {
         method: "POST",
         headers: {
@@ -36,5 +36,6 @@ export const postQueue = async (clientId: string) => {
         },
         body: JSON.stringify({ clientId }),
     });
-    return response.status === 200;
+
+    return response.json();
 }

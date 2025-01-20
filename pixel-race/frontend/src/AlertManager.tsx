@@ -1,36 +1,49 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useStore from "./store";
 
 const Alert = () => {
-  const alert = useStore((state) => state.alert);
-  const setAlert = useStore((state) => state.setAlert);
+  const alerts = useStore((state) => state.alerts);
+  const getAndRemoveNextAlert = useStore((state) => state.getAndRemoveNextAlert);
+  const [visibleAlerts, setVisibleAlerts] = useState<{id: number; message: string}[]>([]);
+  let nextId = 0;
 
   useEffect(() => {
-    if (alert) {
-      setTimeout(() => setAlert(null), 5000);
+    if (alerts.length > 0) {
+      const nextAlert = getAndRemoveNextAlert();
+      if (nextAlert) {
+        const newAlert = {
+          id: nextId++,
+          message: nextAlert
+        };
+        setVisibleAlerts(prev => [...prev, newAlert]);
+        
+        setTimeout(() => {
+          setVisibleAlerts(prev => prev.filter(alert => alert.id !== newAlert.id));
+        }, 5000);
+      }
     }
-  }, [alert, setAlert]);
+  }, [alerts, getAndRemoveNextAlert, nextId]);
 
-  if (alert) {
-    return (
-      <div
-        style={{
-          position: "absolute",
-          bottom: 16,
-          left: 16, 
-          padding: 16,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          zIndex: 1000,
-          color: "white",
-          borderRadius: 8,
-        }}
-      >
-        {alert}
-      </div>
-    );
-  }
+  if (visibleAlerts.length === 0) return null;
 
-  return null;
+  return (
+    <div style={{ position: "fixed", bottom: 16, left: 16, zIndex: 1000 }}>
+      {visibleAlerts.map((alert, index) => (
+        <div
+          key={alert.id}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            color: "white",
+            padding: 16,
+            borderRadius: 8,
+            marginTop: index > 0 ? 8 : 0,
+          }}
+        >
+          {alert.message}
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default Alert;
