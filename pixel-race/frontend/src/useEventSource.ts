@@ -14,33 +14,36 @@ const useEventSource = () => {
   useEffect(() => {
     const eventSource = new EventSource(URL);
 
-    eventSource.onmessage = (event: MessageEvent) => {
-      const message = JSON.parse(event.data) as SSEMessage;
-      switch (message.t) {
+    eventSource.onmessage = (rawEvent: MessageEvent) => {
+      const event = JSON.parse(rawEvent.data) as SSEMessage;
+      switch (event.type) {
         case SSEMessageType.Auth: {
-          setClientId(message.m);
+          setClientId(event.clientId);
+          break;
+        }
+        case SSEMessageType.YourTurn: {
+          addAlert("You can now paint. You have 10 seconds.");
           break;
         }
         case SSEMessageType.Queue: {
-          setQueue(message.m);
+          setQueue(event.size);
           break;
         }
         case SSEMessageType.Paint: {
-          setPoints(message.p);
-          setQueue(message.q);
+          setPoints(event.points);
           moveUpInQueue();
           break;
         }
         case SSEMessageType.UserInfo: {
-          addAlert(message.m)
+          addAlert(event.message)
           break;
         }
         case SSEMessageType.System: {
-          console.log(message.m)
+          console.log(event.message)
           break;
         }
         default: {
-          console.error("Unknown event type", message);
+          console.error("Unknown event type", event);
         }
       }
     };

@@ -37,9 +37,10 @@ const queue = (req: Request, res: Response) => {
     validateOrThrow(clientId);
     queueSingleton.add(clientId);
     const queueSize = queueSingleton.size();
-    clients.messageAllExceptSender(clientId, {
-      t: SSEMessageType.Queue,
-      m: queueSize,
+    
+    clients.messageAllExcept([clientId], {
+      type: SSEMessageType.Queue,
+      size: queueSize,
     });
 
     const response: QueuePostResponse = {

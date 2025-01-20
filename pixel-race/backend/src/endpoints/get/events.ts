@@ -15,8 +15,8 @@ export const events = (req: Request, res: Response) => {
   req.on("close", () => {
     clients.removeClient(clientId);
     queue.remove(clientId);
-    clients.messageAll({ t: SSEMessageType.Queue, m: queue.size() });
+    clients.messageAll({ type: SSEMessageType.Queue, size: queue.size() });
   });
 
-  clients.messageOne(clientId, { t: SSEMessageType.Auth, m: clientId });
+  clients.messageOne(clientId, { type: SSEMessageType.Auth, clientId });
 };

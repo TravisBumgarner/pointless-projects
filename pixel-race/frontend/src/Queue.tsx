@@ -1,40 +1,78 @@
+import { useEffect, useMemo, useState } from "react";
+import { PAINTING_TIME } from "../../shared";
 import { postQueue } from "./api";
 import useStore from "./store";
 
 const Queue = () => {
-    const clientId = useStore((state) => state.clientId);
-    const queue = useStore((state) => state.queue);
-    const setQueue = useStore((state) => state.setQueue);
-    const addAlert = useStore((state) => state.addAlert);
-    const placeInQueue = useStore((state) => state.placeInQueue);
-    const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
+  const clientId = useStore((state) => state.clientId);
+  const queue = useStore((state) => state.queue);
+  const setQueue = useStore((state) => state.setQueue);
+  const addAlert = useStore((state) => state.addAlert);
+  const placeInQueue = useStore((state) => state.placeInQueue);
+  const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
+  const [timeRemaining, setTimeRemaining] = useState(PAINTING_TIME / 1000);
+
+  useEffect(() => {
+    if (placeInQueue === 0 && timeRemaining > 0) {
+      const timeout = setTimeout(() => {
+        setTimeRemaining(timeRemaining - 1);
+        if (timeRemaining === 0) {
+          clearTimeout(timeout);
+        }
+      }, 1000);
+      return () => clearTimeout(timeout);
+    }
+  }, [placeInQueue, timeRemaining]);
+
+  const joinQueue = async () => {
+    if (!clientId) {
+      addAlert("Something went wrong. Please refresh the page.");
+      return;
+    }
+    const response = await postQueue(clientId);
+    if (response.p !== null) {
+      if (response.p === 1) {
+        addAlert("You are the first in the queue.");
+      } else {
+        addAlert("You have joined the queue.");
+      }
+      setQueue(response.p);
+      setPlaceInQueue(response.p);
+    }
+    if (!response) {
+      addAlert("Something went wrong. Please refresh the page.");
+    }
+  };
+
+  const display = useMemo(() => {
+    if (placeInQueue === null) {
+      return `Queue: ${queue}`;
+    }
     
-    const joinQueue = async () => {
-        if (!clientId) {
-            addAlert("Something went wrong. Please refresh the page.");
-            return;
-        }
-        const response = await postQueue(clientId);
-        if(response.p !== null){
-            if (response.p === 1) {
-                addAlert("You are the first in the queue.");
-            } else {
-                addAlert("You have joined the queue.");
-            }
-            setQueue(response.p);
-            setPlaceInQueue(response.p);
-        }
-        if (!response) {
-            addAlert("Something went wrong. Please refresh the page.");
-        }
+    if(placeInQueue === 0 && timeRemaining === 0) {
+      return "Your time has expired, please queue again.";
     }
 
-    return (<div>
-        <h3>{placeInQueue !== null ? `Queue: ${placeInQueue} / ${queue}` : `Queue: ${queue}`}</h3>
-        <div>
-            <button onClick={joinQueue}>Join</button>
-        </div>
-    </div>);
-}
+    if (placeInQueue === 0) {
+      return `Time Remaining: ${timeRemaining}`;
+    }
+    
+
+    if (placeInQueue > 0) {
+      return `Queue: ${placeInQueue} / ${queue}`;
+    }
+  }, [placeInQueue, queue, timeRemaining]);
+
+  return (
+    <div>
+      <h3>
+        {display}
+      </h3>
+      <div>
+        <button onClick={joinQueue}>Join</button>
+      </div>
+    </div>
+  );
+};
 
 export default Queue;

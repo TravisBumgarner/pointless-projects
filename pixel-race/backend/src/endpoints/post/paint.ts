@@ -28,7 +28,7 @@ export const paint = (req: Request, res: Response) => {
 
     canvas.update(points);
     queue.releaseCurrentClient();
-    clients.messageAll({t: SSEMessageType.Paint, p: points, q: queue.size()});
+    clients.messageAll({type: SSEMessageType.Paint, points});
     res.json({ success: true });
   } catch (error) {
     console.error(error);

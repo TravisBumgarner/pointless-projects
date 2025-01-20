@@ -1,11 +1,35 @@
-import { SSEMessageType } from '../../../shared';
+import { PAINTING_TIME, SSEMessageType } from '../../../shared';
 import { clients } from './clients';
 
 class Queue {
     private keys: Set<string> = new Set();
     private queueItems: string[] = [];
     private currentClientId: string | null = null;
+    private currentClientTimer: NodeJS.Timeout | null = null;
 
+    private startPaintingTimer() {
+        if (this.currentClientTimer) {
+            clearTimeout(this.currentClientTimer);
+        }
+        
+        this.currentClientTimer = setTimeout(() => {
+            if (this.currentClientId) {
+                clients.messageOne(this.currentClientId, { 
+                    type: SSEMessageType.UserInfo, 
+                    message: 'Your painting time has expired.' 
+                });
+                this.releaseCurrentClient();
+            }
+        }, PAINTING_TIME); 
+    }
+
+    private clearPaintingTimer() {
+        if (this.currentClientTimer) {
+            clearTimeout(this.currentClientTimer);
+            this.currentClientTimer = null;
+        }
+    }
+    
     public add(clientId: string) {
         if (this.keys.has(clientId)) {
             return;
@@ -20,6 +44,7 @@ class Queue {
         this.keys.delete(clientId);
         this.queueItems = this.queueItems.filter(id => id !== clientId);
         if (this.currentClientId === clientId) {
+            this.clearPaintingTimer();
             this.currentClientId = null;
             this.processQueue();
         }
@@ -51,19 +76,32 @@ class Queue {
         const currentClientId = this.getNextClient();
         if (currentClientId) {
             this.currentClientId = currentClientId;
+            // Start the painting timer
+            this.startPaintingTimer();
             // Notify the client they can paint
-            clients.messageOne(currentClientId, { t: SSEMessageType.UserInfo, m: 'You can now paint.' });
+            clients.messageOne(currentClientId, { 
+                type: SSEMessageType.YourTurn, 
+            });
             // Notify the next client in queue
             const upcomingClient = this.peakNextClient();
             if (upcomingClient) {
-                clients.messageOne(upcomingClient, { t: SSEMessageType.UserInfo, m: 'You are next in the queue.' });
+                clients.messageOne(upcomingClient, { 
+                    type: SSEMessageType.UserInfo, 
+                    message: 'You are next in the queue.' 
+                });
             }
+            clients.messageAll({
+                type: SSEMessageType.Queue,
+                size: this.size()
+            });
+            
         }
     }
     
     // Update the queue when the current client is done painting or the time limit for painting is reached.
     public releaseCurrentClient() {
         if (this.currentClientId) {
+            this.clearPaintingTimer();
             this.currentClientId = null;
             this.processQueue();
         }

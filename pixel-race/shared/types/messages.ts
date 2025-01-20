@@ -1,42 +1,46 @@
 import { PointMap } from "../types";
 
 export enum SSEMessageType {
-    Paint = 'p',
-    System = 's',
-    Auth = 'a',
-    Queue = 'q',
-    UserInfo = 'u'
+    YourTurn = 'your_turn', // You are the current client
+    Paint = 'paint', // Client has painted
+    System = 'system', // System message
+    Auth = 'auth', // Client has authenticated with a clientId
+    Queue = 'queue', // Client has joined the queue
+    UserInfo = 'user_info' // User info message
 }
 
 export type PaintMessage = {
-    t: SSEMessageType.Paint;
-    p: PointMap;
-    q: number;
+    type: SSEMessageType.Paint;
+    points: PointMap;
 }
 
 export type AuthMessage = {
-    t: SSEMessageType.Auth;
-    m: string;
+    type: SSEMessageType.Auth;
+    clientId: string;
 }
 
 enum ConnectionStatus {
-    Connected = "c",
-    Disconnected = "d"
+    Connected = "connected",
+    Disconnected = "disconnected"
 }
 
 export type QueueMessage = {
-    t: SSEMessageType.Queue;
-    m: number;
+    type: SSEMessageType.Queue;
+    size: number;
 }
 
 export type SystemMessage = {
-    t: SSEMessageType.System;
-    m: ConnectionStatus;
+    type: SSEMessageType.System;
+    message: ConnectionStatus;
 }
 
 export type UserInfoMessage = {
-    t: SSEMessageType.UserInfo;
-    m: string;
+    type: SSEMessageType.UserInfo;
+    message: string;
 }
 
-export type SSEMessage = PaintMessage | AuthMessage | SystemMessage | QueueMessage | UserInfoMessage;
+export type YourTurnMessage = {
+    type: SSEMessageType.YourTurn;
+}
+
+export type SSEMessage = PaintMessage | AuthMessage | SystemMessage | QueueMessage | UserInfoMessage | YourTurnMessage;
