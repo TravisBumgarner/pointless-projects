@@ -27,6 +27,10 @@ class Clients {
         this.clients.forEach(client => client.write(`data: ${JSON.stringify(message)}\n\n`));
     }
 
+    public bulkMessage(clientIds: string[], message: SSEMessage) {
+        clientIds.forEach(clientId => this.messageOne(clientId, message));
+    }
+
     public messageOne(clientId: string, message: SSEMessage) {
         const client = this.clients.get(clientId);
         if (client) {

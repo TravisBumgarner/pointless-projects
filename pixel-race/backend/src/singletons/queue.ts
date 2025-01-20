@@ -2,8 +2,8 @@ import { PAINTING_TIME, SSEMessageType } from '../../../shared';
 import { clients } from './clients';
 
 class Queue {
-    private keys: Set<string> = new Set();
-    private queueItems: string[] = [];
+    private clientIds: Set<string> = new Set();
+    private queue: string[] = [];
     private currentClientId: string | null = null;
     private currentClientTimer: NodeJS.Timeout | null = null;
 
@@ -31,18 +31,18 @@ class Queue {
     }
     
     public add(clientId: string) {
-        if (this.keys.has(clientId)) {
+        if (this.clientIds.has(clientId)) {
             return;
         } else {
-            this.keys.add(clientId);
-            this.queueItems.push(clientId);
+            this.clientIds.add(clientId);
+            this.queue.push(clientId);
         }
         this.processQueue();
     }
 
     public remove(clientId: string) {
-        this.keys.delete(clientId);
-        this.queueItems = this.queueItems.filter(id => id !== clientId);
+        this.clientIds.delete(clientId);
+        this.queue = this.queue.filter(id => id !== clientId);
         if (this.currentClientId === clientId) {
             this.clearPaintingTimer();
             this.currentClientId = null;
@@ -51,19 +51,26 @@ class Queue {
     }
 
     public size() {
-        return this.keys.size;
+        return this.clientIds.size;
     }
 
     private getNextClient(): string | null {
-        const nextClient = this.queueItems.shift();
+        const nextClient = this.queue.shift();
         if (nextClient) {
-            this.keys.delete(nextClient);
+            this.clientIds.delete(nextClient);
         }
         return nextClient || null;
     }
 
+    public getClientIdsBeforeAndAfter(clientId: string): { before: string[], after: string[] } {
+        const index = this.queue.indexOf(clientId);
+        const before = this.queue.slice(0, index);
+        const after = this.queue.slice(index + 1);
+        return { before, after };
+    }
+
     private peakNextClient(): string | null {
-        return this.queueItems[0] || null;
+        return this.queue[0] || null;
     }
     
     // Process the queue when a client is added or removed.
@@ -92,7 +99,8 @@ class Queue {
             }
             clients.messageAll({
                 type: SSEMessageType.Queue,
-                size: this.size()
+                size: this.size(),
+                shouldAdvanceInQueue: true
             });
             
         }

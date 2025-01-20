@@ -5,7 +5,7 @@ export enum SSEMessageType {
     Paint = 'paint', // Client has painted
     System = 'system', // System message
     Auth = 'auth', // Client has authenticated with a clientId
-    Queue = 'queue', // Client has joined the queue
+    Queue = 'queue', // Updates to queue
     UserInfo = 'user_info' // User info message
 }
 
@@ -27,6 +27,7 @@ enum ConnectionStatus {
 export type QueueMessage = {
     type: SSEMessageType.Queue;
     size: number;
+    shouldAdvanceInQueue: boolean;
 }
 
 export type SystemMessage = {

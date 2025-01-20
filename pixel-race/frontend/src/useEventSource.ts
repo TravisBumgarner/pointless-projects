@@ -27,6 +27,9 @@ const useEventSource = () => {
         }
         case SSEMessageType.Queue: {
           setQueue(event.size);
+          if (event.shouldAdvanceInQueue) {
+            moveUpInQueue();
+          }
           break;
         }
         case SSEMessageType.Paint: {

@@ -13,9 +13,12 @@ export const events = (req: Request, res: Response) => {
   const clientId = clients.addClient(res);
 
   req.on("close", () => {
+    const { before, after } = queue.getClientIdsBeforeAndAfter(clientId);
     clients.removeClient(clientId);
+
     queue.remove(clientId);
-    clients.messageAll({ type: SSEMessageType.Queue, size: queue.size() });
+    clients.bulkMessage(before, { type: SSEMessageType.Queue, size: queue.size(), shouldAdvanceInQueue: false });
+    clients.bulkMessage(after, { type: SSEMessageType.Queue, size: queue.size(), shouldAdvanceInQueue: true });
   });
 
   clients.messageOne(clientId, { type: SSEMessageType.Auth, clientId });

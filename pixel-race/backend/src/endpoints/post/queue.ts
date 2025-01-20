@@ -41,6 +41,7 @@ const queue = (req: Request, res: Response) => {
     clients.messageAllExcept([clientId], {
       type: SSEMessageType.Queue,
       size: queueSize,
+      shouldAdvanceInQueue: false
     });
 
     const response: QueuePostResponse = {
