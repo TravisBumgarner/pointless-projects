@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useStore from "./store";
 
 const Alert = () => {
   const alerts = useStore((state) => state.alerts);
   const getAndRemoveNextAlert = useStore((state) => state.getAndRemoveNextAlert);
   const [visibleAlerts, setVisibleAlerts] = useState<{id: number; message: string}[]>([]);
-  let nextId = 0;
+  const nextIdRef = useRef(0);
 
   useEffect(() => {
     if (alerts.length > 0) {
       const nextAlert = getAndRemoveNextAlert();
       if (nextAlert) {
         const newAlert = {
-          id: nextId++,
+          id: nextIdRef.current++,
           message: nextAlert
         };
         setVisibleAlerts(prev => [...prev, newAlert]);
@@ -22,7 +22,7 @@ const Alert = () => {
         }, 5000);
       }
     }
-  }, [alerts, getAndRemoveNextAlert, nextId]);
+  }, [alerts, getAndRemoveNextAlert]);
 
   if (visibleAlerts.length === 0) return null;
 
