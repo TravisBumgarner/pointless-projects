@@ -1,7 +1,7 @@
 - [x] Write supported messages in client.ts
 - [x] Improve communication for establishing/closing SSE events.  
 - [x] Need to update points such that only most recent change to an (X,Y) point are saved locally. 
-- [ ] Queuing System
+- [x] Queuing System
     - [x] Map it out.
     - [x] Let someone know they're next. 
     - [x] If someone doesn't paint within 5 seconds. 
