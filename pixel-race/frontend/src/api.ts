@@ -1,6 +1,5 @@
-import { PointEncoded } from "../../shared";
-import { PointXY } from "./types";
-import { encodePoints } from "./utilities";
+import { PointMap } from "../../shared";
+
 
 const API_URL = "http://localhost:8000";
 
@@ -9,16 +8,14 @@ export const init = async () => {
     const data = await response.json();
 
     return {
-        canvas: data.canvas as PointEncoded[],    
+        canvas: data.canvas as PointMap,    
         queue: data.queue as number
     }
 }
 
-export const postPaint = async (data: PointXY[], clientId: string) => {
-    const encodedData = encodePoints(data);
-
+export const postPaint = async (points: PointMap, clientId: string) => {
     const body = {
-        points: encodedData,
+        points,
         clientId: clientId
     }
     const response = await fetch(`${API_URL}/paint`, {

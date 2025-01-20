@@ -2,9 +2,9 @@ type UPPER_CHAR = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K
 type LOWER_CHAR = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z";
 type NUMBER = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 
-export type ColorKey = UPPER_CHAR | LOWER_CHAR | NUMBER;
-export type PointEncoded = `${number}_${ColorKey}`;
-
+export type PointColor = UPPER_CHAR | LOWER_CHAR | NUMBER;
+export type PointKey = `${number}_${number}`;
+export type PointMap = Record<PointKey, PointColor>;
 export enum SSEMessageType {
     Paint = 'p',
     System = 's',
@@ -15,7 +15,7 @@ export enum SSEMessageType {
 
 export type PaintMessage = {
     t: SSEMessageType.Paint;
-    p: PointEncoded[];
+    p: PointMap;
     q: number;
 }
 

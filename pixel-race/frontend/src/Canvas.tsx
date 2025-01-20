@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ColorKey } from "../../shared";
+import { PointColor, PointMap } from "../../shared";
 import { postPaint } from "./api";
 import { CANVAS_GRID_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH } from "./consts";
 import useStore from "./store";
-import { PointXY } from "./types";
-
 const COLOR_MAP: { [key: string]: string } = {
   "a": "#f9ebea",
   "b": "#f2d7d5",
@@ -73,15 +71,16 @@ const COLOR_MAP: { [key: string]: string } = {
 const PaintApp = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const points = useStore((state) => state.points);
-  const [tempPoints, setTempPoints] = useState<PointXY[]>([]);
+  const [tempPoints, setTempPoints] = useState<PointMap>({});
   const clientId = useStore((state) => state.clientId);
   
-  const paintCanvas = (points: PointXY[]) => {
+  const paintCanvas = (points: PointMap) => {
     const canvas = canvasRef.current;
     const context = canvas!.getContext("2d")!;
-    points.forEach((point) => {
-      context.fillStyle = COLOR_MAP[point.colorKey];
-      context.fillRect(point.x, point.y, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
+    Object.entries(points).forEach(([key, colorKey]) => {
+      const [x, y] = key.split('_');
+      context.fillStyle = COLOR_MAP[colorKey];
+      context.fillRect(parseInt(x), parseInt(y), CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
     });
   };
 
@@ -93,7 +92,7 @@ const PaintApp = () => {
 
     const hasPainted = await postPaint(tempPoints, clientId);
     if(hasPainted) {  
-      setTempPoints([]);
+      setTempPoints({});
     } else {
       alert("You are not the current painter.");
     }
@@ -104,14 +103,14 @@ const PaintApp = () => {
   }, [points]);
 
 
-  const [selectedColorKey, setSelectedColorKey] = useState<ColorKey>("A");
+  const [selectedColorKey, setSelectedColorKey] = useState<PointColor>("A");
 
-  const handleColorClick = (char: ColorKey) => {
+  const handleColorClick = (char: PointColor) => {
     setSelectedColorKey(char);
   };
 
   const clearTempPoints = () => {
-    setTempPoints([]);
+    setTempPoints({});
     canvasRef.current?.getContext("2d")?.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     paintCanvas(points);
   }
@@ -130,7 +129,7 @@ const PaintApp = () => {
     context!.fillStyle = COLOR_MAP[selectedColorKey];
     context!.fillRect(snappedX, snappedY, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
 
-    setTempPoints([...tempPoints, { x: snappedX, y: snappedY, colorKey: selectedColorKey }]);
+    setTempPoints({...tempPoints, [`${snappedX}_${snappedY}`]: selectedColorKey});
   }
 
   return (
@@ -142,13 +141,13 @@ const PaintApp = () => {
         style={{ border: "1px solid black" }}
         onMouseDown={handleMouseDown}
       ></canvas>
-      <button disabled={tempPoints.length === 0} onClick={handlePaint}>Paint</button>
+      <button disabled={Object.keys(tempPoints).length === 0} onClick={handlePaint}>Paint</button>
       <button onClick={clearTempPoints}>Clear</button>
       <div style={{ width: CANVAS_WIDTH, display: "flex", marginTop: "10px", flexWrap: "wrap" }}>
         {Object.keys(COLOR_MAP).sort().map((char) => (
           <div
             key={char}
-            onClick={() => handleColorClick(char as ColorKey)}
+            onClick={() => handleColorClick(char as PointColor)}
             style={{
               width: "25px",
               height: "25px",

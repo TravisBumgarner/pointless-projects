@@ -1,28 +1,13 @@
-import { PointEncoded } from "../../../shared";
-
-const encodePoints = (data: Record<string, string>) => {
-    return Object.entries(data).map(([index, color]) => `${index}_${color}`);
-}
-
-const decodePoints = (encodedPoints: string[]): [number, string][] => {
-    return encodedPoints.map((encodedPoint) => {
-      const [index, colorKey] = encodedPoint.split("_");
-      return [parseInt(index), colorKey];
-    });
-  };
-
+import { PointMap } from "../../../shared";
 export class Canvas {
     data: Record<string, string> = {};
 
-    public update(points: PointEncoded[]) {
-        const decodedPoints = decodePoints(points);
-        decodedPoints.forEach(([index, color]) => {
-            this.data[index] = color;
-        });
+    public update(points: PointMap) {
+        this.data = { ...this.data, ...points };
     }
 
     public getCanvas() {
-        return encodePoints(this.data);
+        return this.data;
     }
 }
 

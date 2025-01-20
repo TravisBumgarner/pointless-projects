@@ -1,28 +1,25 @@
 import { create } from 'zustand';
-import { PointEncoded } from '../../shared';
-import { PointXY } from './types';
-import { decodePoints } from './utilities';
+import { PointMap } from '../../shared';
 
 interface EventState {
   queue: number;
-  points: PointXY[];
+  points: PointMap;
   clientId: string | null;
   
   setQueue: (queue: number) => void;
-  setPoints: (points: PointEncoded[]) => void;
+  setPoints: (points: PointMap) => void;
   setClientId: (clientId: string | null) => void;
 }
 
 const useStore = create<EventState>((set) => ({
   queue: 0,
-  points: [],
+  points: {},
   clientId: null,
 
   setQueue: (queue: number) => set({ queue }),
-  setPoints: (points: PointEncoded[]) => {
-    const pointsXY = decodePoints(points);
-    set({ points: pointsXY});
-  },
+  setPoints: (points: PointMap) => set((state) => ({ 
+    points: { ...state.points, ...points } 
+  })),
   setClientId: (clientId: string | null) => set({ clientId }),
 }));
 

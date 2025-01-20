@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import { PointEncoded, SSEMessageType } from "../../../../shared/types";
+import { PointMap, SSEMessageType } from "../../../../shared/types";
 import { canvas } from "../../singletons/canvas";
 import { clients } from "../../singletons/clients";
 import { queue } from "../../singletons/queue";
 
-const EncodedPointSchema = z.string().regex(/^\d+_[A-Za-z0-9]$/);
-const EncodedPointArraySchema = z.array(EncodedPointSchema).min(1).max(5);
+const ColorSchema = z.string().regex(/^[A-Za-z0-9]$/);
+const PointSchema = z.record(z.string(), ColorSchema);
 const ClientIdSchema = z.string().uuid();
 
 const validateOrThrow = (body: unknown) => {
   const parsed = z.object({
-    points: EncodedPointArraySchema,
+    points: PointSchema,
     clientId: ClientIdSchema
   }).parse(body);
-  return parsed as { points: PointEncoded[], clientId: string };
+  return parsed as { points: PointMap, clientId: string };
 };
 
 export const paint = (req: Request, res: Response) => {
