@@ -7,6 +7,7 @@ interface EventState {
   clientId: string | null;
   alerts: string[];
   placeInQueue: number | null;
+  connectionError: boolean;
 
   getAndRemoveNextAlert: () => string | null;
 
@@ -16,6 +17,7 @@ interface EventState {
   addAlert: (alert: string) => void;
   setPlaceInQueue: (placeInQueue: number | null) => void;
   moveUpInQueue: () => void;
+  setConnectionError: (connectionError: boolean) => void;
 }
 
 const useStore = create<EventState>((set, get) => ({
@@ -24,7 +26,7 @@ const useStore = create<EventState>((set, get) => ({
   clientId: null,
   alerts: [],
   placeInQueue: null,
-
+  connectionError: false,
   getAndRemoveNextAlert: () => {
     const alerts = get().alerts;
     if (alerts.length === 0) return null;
@@ -42,6 +44,7 @@ const useStore = create<EventState>((set, get) => ({
   addAlert: (alert: string) => set(state => ({alerts: [...state.alerts, alert]})),
   setPlaceInQueue: (placeInQueue: number | null) => set({ placeInQueue }),
   moveUpInQueue: () => set(state => ({ placeInQueue: state.placeInQueue ? state.placeInQueue - 1 : null })),
+  setConnectionError: (connectionError: boolean) => set({ connectionError }),
 }));
 
 export default useStore;

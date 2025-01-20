@@ -56,9 +56,8 @@ const useEventSource = () => {
     };
 
     eventSource.onerror = () => {
-      addAlert("Connection to server lost.");
+      addAlert("Connection to server lost, refresh page.");
       eventSource.close();
-      window.location.reload();
     };
 
     return () => {
@@ -69,6 +68,7 @@ const useEventSource = () => {
     setQueue,
     setPoints,
     addAlert,
+    moveUpInQueue
   ]);
 };
 

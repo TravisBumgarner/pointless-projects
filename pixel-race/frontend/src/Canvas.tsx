@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PointColor, PointMap } from "../../shared";
+import { MAX_PAINT_POINTS, PointColor, PointMap } from "../../shared";
 import { postPaint } from "./api";
 import { CANVAS_GRID_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH } from "./consts";
 import useStore from "./store";
@@ -75,6 +75,7 @@ const PaintApp = () => {
   const [tempPoints, setTempPoints] = useState<PointMap>({});
   const clientId = useStore((state) => state.clientId);
   const addAlert = useStore((state) => state.addAlert);
+  const placeInQueue = useStore((state) => state.placeInQueue);
   const paintCanvas = (points: PointMap) => {
     const canvas = canvasRef.current;
     const context = canvas!.getContext("2d")!;
@@ -84,6 +85,8 @@ const PaintApp = () => {
       context.fillRect(parseInt(x), parseInt(y), CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
     });
   };
+
+  const pointsLeft = MAX_PAINT_POINTS - Object.keys(tempPoints).length;
 
   const handlePaint = async () => {
     if(!clientId) {
@@ -118,6 +121,10 @@ const PaintApp = () => {
   }
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if(Object.keys(tempPoints).length >= MAX_PAINT_POINTS) {
+      addAlert(`Only ${MAX_PAINT_POINTS} can be plotted.`);
+      return;
+    }
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     const rect = canvas?.getBoundingClientRect();
@@ -136,6 +143,7 @@ const PaintApp = () => {
 
   return (
     <div>
+      <p>You can paint {pointsLeft} more points. (Press clear to reset)</p>
       <canvas
         ref={canvasRef}
         width={CANVAS_WIDTH}
@@ -143,8 +151,8 @@ const PaintApp = () => {
         style={{ border: "1px solid black" }}
         onMouseDown={handleMouseDown}
       ></canvas>
-      <button disabled={Object.keys(tempPoints).length === 0} onClick={handlePaint}>Paint</button>
-      <button onClick={clearTempPoints}>Clear</button>
+      <button disabled={Object.keys(tempPoints).length === 0 || placeInQueue !== 0} onClick={handlePaint}>Paint</button>
+      <button disabled={Object.keys(tempPoints).length === 0} onClick={clearTempPoints}>Clear</button>
       <div style={{ width: CANVAS_WIDTH, display: "flex", marginTop: "10px", flexWrap: "wrap" }}>
         {Object.keys(COLOR_MAP).sort().map((char) => (
           <div

@@ -38,6 +38,7 @@ console.log('alerts', alerts);
             color: "white",
             padding: 16,
             borderRadius: 8,
+            width: '200px',
             marginTop: index > 0 ? 8 : 0,
           }}
         >

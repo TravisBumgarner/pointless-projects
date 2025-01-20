@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { PAINTING_TIME_MS } from "../../shared";
 import { postQueue } from "./api";
 import useStore from "./store";
@@ -74,7 +74,7 @@ const Queue = () => {
     <div>
       <h3>{display}</h3>
       <div>
-        <button onClick={joinQueue}>Join</button>
+        <button disabled={placeInQueue !== null} onClick={joinQueue}>Join</button>
       </div>
     </div>
   );
