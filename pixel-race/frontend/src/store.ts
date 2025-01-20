@@ -15,6 +15,7 @@ interface EventState {
   setClientId: (clientId: string | null) => void;
   addAlert: (alert: string) => void;
   setPlaceInQueue: (placeInQueue: number | null) => void;
+  moveUpInQueue: () => void;
 }
 
 const useStore = create<EventState>((set, get) => ({
@@ -40,6 +41,7 @@ const useStore = create<EventState>((set, get) => ({
   setClientId: (clientId: string | null) => set({ clientId }),
   addAlert: (alert: string) => set(state => ({alerts: [...state.alerts, alert]})),
   setPlaceInQueue: (placeInQueue: number | null) => set({ placeInQueue }),
+  moveUpInQueue: () => set(state => ({ placeInQueue: state.placeInQueue ? state.placeInQueue - 1 : null })),
 }));
 
 export default useStore;

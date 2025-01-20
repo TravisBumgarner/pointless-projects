@@ -9,6 +9,7 @@ const useEventSource = () => {
   const setQueue = useStore((state) => state.setQueue);
   const setPoints = useStore((state) => state.setPoints);
   const addAlert = useStore((state) => state.addAlert);
+  const moveUpInQueue = useStore((state) => state.moveUpInQueue);
 
   useEffect(() => {
     const eventSource = new EventSource(URL);
@@ -26,6 +27,8 @@ const useEventSource = () => {
         }
         case SSEMessageType.Paint: {
           setPoints(message.p);
+          setQueue(message.q);
+          moveUpInQueue();
           break;
         }
         case SSEMessageType.UserInfo: {
@@ -49,6 +52,7 @@ const useEventSource = () => {
     eventSource.onerror = () => {
       addAlert("Connection to server lost.");
       eventSource.close();
+      window.location.reload();
     };
 
     return () => {

@@ -30,7 +30,7 @@ const Queue = () => {
     }
 
     return (<div>
-        <h3>Queue: {placeInQueue} / {queue}</h3>
+        <h3>{placeInQueue !== null ? `Queue: ${placeInQueue} / ${queue}` : `Queue: ${queue}`}</h3>
         <div>
             <button onClick={joinQueue}>Join</button>
         </div>

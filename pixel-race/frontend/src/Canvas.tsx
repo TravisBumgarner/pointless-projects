@@ -70,6 +70,7 @@ const COLOR_MAP: { [key: string]: string } = {
 
 const PaintApp = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
   const points = useStore((state) => state.points);
   const [tempPoints, setTempPoints] = useState<PointMap>({});
   const clientId = useStore((state) => state.clientId);
@@ -93,6 +94,7 @@ const PaintApp = () => {
     const hasPainted = await postPaint(tempPoints, clientId);
     if(hasPainted) {  
       setTempPoints({});
+      setPlaceInQueue(null);
     } else {
       addAlert("You are not the current painter.");
     }
