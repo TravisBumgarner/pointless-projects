@@ -4,18 +4,19 @@ import useStore from "./store";
 const Queue = () => {
     const clientId = useStore((state) => state.clientId);
     const queue = useStore((state) => state.queue);
+    const setAlert = useStore((state) => state.setAlert);
     
     const joinQueue = async () => {
         if (!clientId) {
-            alert("Something went wrong. Please refresh the page.");
+            setAlert("Something went wrong. Please refresh the page.");
             return;
         }
         const success = await postQueue(clientId);
         if(success){
-            alert("You have joined the queue.");
+            setAlert("You have joined the queue.");
         }
         if (!success) {
-            alert("Something went wrong. Please refresh the page.");
+            setAlert("Something went wrong. Please refresh the page.");
         }
     }
 
