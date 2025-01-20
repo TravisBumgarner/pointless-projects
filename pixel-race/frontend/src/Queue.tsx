@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { PAINTING_TIME } from "../../shared";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { PAINTING_TIME_MS } from "../../shared";
 import { postQueue } from "./api";
 import useStore from "./store";
 
@@ -10,19 +10,27 @@ const Queue = () => {
   const addAlert = useStore((state) => state.addAlert);
   const placeInQueue = useStore((state) => state.placeInQueue);
   const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
-  const [timeRemaining, setTimeRemaining] = useState(PAINTING_TIME / 1000);
+  const [timeRemaining, setTimeRemaining] = useState(PAINTING_TIME_MS / 1000);
+
+  const startTimer = useCallback(() => {
+    setTimeRemaining(PAINTING_TIME_MS / 1000);
+    const interval = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev === 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
-    if (placeInQueue === 0 && timeRemaining > 0) {
-      const timeout = setTimeout(() => {
-        setTimeRemaining(timeRemaining - 1);
-        if (timeRemaining === 0) {
-          clearTimeout(timeout);
-        }
-      }, 1000);
-      return () => clearTimeout(timeout);
+    if (placeInQueue === 0) {
+      startTimer();
     }
-  }, [placeInQueue, timeRemaining]);
+  }, [placeInQueue, startTimer]);
 
   const joinQueue = async () => {
     if (!clientId) {
@@ -48,15 +56,14 @@ const Queue = () => {
     if (placeInQueue === null) {
       return `Queue: ${queue}`;
     }
-    
-    if(placeInQueue === 0 && timeRemaining === 0) {
+
+    if (placeInQueue === 0 && timeRemaining === 0) {
       return "Your time has expired, please queue again.";
     }
 
     if (placeInQueue === 0) {
       return `Time Remaining: ${timeRemaining}`;
     }
-    
 
     if (placeInQueue > 0) {
       return `Queue: ${placeInQueue} / ${queue}`;
@@ -65,9 +72,7 @@ const Queue = () => {
 
   return (
     <div>
-      <h3>
-        {display}
-      </h3>
+      <h3>{display}</h3>
       <div>
         <button onClick={joinQueue}>Join</button>
       </div>

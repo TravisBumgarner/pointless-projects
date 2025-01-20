@@ -1,4 +1,4 @@
-import { PAINTING_TIME, SSEMessageType } from '../../../shared';
+import { PAINTING_TIME_MS, SSEMessageType } from '../../../shared';
 import { clients } from './clients';
 
 class Queue {
@@ -20,7 +20,7 @@ class Queue {
                 });
                 this.releaseCurrentClient();
             }
-        }, PAINTING_TIME); 
+        }, PAINTING_TIME_MS); 
     }
 
     private clearPaintingTimer() {
