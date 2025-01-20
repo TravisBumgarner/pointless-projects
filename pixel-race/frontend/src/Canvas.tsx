@@ -73,7 +73,7 @@ const PaintApp = () => {
   const points = useStore((state) => state.points);
   const [tempPoints, setTempPoints] = useState<PointMap>({});
   const clientId = useStore((state) => state.clientId);
-  const setAlert = useStore((state) => state.setAlert);
+  const addAlert = useStore((state) => state.addAlert);
   const paintCanvas = (points: PointMap) => {
     const canvas = canvasRef.current;
     const context = canvas!.getContext("2d")!;
@@ -86,7 +86,7 @@ const PaintApp = () => {
 
   const handlePaint = async () => {
     if(!clientId) {
-      setAlert("You are not logged in.");
+      addAlert("You are not logged in.");
       return
     };
 
@@ -94,7 +94,7 @@ const PaintApp = () => {
     if(hasPainted) {  
       setTempPoints({});
     } else {
-      setAlert("You are not the current painter.");
+      addAlert("You are not the current painter.");
     }
   }
 
