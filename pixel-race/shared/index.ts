@@ -2,3 +2,9 @@ export * from './types';
 
 export const PAINTING_TIME_MS = 10_000;
 export const MAX_PAINT_POINTS = 5;  
+
+export const CANVAS_GRID_SIZE = 10;
+export const CANVAS_WIDTH_PIXELS = 500;
+export const CANVAS_HEIGHT_PIXELS = 500;
+export const CANVAS_WIDTH_INDICES = CANVAS_WIDTH_PIXELS / CANVAS_GRID_SIZE;
+export const CANVAS_HEIGHT_INDICES = CANVAS_HEIGHT_PIXELS / CANVAS_GRID_SIZE;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import { MAX_PAINT_POINTS } from "../../../../shared";
+import { CANVAS_HEIGHT_INDICES, CANVAS_WIDTH_INDICES, MAX_PAINT_POINTS } from "../../../../shared";
 import { PointMap, SSEMessageType } from "../../../../shared/types";
 import { canvas } from "../../singletons/canvas";
 import { clients } from "../../singletons/clients";
@@ -19,6 +19,12 @@ const validateOrThrow = (body: unknown) => {
   if(Object.keys(parsed.points).length > MAX_PAINT_POINTS) {
     throw new Error(`Only ${MAX_PAINT_POINTS} can be plotted.`);
   }
+
+  const coords = Object.keys(parsed.points).map(coord => coord.split("_").map(Number));
+  if(coords.some(([x, y]) => x < 0 || x >= CANVAS_WIDTH_INDICES || y < 0 || y >= CANVAS_HEIGHT_INDICES)) {
+    throw new Error(`Invalid coordinates: ${coords.join(", ")}`);
+  }
+
   return parsed as { points: PointMap, clientId: string };
 };
 

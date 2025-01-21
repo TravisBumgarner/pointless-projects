@@ -118,6 +118,13 @@ class Queue {
     public getCurrentClientId(): string | null {
         return this.currentClientId;
     }
+
+    public clearQueue() {
+        this.clientIds.clear();
+        this.queue = [];
+        this.currentClientId = null;
+        this.clearPaintingTimer();
+    }
 }
 
 export const queue = new Queue();

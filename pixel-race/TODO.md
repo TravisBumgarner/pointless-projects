@@ -10,8 +10,8 @@
 - [x] Add backend validation
 - [ ] Batch messages to clients
 - [ ] Write some API tests
-    - [ ] Post valid data length
-    - [ ] post invalid data length
+    - [x] Post valid data length
+    - [x] post invalid data length
     - [ ] Invalid numbers (maybe move canvas size to shared between fe/be)
     - [ ] Invalid chars (move colors to shared?)
 - [] Somehow track all painting history
@@ -21,3 +21,4 @@
     - [ ] Storing Canvas
 - [ ] Auth
     - [ ] Maybe encode UUID so it's not stored as plaintext?
+- [ ] Rate Limiting

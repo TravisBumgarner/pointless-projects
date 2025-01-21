@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PAINTING_TIME_MS } from "../../shared";
 import { postQueue } from "./api";
 import useStore from "./store";
@@ -53,12 +53,16 @@ const Queue = () => {
   };
 
   const display = useMemo(() => {
-    if (placeInQueue === null) {
-      return `Queue: ${queue}`;
-    }
-
     if (placeInQueue === 0 && timeRemaining === 0) {
       return "Your time has expired, please queue again.";
+    }
+
+    if (placeInQueue === null) {
+      if(queue === 0) {
+        return "No one is in the queue.";
+      }
+
+      return `Queue: ${queue}`;
     }
 
     if (placeInQueue === 0) {
