@@ -1,67 +1,45 @@
 import { PointColor } from "../../shared";
 
 export const COLOR_MAP: Record<PointColor, string> = {
-    a: "#f9ebea",
-    b: "#f2d7d5",
-    c: "#e6b0aa",
-    d: "#d98880",
-    e: "#cd6155",
-    f: "#c0392b",
-    g: "#a93226",
-    h: "#922b21",
-    i: "#7b241c",
-    j: "#641e16",
-    k: "#fdedec",
-    l: "#fadbd8",
-    m: "#f5b7b1",
-    n: "#f1948a",
-    o: "#ec7063",
-    p: "#e74c3c",
-    q: "#cb4335",
-    r: "#b03a2e",
-    s: "#943126",
-    t: "#78281f",
-    u: "#f5eef8",
-    v: "#ebdef0",
-    w: "#d7bde2",
-    x: "#c39bd3",
-    y: "#af7ac5",
-    z: "#9b59b6",
-    A: "#884ea0",
-    B: "#76448a",
-    C: "#633974",
-    D: "#512e5f",
-    E: "#f4ecf7",
-    F: "#e8daef",
-    G: "#d2b4de",
-    H: "#bb8fce",
-    I: "#a569bd",
-    J: "#8e44ad",
-    K: "#7d3c98",
-    L: "#6c3483",
-    M: "#5b2c6f",
-    N: "#4a235a",
-    O: "#eaf2f8",
-    P: "#d4e6f1",
-    Q: "#a9cce3",
-    R: "#7fb3d5",
-    S: "#5499c7",
-    T: "#2980b9",
-    U: "#2471a3",
-    V: "#1f618d",
-    W: "#1a5276",
-    X: "#154360",
-    Y: "#e8f8f5",
-    Z: "#d1f2eb",
-    "0": "#a3e4d7",
-    "1": "#76d7c4",
-    "2": "#48c9b0",
-    "3": "#1abc9c",
-    "4": "#17a589",
-    "5": "#148f77",
-    "6": "#117864",
-    "7": "#0e6251",
-    "8": "#fef9e7",
-    "9": "#fcf3cf",
-  };
-  
+    // Red (Light, Medium, Dark)
+    "a": "#FF6B6B",
+    "b": "#FF0000",
+    "c": "#8B0000",
+
+    // Orange
+    "d": "#FFB347",
+    "e": "#FF7F00",
+    "f": "#CC5500",
+
+    // Yellow
+    "g": "#FFF68F",
+    "h": "#FFFF00",
+    "i": "#FFD700",
+
+    // Green
+    "j": "#90EE90",
+    "k": "#00FF00",
+    "l": "#006400",
+
+    // Blue
+    "m": "#87CEEB",
+    "n": "#0000FF",
+    "o": "#00008B",
+
+    // Indigo
+    "p": "#9FA8DA",
+    "q": "#4B0082",
+    "r": "#2E006C",
+
+    // Violet
+    "s": "#DDA0DD",
+    "t": "#9400D3",
+    "u": "#4B0082",
+
+    // Grayscale (Light to Dark)
+    "v": "#FFFFFF",
+    "w": "#BFBFBF",
+    "x": "#808080",
+    "y": "#404040",
+    "z": "#000000"
+};

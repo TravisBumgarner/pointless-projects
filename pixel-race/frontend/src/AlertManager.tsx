@@ -34,8 +34,10 @@ console.log('alerts', alerts);
         <div
           key={alert.id}
           style={{
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            color: "white",
+            borderColor: "var(--border-color)",
+            textAlign: "center",
+            color: "var(--border-color)",
+            backgroundColor: "var(--neutral-dark-color)",
             padding: 16,
             borderRadius: 8,
             width: '200px',

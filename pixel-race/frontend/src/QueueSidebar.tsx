@@ -60,17 +60,19 @@ const Queue = () => {
   };
 
   const display = useMemo(() => {
+    if (placeInQueue === 0) {
+      return `Time Remaining: ${timeRemaining}`;
+    }
+
     if (placeInQueue === null) {
       if(queue === 0) {
-        return "No one is in the queue.";
+        return "No one painting";
       }
 
       return `Queue: ${queue}`;
     }
 
-    if (placeInQueue === 0) {
-      return `Time Remaining: ${timeRemaining}`;
-    }
+
 
     if (placeInQueue > 0) {
       return `Queue: ${placeInQueue} / ${queue}`;
@@ -79,7 +81,7 @@ const Queue = () => {
 
   return (
     <div className="border">
-      <p>{display}</p>
+      <p style={{textAlign: "center"}}>{display}</p>
       <div>
         <button disabled={placeInQueue !== null} onClick={joinQueue}>Join Queue</button>
       </div>

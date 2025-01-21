@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import Alert from "./AlertManager";
 import { init } from "./api";
-import "./App.css";
 import Canvas from "./Canvas";
 import ColorPicker from "./ColorPicker";
 import ConnectionError from "./ConnectionError";
@@ -25,7 +24,7 @@ function App() {
 
   return (
     <>
-      <h1 style={{ margin: "10px" }}>Pixel Race</h1>
+      <h1>Colab Canvas</h1>
       <ConnectionError />
       <Alert />
       <div
@@ -35,7 +34,7 @@ function App() {
           justifyContent: "center",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "column", width: "200px" }}>
           <QueueSidebar />
           <PaintSidebar />
         </div>

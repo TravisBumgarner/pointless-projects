@@ -70,12 +70,12 @@ const PaintApp = () => {
   };
 
   return (
-    <div>
+    <div className="border">
       <canvas
+        style={{ backgroundColor: "#FFFFFF", borderRadius: "10px", display: "block" }}
         ref={canvasRef}
         width={CANVAS_WIDTH_PIXELS}
         height={CANVAS_HEIGHT_PIXELS}
-        className="border"
         onMouseDown={handleMouseDown}
       ></canvas>
     </div>

@@ -6,7 +6,7 @@ import { queue } from '../../src/singletons/queue';
 describe('GET /init', () => {
   it('should return expected data', async () => {
     // Setup some test data
-    canvas.update({ "0_0": "A", "1_1": "B" });
+    canvas.update({ "0_0": "a", "1_1": "b" });
     
     const response = await request(app)
       .get('/init')
@@ -14,7 +14,7 @@ describe('GET /init', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
-      canvas: { "0_0": "A", "1_1": "B" },
+      canvas: { "0_0": "a", "1_1": "b" },
       queue: queue.size()
     });
   });

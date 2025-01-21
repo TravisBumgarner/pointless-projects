@@ -9,11 +9,11 @@
 - [ ] Shorten JSON payloads
 - [x] Add backend validation
 - [ ] Batch messages to clients
-- [ ] Write some API tests
+- [x] Write some API tests
     - [x] Post valid data length
     - [x] post invalid data length
-    - [ ] Invalid numbers (maybe move canvas size to shared between fe/be)
-    - [ ] Invalid chars (move colors to shared?)
+    - [x] Invalid numbers (maybe move canvas size to shared between fe/be)
+    - [x] Invalid chars (move colors to shared?)
 - [] Somehow track all painting history
 - [ ] How much memory are things going to take
     - [ ] Storing user connections 
@@ -22,4 +22,14 @@
 - [ ] Auth
     - [ ] Maybe encode UUID so it's not stored as plaintext?
 - [ ] Rate Limiting
+    - [ ] Users
+    - [ ] How often someone can paint. 
+    - [ ] How to stop a bot from spinning up a bunch of browsers / scripts?
+- [ ] Repatcha
+- [ ] Figure out billing
 - [ ] Inspo from Bananarama
+- [ ] Can't modify a pixel already placed
+- [ ] Add intro text. 
+    - How to play
+    - What's going on
+- [ ] Learn more link

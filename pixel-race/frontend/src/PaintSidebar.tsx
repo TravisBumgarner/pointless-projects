@@ -35,7 +35,7 @@ const PaintSidebar = () => {
 
   return (
     <div className="border">
-      <button disabled={!canPaint || !hasPainted} onClick={handlePaint}>
+      <button style={{ marginBottom: "10px" }} disabled={!canPaint || !hasPainted} onClick={handlePaint}>
         Paint
       </button>
       <button disabled={!hasPainted} onClick={clearTempPoints}>
