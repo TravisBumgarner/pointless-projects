@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { PointMap } from '../../shared';
+import { PointColor, PointMap } from '../../shared';
 
 interface EventState {
   queue: number;
@@ -8,6 +8,8 @@ interface EventState {
   alerts: string[];
   placeInQueue: number | null;
   connectionError: boolean;
+  tempPoints: PointMap;
+  selectedColorKey: PointColor;
 
   getAndRemoveNextAlert: () => string | null;
 
@@ -18,6 +20,8 @@ interface EventState {
   setPlaceInQueue: (placeInQueue: number | null) => void;
   moveUpInQueue: () => void;
   setConnectionError: (connectionError: boolean) => void;
+  setTempPoints: (tempPoints: PointMap) => void;
+  setSelectedColorKey: (selectedColorKey: PointColor) => void;
 }
 
 const useStore = create<EventState>((set, get) => ({
@@ -27,6 +31,9 @@ const useStore = create<EventState>((set, get) => ({
   alerts: [],
   placeInQueue: null,
   connectionError: false,
+  tempPoints: {},
+  selectedColorKey: "A",
+  
   getAndRemoveNextAlert: () => {
     const alerts = get().alerts;
     if (alerts.length === 0) return null;
@@ -45,6 +52,8 @@ const useStore = create<EventState>((set, get) => ({
   setPlaceInQueue: (placeInQueue: number | null) => set({ placeInQueue }),
   moveUpInQueue: () => set(state => ({ placeInQueue: state.placeInQueue ? state.placeInQueue - 1 : null })),
   setConnectionError: (connectionError: boolean) => set({ connectionError }),
+  setTempPoints: (tempPoints: PointMap) => set({ tempPoints }),
+  setSelectedColorKey: (selectedColorKey: PointColor) => set({ selectedColorKey }),
 }));
 
 export default useStore;

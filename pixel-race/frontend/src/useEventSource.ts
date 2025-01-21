@@ -10,6 +10,7 @@ const useEventSource = () => {
   const setPoints = useStore((state) => state.setPoints);
   const addAlert = useStore((state) => state.addAlert);
   const moveUpInQueue = useStore((state) => state.moveUpInQueue);
+  const setConnectionError = useStore((state) => state.setConnectionError);
 
   useEffect(() => {
     const eventSource = new EventSource(URL);
@@ -56,7 +57,7 @@ const useEventSource = () => {
     };
 
     eventSource.onerror = () => {
-      addAlert("Connection to server lost, refresh page.");
+      setConnectionError(true);
       eventSource.close();
     };
 

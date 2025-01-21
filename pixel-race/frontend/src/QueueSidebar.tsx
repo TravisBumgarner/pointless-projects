@@ -32,6 +32,13 @@ const Queue = () => {
     }
   }, [placeInQueue, startTimer]);
 
+  useEffect(() => {
+     if (placeInQueue === 0 && timeRemaining === 0) {
+      addAlert("Your time has expired, please queue again.");
+      setPlaceInQueue(null);
+     }
+  }, [timeRemaining, placeInQueue, addAlert, setPlaceInQueue]);
+
   const joinQueue = async () => {
     if (!clientId) {
       addAlert("Something went wrong. Please refresh the page.");
@@ -53,10 +60,6 @@ const Queue = () => {
   };
 
   const display = useMemo(() => {
-    if (placeInQueue === 0 && timeRemaining === 0) {
-      return "Your time has expired, please queue again.";
-    }
-
     if (placeInQueue === null) {
       if(queue === 0) {
         return "No one is in the queue.";
@@ -75,10 +78,10 @@ const Queue = () => {
   }, [placeInQueue, queue, timeRemaining]);
 
   return (
-    <div>
-      <h3>{display}</h3>
+    <div className="border">
+      <p>{display}</p>
       <div>
-        <button disabled={placeInQueue !== null} onClick={joinQueue}>Join</button>
+        <button disabled={placeInQueue !== null} onClick={joinQueue}>Join Queue</button>
       </div>
     </div>
   );

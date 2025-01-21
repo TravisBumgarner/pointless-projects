@@ -22,3 +22,4 @@
 - [ ] Auth
     - [ ] Maybe encode UUID so it's not stored as plaintext?
 - [ ] Rate Limiting
+- [ ] Inspo from Bananarama
