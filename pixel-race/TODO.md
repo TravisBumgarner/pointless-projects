@@ -35,17 +35,17 @@
 - [x] Add intro text. 
     - How to play
     - What's going on
-- [ ] Can't modify a pixel already placed
+- [x] Can't modify a pixel already placed
+- [x] Inspo from Bananarama
+- [x] Learn more link
+- [x] Add server log or server start. 
 
 # Priority
-- [ ] Batch messages to clients
-- [ ] Inspo from Bananarama
-- [ ] Learn more link
-- [ ] Add server log or server start. 
 - [ ] Polish UI
     - [ ] Let user know they can queue points
 
 # Soon
+- [ ] Batch messages to clients
 - [ ] Audit OG Tags
 - [ ] Analytics (Not Google)
 - [ ] Audit with friend (P)

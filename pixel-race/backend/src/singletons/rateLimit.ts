@@ -3,7 +3,7 @@ import log from "./log";
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 30, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+	limit: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
 	standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
     handler: (req, res) => {

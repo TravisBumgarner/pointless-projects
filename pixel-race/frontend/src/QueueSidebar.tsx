@@ -51,7 +51,6 @@ const Queue = () => {
     if ("error" in response) {
       setError(response.error);
     } else {
-      console.log('hmmm queue size', response.queueSize)
       if(response.queueSize === 0) {
         // Do Nothing. Another message will alert the user they can paint.
       } else if (response.queueSize === 1) {
