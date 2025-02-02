@@ -4,6 +4,7 @@ import {
   CANVAS_HEIGHT_PIXELS,
   CANVAS_WIDTH_PIXELS,
   MAX_PAINT_POINTS,
+  PointKey,
   PointMap,
 } from "../../shared";
 import { COLOR_MAP } from "./consts";
@@ -69,10 +70,6 @@ const PaintApp = () => {
   }, [tempPoints, points]);
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (Object.keys(tempPoints).length >= MAX_PAINT_POINTS) {
-      addAlert(`Only ${MAX_PAINT_POINTS} can be plotted.`);
-      return;
-    }
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     const rect = canvas?.getBoundingClientRect();
@@ -82,13 +79,20 @@ const PaintApp = () => {
 
     const snappedX = Math.floor(x / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
     const snappedY = Math.floor(y / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
+    const newPoint: PointKey  = `${snappedX}_${snappedY}`;
+
+    if (Object.keys(tempPoints).length >= MAX_PAINT_POINTS && !tempPoints[newPoint]) {
+      addAlert(`Only ${MAX_PAINT_POINTS} can be plotted.`);
+      return;
+    }
+
 
     context!.fillStyle = COLOR_MAP[selectedColorKey];
     context!.fillRect(snappedX, snappedY, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
 
     setTempPoints({
       ...tempPoints,
-      [`${snappedX}_${snappedY}`]: selectedColorKey,
+      [newPoint]: selectedColorKey,
     });
   };
 

@@ -32,16 +32,18 @@
 - [ ] ~~Shorten JSON payloads~~ They already seem adequately short. Especially since NFS doesn't charge for bandwidth
 - [ ] ~~Auth~~
     - [ ] ~~Maybe encode UUID so it's not stored as plaintext?~~
+- [x] Add intro text. 
+    - How to play
+    - What's going on
+- [ ] Can't modify a pixel already placed
 
 # Priority
 - [ ] Batch messages to clients
 - [ ] Inspo from Bananarama
-- [ ] Can't modify a pixel already placed
-- [ ] Add intro text. 
-    - How to play
-    - What's going on
 - [ ] Learn more link
 - [ ] Add server log or server start. 
+- [ ] Polish UI
+    - [ ] Let user know they can queue points
 
 # Soon
 - [ ] Audit OG Tags
