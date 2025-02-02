@@ -2,6 +2,7 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 import endpoints from './endpoints';
+import log from './singletons/log';
 import limiter from './singletons/rateLimit';
 
 const app = express();
@@ -20,7 +21,7 @@ app.post('/queue', endpoints.post.queue);
 // Only start the server if we're not testing
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {
-    console.log(`SSE server running at http://localhost:${port}`);
+    log.write(`SSE server running at http://localhost:${port}`);
   });
 }
 

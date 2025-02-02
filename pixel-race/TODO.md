@@ -16,7 +16,9 @@
 - [x] Deploy
 - [ ] Rate Limiting
     - [x] Users
-    - [ ] Cloudflare
+    - [x] Cloudflare
+    - [ ] Only permit Cloudflare IPs
+    - [ ] Disable NFS DNS. 
     - [ ] ~~How often someone can paint. - If IP is already queued, can't queue again.~~
     - [ ] How to stop a bot from spinning up a bunch of browsers / scripts?
     - [ ] ~~Repatcha~~
@@ -24,28 +26,30 @@
     - [x] Storing user connections 
     - [x] Storing Queue
     - [x] Storing Canvas
-
-# Priority
-- [ ] OG tags
-- [ ] Shorten JSON payloads
+- [x] OG tags
 - [x] can't paint bug.
 - [x] Somehow track all painting history
+- [ ] ~~Shorten JSON payloads~~ They already seem adequately short. Especially since NFS doesn't charge for bandwidth
+- [ ] ~~Auth~~
+    - [ ] ~~Maybe encode UUID so it's not stored as plaintext?~~
 
+# Priority
 - [ ] Batch messages to clients
-- [ ] Auth
-    - [ ] Maybe encode UUID so it's not stored as plaintext?
 - [ ] Inspo from Bananarama
 - [ ] Can't modify a pixel already placed
 - [ ] Add intro text. 
     - How to play
     - What's going on
 - [ ] Learn more link
+- [ ] Add server log or server start. 
 
 # Soon
-
+- [ ] Audit OG Tags
 - [ ] Analytics (Not Google)
 - [ ] Audit with friend (P)
 
 # Later
 
+- [ ] Don't destroy backend on redeploy. 
 - [ ] Write a player for the data. 
+- [ ] Add the ability for rooms.
