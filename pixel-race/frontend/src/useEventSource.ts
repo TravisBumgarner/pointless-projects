@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { ErrorType } from "../../shared";
 import { SSEMessage, SSEMessageType } from "../../shared/types";
 import useStore from "./store";
 
@@ -10,7 +11,8 @@ const useEventSource = () => {
   const setPoints = useStore((state) => state.setPoints);
   const addAlert = useStore((state) => state.addAlert);
   const moveUpInQueue = useStore((state) => state.moveUpInQueue);
-  const setConnectionError = useStore((state) => state.setConnectionError);
+  const setError = useStore((state) => state.setError);
+  const stateError = useStore((state) => state.error);
 
   useEffect(() => {
     const eventSource = new EventSource(URL);
@@ -26,6 +28,10 @@ const useEventSource = () => {
           addAlert("You can now paint. You have 10 seconds.");
           break;
         }
+        case SSEMessageType.YouAreNext: {
+          addAlert("You are next in the queue.")
+          break;
+        }
         case SSEMessageType.Queue: {
           setQueue(event.size);
           if (event.shouldAdvanceInQueue) {
@@ -39,7 +45,8 @@ const useEventSource = () => {
           break;
         }
         case SSEMessageType.UserInfo: {
-          addAlert(event.message)
+          // addAlert(event.message)
+          console.alert("We should depreciate user info.")
           break;
         }
         case SSEMessageType.System: {
@@ -56,8 +63,12 @@ const useEventSource = () => {
       addAlert("Welcome!");
     };
 
-    eventSource.onerror = () => {
-      setConnectionError(true);
+    eventSource.onerror = (error: Event) => {
+      console.error("Event source error", error);
+      if (stateError === ErrorType.ConnectionError) {
+        // If the server has failed from rate limiting, no need to display a connection error.
+        setError(ErrorType.ConnectionError);
+      }
       eventSource.close();
     };
 
@@ -69,7 +80,9 @@ const useEventSource = () => {
     setQueue,
     setPoints,
     addAlert,
-    moveUpInQueue
+    moveUpInQueue,
+    setError,
+    stateError
   ]);
 };
 

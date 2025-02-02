@@ -3,7 +3,7 @@ import Alert from "./AlertManager";
 import { init } from "./api";
 import Canvas from "./Canvas";
 import ColorPicker from "./ColorPicker";
-import ConnectionError from "./ConnectionError";
+import ErrorHandler from "./ErrorHandler";
 import PaintSidebar from "./PaintSidebar";
 import QueueSidebar from "./QueueSidebar";
 import useStore from "./store";
@@ -14,18 +14,24 @@ function App() {
 
   const setPoints = useStore((state) => state.setPoints);
   const setQueue = useStore((state) => state.setQueue);
-
+  const setError = useStore((state) => state.setError);
+  
   useEffect(() => {
-    init().then(({ canvas, queue }) => {
-      setPoints(canvas);
-      setQueue(queue);
+    init().then((response) => {
+      console.log('response', response)
+      if ("error" in response) {
+        setError(response.error);
+      } else {
+        setPoints(response.canvas);
+        setQueue(response.queue);
+      }
     });
-  }, [setPoints, setQueue]);
+  }, [setPoints, setQueue, setError]);
 
   return (
     <>
       <h1>Colab Canvas</h1>
-      <ConnectionError />
+      <ErrorHandler />
       <Alert />
       <div
         style={{

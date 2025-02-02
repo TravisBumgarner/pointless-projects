@@ -43,3 +43,4 @@ export const COLOR_MAP: Record<PointColor, string> = {
     "y": "#404040",
     "z": "#000000"
 };
+

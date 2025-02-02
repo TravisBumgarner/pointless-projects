@@ -1,12 +1,15 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+
 import endpoints from './endpoints';
+import limiter from './singletons/rateLimit';
 
 const app = express();
 const port = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(express.json());
+app.use(limiter);
 
 app.get('/ok', (_req: Request, res: Response) => res.send('OK'));
 app.get('/events', endpoints.get.events);

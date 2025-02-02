@@ -33,7 +33,6 @@ export const paint = (req: Request, res: Response) => {
   try {
     const {points, clientId} = validateOrThrow(req.body);
 
-    console.log('queue.getCurrentClientId()', queue.getCurrentClientId());
     if (queue.getCurrentClientId() !== clientId) {
       res.status(400).json({ error: "You are not the current painter." });
       return;

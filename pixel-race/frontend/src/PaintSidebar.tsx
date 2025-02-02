@@ -12,6 +12,7 @@ const PaintSidebar = () => {
   const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
   const clientId = useStore((state) => state.clientId);
   const addAlert = useStore((state) => state.addAlert);
+  const setError = useStore((state) => state.setError);
 
   const clearTempPoints = () => {
     setTempPoints({});
@@ -23,12 +24,12 @@ const PaintSidebar = () => {
       return;
     }
 
-    const hasPainted = await postPaint(tempPoints, clientId);
-    if (hasPainted) {
+    const response = await postPaint(tempPoints, clientId);
+    if ("error" in response) {
+      setError(response.error);
+    } else {
       setTempPoints({});
       setPlaceInQueue(null);
-    } else {
-      addAlert("You are not the current painter.");
     }
   };
 

@@ -13,24 +13,24 @@
     - [x] post invalid data length
     - [x] Invalid numbers (maybe move canvas size to shared between fe/be)
     - [x] Invalid chars (move colors to shared?)
+- [x] Figure out billing
+- [ ] Rate Limiting
+    - [x] Users
+    - [ ] How often someone can paint. 
+    - [ ] How to stop a bot from spinning up a bunch of browsers / scripts?
+    - [ ] Repatcha
+- [ ] How much memory are things going to take
+    - [ ] Storing user connections 
+    - [ ] Storing Queue
+    - [ ] Storing Canvas
 
 # Priority
 - [x] can't paint bug.
 - [x] Somehow track all painting history
 
 - [ ] Batch messages to clients
-- [ ] How much memory are things going to take
-    - [ ] Storing user connections 
-    - [ ] Storing Queue
-    - [ ] Storing Canvas
 - [ ] Auth
     - [ ] Maybe encode UUID so it's not stored as plaintext?
-- [ ] Rate Limiting
-    - [ ] Users
-    - [ ] How often someone can paint. 
-    - [ ] How to stop a bot from spinning up a bunch of browsers / scripts?
-- [ ] Repatcha
-- [ ] Figure out billing
 - [ ] Inspo from Bananarama
 - [ ] Can't modify a pixel already placed
 - [ ] Add intro text. 

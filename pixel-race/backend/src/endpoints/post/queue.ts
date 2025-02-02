@@ -45,7 +45,7 @@ const queue = (req: Request, res: Response) => {
     });
 
     const response: QueuePostResponse = {
-      p: queueSize,
+      queueSize,
     };
     res.status(200).json(response);
   } catch (error) {

@@ -13,13 +13,7 @@ class Queue {
         }
         
         this.currentClientTimer = setTimeout(() => {
-            if (this.currentClientId) {
-                clients.messageOne(this.currentClientId, { 
-                    type: SSEMessageType.UserInfo, 
-                    message: 'Your painting time has expired.' 
-                });
-                this.releaseCurrentClient();
-            }
+        this.releaseCurrentClient();
         }, PAINTING_TIME_MS); 
     }
 
@@ -93,8 +87,7 @@ class Queue {
             const upcomingClient = this.peakNextClient();
             if (upcomingClient) {
                 clients.messageOne(upcomingClient, { 
-                    type: SSEMessageType.UserInfo, 
-                    message: 'You are next in the queue.' 
+                    type: SSEMessageType.YouAreNext, 
                 });
             }
             clients.messageAll({

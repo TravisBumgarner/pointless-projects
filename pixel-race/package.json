@@ -9,6 +9,7 @@
     },
     "dependencies": {
         "concurrently": "^9.1.2",
+        "express-rate-limit": "^7.5.0",
         "zod": "^3.24.1"
     }
 }

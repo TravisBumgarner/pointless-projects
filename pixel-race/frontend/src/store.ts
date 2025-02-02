@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { PointColor, PointMap } from '../../shared';
+import { ErrorType } from './consts';
 
 interface EventState {
   queue: number;
@@ -7,7 +8,7 @@ interface EventState {
   clientId: string | null;
   alerts: string[];
   placeInQueue: number | null;
-  connectionError: boolean;
+  error: ErrorType | null;
   tempPoints: PointMap;
   selectedColorKey: PointColor;
 
@@ -19,7 +20,7 @@ interface EventState {
   addAlert: (alert: string) => void;
   setPlaceInQueue: (placeInQueue: number | null) => void;
   moveUpInQueue: () => void;
-  setConnectionError: (connectionError: boolean) => void;
+  setError: (error: ErrorType) => void;
   setTempPoints: (tempPoints: PointMap) => void;
   setSelectedColorKey: (selectedColorKey: PointColor) => void;
 }
@@ -30,9 +31,9 @@ const useStore = create<EventState>((set, get) => ({
   clientId: null,
   alerts: [],
   placeInQueue: null,
-  connectionError: false,
+  error: null,
   tempPoints: {},
-  selectedColorKey: "A",
+  selectedColorKey: "a",
   
   getAndRemoveNextAlert: () => {
     const alerts = get().alerts;
@@ -47,13 +48,13 @@ const useStore = create<EventState>((set, get) => ({
   setPoints: (points: PointMap) => set((state) => ({ 
     points: { ...state.points, ...points } 
   })),
-  setClientId: (clientId: string | null) => set({ clientId }),
-  addAlert: (alert: string) => set(state => ({alerts: [...state.alerts, alert]})),
-  setPlaceInQueue: (placeInQueue: number | null) => set({ placeInQueue }),
+  setClientId: (clientId) => set({ clientId }),
+  addAlert: (alert) => set(state => ({alerts: [...state.alerts, alert]})),
+  setPlaceInQueue: (placeInQueue) => set({ placeInQueue }),
   moveUpInQueue: () => set(state => ({ placeInQueue: state.placeInQueue ? state.placeInQueue - 1 : null })),
-  setConnectionError: (connectionError: boolean) => set({ connectionError }),
-  setTempPoints: (tempPoints: PointMap) => set({ tempPoints }),
-  setSelectedColorKey: (selectedColorKey: PointColor) => set({ selectedColorKey }),
+  setError: (error) => set({ error }),
+  setTempPoints: (tempPoints) => set({ tempPoints }),
+  setSelectedColorKey: (selectedColorKey) => set({ selectedColorKey }),
 }));
 
 export default useStore;
