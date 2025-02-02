@@ -1,6 +1,6 @@
 export * from './types';
 
-export const PAINTING_TIME_MS = 10_000;
+export const PAINTING_TIME_MS = 5_000;
 export const MAX_PAINT_POINTS = 5;  
 
 export const CANVAS_GRID_SIZE = 10;

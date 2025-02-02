@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ErrorType } from "../../shared";
+import { ErrorType, PAINTING_TIME_MS } from "../../shared";
 import { SSEMessage, SSEMessageType } from "../../shared/types";
 import useStore from "./store";
 
@@ -25,7 +25,7 @@ const useEventSource = () => {
           break;
         }
         case SSEMessageType.YourTurn: {
-          addAlert("You can now paint. You have 10 seconds.");
+          addAlert(`You can now paint. You have ${PAINTING_TIME_MS / 1_000} seconds.`);
           break;
         }
         case SSEMessageType.YouAreNext: {

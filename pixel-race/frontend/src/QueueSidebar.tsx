@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PAINTING_TIME_MS } from "../../shared";
 import { postQueue } from "./api";
 import useStore from "./store";
@@ -13,20 +13,38 @@ const Queue = () => {
   const setError = useStore((state) => state.setError);
   const setTempPoints = useStore((state) => state.setTempPoints);
   const [timeRemaining, setTimeRemaining] = useState(PAINTING_TIME_MS / 1000);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+
+  const reset = useCallback(() => {
+    setTimeRemaining(PAINTING_TIME_MS / 1000);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setPlaceInQueue(null);
+    setTempPoints({});  
+  }, [setPlaceInQueue, setTempPoints]);
+
+  useEffect(() => {
+    // Once the user finishes their turn, their placeInQueue is set to null so we reset.
+    if (placeInQueue === null) {
+      reset();
+    }
+  }, [placeInQueue, reset]);
+
 
   const startTimer = useCallback(() => {
-    setTimeRemaining(PAINTING_TIME_MS / 1000);
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev === 1) {
-          clearInterval(interval);
+          reset();
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      reset();
+    };
+  }, [reset]);
 
   useEffect(() => {
     if (placeInQueue === 0) {
@@ -35,12 +53,11 @@ const Queue = () => {
   }, [placeInQueue, startTimer]);
 
   useEffect(() => {
-     if (placeInQueue === 0 && timeRemaining === 0) {
+    if (placeInQueue === 0 && timeRemaining === 0) {
       addAlert("Your time has expired, please queue again.");
-      setPlaceInQueue(null);
-      setTempPoints({});
-     }
-  }, [timeRemaining, placeInQueue, addAlert, setPlaceInQueue, setTempPoints]);
+      reset();
+    }
+  }, [timeRemaining, placeInQueue, addAlert, reset]);
 
   const joinQueue = async () => {
     if (!clientId) {
@@ -51,7 +68,7 @@ const Queue = () => {
     if ("error" in response) {
       setError(response.error);
     } else {
-      if(response.queueSize === 0) {
+      if (response.queueSize === 0) {
         // Do Nothing. Another message will alert the user they can paint.
       } else if (response.queueSize === 1) {
         addAlert("You are the first in the queue.");
@@ -69,14 +86,12 @@ const Queue = () => {
     }
 
     if (placeInQueue === null) {
-      if(queue === 0) {
+      if (queue === 0) {
         return "No one painting";
       }
 
       return `Queue: ${queue}`;
     }
-
-
 
     if (placeInQueue > 0) {
       return `Queue: ${placeInQueue} / ${queue}`;
@@ -85,9 +100,11 @@ const Queue = () => {
 
   return (
     <div className="border">
-      <p style={{textAlign: "center"}}>{display}</p>
+      <p style={{ textAlign: "center" }}>{display}</p>
       <div>
-        <button disabled={placeInQueue !== null} onClick={joinQueue}>Join Queue</button>
+        <button disabled={placeInQueue !== null} onClick={joinQueue}>
+          Join Queue
+        </button>
       </div>
     </div>
   );

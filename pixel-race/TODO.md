@@ -39,14 +39,16 @@
 - [x] Inspo from Bananarama
 - [x] Learn more link
 - [x] Add server log or server start. 
-
-# Priority
+- [x] Bugs
+    - [x] Start countdown, paint, start painting again, countdown goes 2x.
+    - [x] Start countdown, don't paint, start again
+- [x] Audit OG Tags
+- [ ] Be able to restore paint state on server restart. 
 - [ ] Polish UI
     - [ ] Let user know they can queue points
 
 # Soon
 - [ ] Batch messages to clients
-- [ ] Audit OG Tags
 - [ ] Analytics (Not Google)
 - [ ] Audit with friend (P)
 

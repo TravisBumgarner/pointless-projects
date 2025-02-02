@@ -35,7 +35,7 @@ const PaintSidebar = () => {
 
 
   return (
-    <div className="border">
+    <div className="border" style={{flexGrow: 1}}>
       <button style={{ marginBottom: "10px" }} disabled={!canPaint || !hasPainted} onClick={handlePaint}>
         Paint
       </button>
