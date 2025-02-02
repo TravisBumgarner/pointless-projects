@@ -3,7 +3,7 @@ import { ErrorType } from "../../shared";
 import { SSEMessage, SSEMessageType } from "../../shared/types";
 import useStore from "./store";
 
-const URL = "http://localhost:8000/events";
+const URL = `${import.meta.env.VITE_API_BASE_URL}/events`;
 
 const useEventSource = () => {
   const setClientId = useStore((state) => state.setClientId);

@@ -5,16 +5,16 @@
   "scripts": {
     "test": "jest --detectOpenHandles --forceExit",
     "test:watch": "jest --watch",
-    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/backend/src/server.js\"",
-    "build": "rm -rf ./build && tsc",
+    "dev": "export NODE_ENV=development && tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./build/backend/src/server.js\"",
+    "build": "rm -rf ./build && node build.js",
     "deploy:nfs": "bash deploy.sh",
-    "start:prod": "node build/index.js"
+    "start:prod": "node build/server.js"
   },
   "dependencies": {
-    "@shared": "../shared",
     "@types/supertest": "^6.0.2",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "shared": "file:../shared",
     "ts-jest": "^29.2.5",
     "uuid": "^11.0.5"
   },
@@ -22,7 +22,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.10.6",
+    "@types/node": "^22.13.0",
     "dotenv": "^16.4.7",
     "esbuild": "^0.24.2",
     "jest": "^29.7.0",

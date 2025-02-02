@@ -4,3 +4,5 @@ dist/
 .env.nfs
 server.log
 build/
+.env.production
+.env.development

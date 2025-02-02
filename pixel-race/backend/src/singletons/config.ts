@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
 import z from 'zod';
 
-dotenv.config();
+console.log(process.env.NODE_ENV);
+dotenv.config({ path: `.env.${process.env.NODE_ENV || 'production'}` });
+
 
 class Config {
     public logPath: string;

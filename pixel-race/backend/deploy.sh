@@ -11,31 +11,31 @@ fi
 # Define variables
 SERVER_USER="${DEPLOY_SERVER_USER}"
 SERVER_HOST="${DEPLOY_SERVER_HOST}"
-REMOTE_DIR="/home/protected/backend"
+BACKEND_DIR="/home/protected/backend"
 NODE_VERSION="18"
 
 # Create remote directory if it doesn't exist
-echo "Creating remote directory $REMOTE_DIR if it doesn't exist"
-ssh $SERVER_USER@$SERVER_HOST "mkdir -p $REMOTE_DIR"
+echo "Creating remote directory $BACKEND_DIR if it doesn't exist"
+ssh $SERVER_USER@$SERVER_HOST "mkdir -p $BACKEND_DIR"
 
 # Build the Next.js app locally
 echo "Building the Express app..."
-npm run build
+yarn run build
 
 # Create or update .nvmrc file on server
 echo "Setting up Node.js environment..."
-ssh $SERVER_USER@$SERVER_HOST "echo $NODE_VERSION > $REMOTE_DIR/.nvmrc"
+ssh $SERVER_USER@$SERVER_HOST "echo $NODE_VERSION > $BACKEND_DIR/.nvmrc"
 
 # Delete existing private directory on server
 echo "Cleaning up existing deployment..."
-ssh $SERVER_USER@$SERVER_HOST "rm -rf $REMOTE_DIR/*"
+ssh $SERVER_USER@$SERVER_HOST "rm -rf $BACKEND_DIR/*"
 
 # Upload the build files
 echo "Uploading build to the server..."
-scp -r run.sh build package.json yarn.lock $SERVER_USER@$SERVER_HOST:$REMOTE_DIR
+scp -r .env.production run.sh build package.json yarn.lock $SERVER_USER@$SERVER_HOST:$BACKEND_DIR
 
 # # Setup and start the application
 echo "Setting up the application..."
-ssh $SERVER_USER@$SERVER_HOST "cd $REMOTE_DIR && yarn install --production && chmod +x run.sh"
+ssh $SERVER_USER@$SERVER_HOST "cd $BACKEND_DIR && yarn install --production && chmod +x run.sh"
 
 echo "Deployment complete!"
