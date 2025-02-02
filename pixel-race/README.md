@@ -2,7 +2,7 @@
 
 ## Break Glass
 
-- If canvas gets inappropriate or weird, log in to server and HUP the daemon.
+- If canvas gets inappropriate or weird, log in to server, bring it down, delete backup.json, and HUP the daemon.
 
 ## Backend 
 

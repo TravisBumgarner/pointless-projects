@@ -6,3 +6,4 @@ server.log
 build/
 .env.production
 .env.development
+backup.json

@@ -43,13 +43,15 @@
     - [x] Start countdown, paint, start painting again, countdown goes 2x.
     - [x] Start countdown, don't paint, start again
 - [x] Audit OG Tags
-- [ ] Be able to restore paint state on server restart. 
+- [ ] Analytics (Not Google)
+- [x] Be able to restore paint state on server restart. 
 - [ ] Polish UI
     - [ ] Let user know they can queue points
+- [ ] Bug
+     - [ ] Rate limit showing up at random times. 
 
 # Soon
 - [ ] Batch messages to clients
-- [ ] Analytics (Not Google)
 - [ ] Audit with friend (P)
 
 # Later
