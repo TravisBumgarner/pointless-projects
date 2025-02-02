@@ -27,7 +27,7 @@ const Alert = () => {
   if (visibleAlerts.length === 0) return null;
 
   return (
-    <div style={{ position: "fixed", bottom: 16, left: 16, zIndex: 1000 }}>
+    <div style={{ position: "fixed", bottom: 16, left: 16, zIndex: 998 }}>
       {visibleAlerts.map((alert, index) => (
         <div
           key={alert.id}

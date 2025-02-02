@@ -17,28 +17,28 @@ const PaintApp = () => {
   const setTempPoints = useStore((state) => state.setTempPoints);
   const selectedColorKey = useStore((state) => state.selectedColorKey);
 
-  useEffect(() => {
-    setTimeout(() => {
-      randomlyFillCanvasPixels();
-    }, 1000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     randomlyFillCanvasPixels();
+  //   }, 1000);
+  // }, []);
 
-  const randomlyFillCanvasPixels = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // const randomlyFillCanvasPixels = () => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
     
-    const context = canvas.getContext("2d");
-    if (!context) return;
+  //   const context = canvas.getContext("2d");
+  //   if (!context) return;
     
-    for (let i = 0; i < CANVAS_WIDTH_PIXELS; i += CANVAS_GRID_SIZE) {
-      for (let j = 0; j < CANVAS_HEIGHT_PIXELS; j += CANVAS_GRID_SIZE) {
-        const randomColorKey = Object.keys(COLOR_MAP)[Math.floor(Math.random() * Object.keys(COLOR_MAP).length)];
-        const randomColor = COLOR_MAP[randomColorKey as keyof typeof COLOR_MAP];
-        context.fillStyle = randomColor;
-        context.fillRect(i, j, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
-      }
-    }
-  };
+  //   for (let i = 0; i < CANVAS_WIDTH_PIXELS; i += CANVAS_GRID_SIZE) {
+  //     for (let j = 0; j < CANVAS_HEIGHT_PIXELS; j += CANVAS_GRID_SIZE) {
+  //       const randomColorKey = Object.keys(COLOR_MAP)[Math.floor(Math.random() * Object.keys(COLOR_MAP).length)];
+  //       const randomColor = COLOR_MAP[randomColorKey as keyof typeof COLOR_MAP];
+  //       context.fillStyle = randomColor;
+  //       context.fillRect(i, j, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
+  //     }
+  //   }
+  // };
 
   const paintCanvas = (points: PointMap) => {
     const canvas = canvasRef.current;
