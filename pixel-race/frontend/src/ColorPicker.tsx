@@ -6,7 +6,7 @@ import useStore from "./store";
 const ColorPicker = () => {
     const setSelectedColorKey = useStore((state) => state.setSelectedColorKey);
     const selectedColorKey = useStore((state) => state.selectedColorKey);
-  console.log(Object.keys(COLOR_MAP))
+
     const handleColorClick = (char: PointColor) => {
         setSelectedColorKey(char);
       };

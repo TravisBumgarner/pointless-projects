@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "dev": "concurrently -n \"Backend,Frontend\" -c \"blue.green\" \"cd backend && yarn run dev\" \"cd frontend && yarn run dev\""
+        "dev": "concurrently -n \"Backend,Frontend\" -c \"blue.green\" \"cd backend && yarn run dev\" \"cd frontend && yarn run dev\"",
+        "bootstrap": "yarn install && cd backend && yarn install && cd ../frontend && yarn install",
+        "test": "cd backend && yarn test"
     },
     "dependencies": {
         "concurrently": "^9.1.2",

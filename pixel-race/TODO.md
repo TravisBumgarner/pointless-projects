@@ -8,13 +8,17 @@
     - [x] Only one at a time
 - [ ] Shorten JSON payloads
 - [x] Add backend validation
-- [ ] Batch messages to clients
 - [x] Write some API tests
     - [x] Post valid data length
     - [x] post invalid data length
     - [x] Invalid numbers (maybe move canvas size to shared between fe/be)
     - [x] Invalid chars (move colors to shared?)
-- [] Somehow track all painting history
+
+# Priority
+- [x] can't paint bug.
+- [x] Somehow track all painting history
+
+- [ ] Batch messages to clients
 - [ ] How much memory are things going to take
     - [ ] Storing user connections 
     - [ ] Storing Queue

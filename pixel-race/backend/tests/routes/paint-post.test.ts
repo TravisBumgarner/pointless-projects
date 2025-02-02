@@ -1,6 +1,6 @@
 import request from "supertest";
 import { v4 as uuidv4 } from 'uuid';
-import { CANVAS_HEIGHT_INDICES, CANVAS_WIDTH_INDICES, MAX_PAINT_POINTS } from "../../../shared";
+import { CANVAS_HEIGHT_PIXELS, CANVAS_WIDTH_PIXELS, MAX_PAINT_POINTS } from "../../../shared";
 import { app } from "../../src/server";
 import { canvas } from "../../src/singletons/canvas";
 import { queue } from "../../src/singletons/queue";
@@ -88,7 +88,10 @@ describe("POST /paint", () => {
     const clientId = uuidv4();
     queue.add(clientId);
     queue.processQueue()
-    const points = { "0_0": "A", [`${CANVAS_WIDTH_INDICES - 1}_${CANVAS_HEIGHT_INDICES - 1}`]: "B" };
+    const points = { 
+      "0_0": "A", 
+      [`${CANVAS_WIDTH_PIXELS - 1}_${CANVAS_HEIGHT_PIXELS - 1}`]: "B",
+    };
 
     const response = await request(app)
       .post("/paint")
@@ -102,7 +105,9 @@ describe("POST /paint", () => {
     const clientId = uuidv4();
     queue.add(clientId);
     queue.processQueue()
-    const points = { [`${CANVAS_WIDTH_INDICES}_${CANVAS_HEIGHT_INDICES}`]: "A" };
+    const points = { 
+      [`${CANVAS_WIDTH_PIXELS}_${CANVAS_HEIGHT_PIXELS}`]: "B" 
+    };
 
     const response = await request(app)
       .post("/paint")

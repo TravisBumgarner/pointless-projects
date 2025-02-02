@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import { CANVAS_HEIGHT_INDICES, CANVAS_WIDTH_INDICES, MAX_PAINT_POINTS } from "../../../../shared";
+import { CANVAS_HEIGHT_PIXELS, CANVAS_WIDTH_PIXELS, MAX_PAINT_POINTS } from "../../../../shared";
 import { PointMap, SSEMessageType } from "../../../../shared/types";
 import { canvas } from "../../singletons/canvas";
 import { clients } from "../../singletons/clients";
+import log from "../../singletons/log";
 import { queue } from "../../singletons/queue";
 
 const ColorSchema = z.string().regex(/^[A-Za-z0-9]$/);
@@ -21,7 +22,7 @@ const validateOrThrow = (body: unknown) => {
   }
 
   const coords = Object.keys(parsed.points).map(coord => coord.split("_").map(Number));
-  if(coords.some(([x, y]) => x < 0 || x >= CANVAS_WIDTH_INDICES || y < 0 || y >= CANVAS_HEIGHT_INDICES)) {
+  if(coords.some(([x, y]) => x < 0 || x >= CANVAS_WIDTH_PIXELS || y < 0 || y >= CANVAS_HEIGHT_PIXELS)) {
     throw new Error(`Invalid coordinates: ${coords.join(", ")}`);
   }
 
@@ -31,12 +32,14 @@ const validateOrThrow = (body: unknown) => {
 export const paint = (req: Request, res: Response) => {
   try {
     const {points, clientId} = validateOrThrow(req.body);
-    
+
+    console.log('queue.getCurrentClientId()', queue.getCurrentClientId());
     if (queue.getCurrentClientId() !== clientId) {
       res.status(400).json({ error: "You are not the current painter." });
       return;
     }
-
+    
+    log.write(`${clientId}: ${JSON.stringify(points)}`);
     canvas.update(points);
     queue.releaseCurrentClient();
     clients.messageAll({type: SSEMessageType.Paint, points});

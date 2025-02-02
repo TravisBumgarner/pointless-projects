@@ -7,8 +7,6 @@ const Alert = () => {
   const [visibleAlerts, setVisibleAlerts] = useState<{id: number; message: string}[]>([]);
   const nextIdRef = useRef(0);
 
-console.log('alerts', alerts);
-
   useEffect(() => {
     if (alerts.length > 0) {
       const nextAlert = getAndRemoveNextAlert();
