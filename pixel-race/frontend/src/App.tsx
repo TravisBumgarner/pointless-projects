@@ -18,7 +18,6 @@ function App() {
   
   useEffect(() => {
     init().then((response) => {
-      console.log('response', response)
       if ("error" in response) {
         setError(response.error);
       } else {

@@ -5,7 +5,10 @@
   "scripts": {
     "test": "jest --detectOpenHandles --forceExit",
     "test:watch": "jest --watch",
-    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/backend/src/server.js\""
+    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/backend/src/server.js\"",
+    "build": "rm -rf ./build && tsc",
+    "deploy:nfs": "bash deploy.sh",
+    "start:prod": "node build/index.js"
   },
   "dependencies": {
     "@shared": "../shared",

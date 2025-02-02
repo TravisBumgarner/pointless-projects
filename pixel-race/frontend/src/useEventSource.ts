@@ -46,7 +46,7 @@ const useEventSource = () => {
         }
         case SSEMessageType.UserInfo: {
           // addAlert(event.message)
-          console.alert("We should depreciate user info.")
+          alert("We should depreciate user info.") 
           break;
         }
         case SSEMessageType.System: {

@@ -6,7 +6,6 @@
     - [x] Let someone know they're next. 
     - [x] If someone doesn't paint within 5 seconds. 
     - [x] Only one at a time
-- [ ] Shorten JSON payloads
 - [x] Add backend validation
 - [x] Write some API tests
     - [x] Post valid data length
@@ -14,8 +13,10 @@
     - [x] Invalid numbers (maybe move canvas size to shared between fe/be)
     - [x] Invalid chars (move colors to shared?)
 - [x] Figure out billing
+- [ ] Deploy
 - [ ] Rate Limiting
     - [x] Users
+    - [ ] Cloudflare
     - [ ] How often someone can paint. 
     - [ ] How to stop a bot from spinning up a bunch of browsers / scripts?
     - [ ] Repatcha
@@ -25,6 +26,7 @@
     - [ ] Storing Canvas
 
 # Priority
+- [ ] Shorten JSON payloads
 - [x] can't paint bug.
 - [x] Somehow track all painting history
 

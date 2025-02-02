@@ -5,7 +5,8 @@
     "scripts": {
         "dev": "concurrently -n \"Backend,Frontend\" -c \"blue.green\" \"cd backend && yarn run dev\" \"cd frontend && yarn run dev\"",
         "bootstrap": "yarn install && cd backend && yarn install && cd ../frontend && yarn install",
-        "test": "cd backend && yarn test"
+        "test": "cd backend && yarn test",
+        "deploy:nfs": "concurrently -n frontend,backend -c \"bgMagenta.bold,bgCyan.bold\" \"cd frontend && yarn run deploy:nfs\" \"cd backend && yarn run deploy:nfs\""
     },
     "dependencies": {
         "concurrently": "^9.1.2",

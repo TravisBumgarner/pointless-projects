@@ -9,9 +9,9 @@
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
       "strict": true,
-      "outDir": "./dist",
       "rootDir": "../",
-      "baseUrl": "."
+      "baseUrl": ".",
+      "outDir": "build/",
     },
     "include": ["./src/**/*.ts", "../shared/**/*.ts", "./tests/**/*.ts"]
   }

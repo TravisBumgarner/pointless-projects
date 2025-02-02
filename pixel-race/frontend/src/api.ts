@@ -1,14 +1,14 @@
 import { ErrorType, PointMap, QueuePostResponse } from "../../shared";
 import { ErrorResponse, InitResponse, PostPaintResponse } from "../../shared/types/rest";
 
-const API_URL = "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 export const init = async (): Promise<InitResponse | ErrorResponse> => {
     let response
     try {
         response = await fetch(`${API_URL}/init`);
-        
+
         if (response.status === 429) {
             return {
                 error: ErrorType.RateLimitError
@@ -20,8 +20,7 @@ export const init = async (): Promise<InitResponse | ErrorResponse> => {
             canvas: data.canvas as PointMap,    
             queue: data.queue as number
         }
-    } catch (error) {
-        console.error('init error', error)
+    } catch {
         return {
             error: ErrorType.RateLimitError
         }

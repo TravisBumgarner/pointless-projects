@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { PointColor, PointMap } from '../../shared';
-import { ErrorType } from './consts';
+import { ErrorType } from '../../shared';
+import { PointColor, PointMap } from '../../shared/types';
 
 interface EventState {
   queue: number;
