@@ -17,7 +17,7 @@
 - [ ] Rate Limiting
     - [x] Users
     - [ ] Cloudflare
-    - [ ] How often someone can paint. - If IP is already queued, can't queue again.
+    - [ ] ~~How often someone can paint. - If IP is already queued, can't queue again.~~
     - [ ] How to stop a bot from spinning up a bunch of browsers / scripts?
     - [ ] ~~Repatcha~~
 - [x] How much memory are things going to take
