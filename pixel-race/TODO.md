@@ -13,7 +13,7 @@
     - [x] Invalid numbers (maybe move canvas size to shared between fe/be)
     - [x] Invalid chars (move colors to shared?)
 - [x] Figure out billing
-- [ ] Deploy
+- [x] Deploy
 - [ ] Rate Limiting
     - [x] Users
     - [ ] Cloudflare
@@ -26,6 +26,7 @@
     - [ ] Storing Canvas
 
 # Priority
+- [ ] OG tags
 - [ ] Shorten JSON payloads
 - [x] can't paint bug.
 - [x] Somehow track all painting history
