@@ -48,7 +48,8 @@
 - [ ] Polish UI
     - [ ] Let user know they can queue points
 - [ ] Bug
-     - [ ] Rate limit showing up at random times. 
+     - [ ] Rate limit message showing up at random times. 
+- [x] Don't destroy backend on redeploy. 
 
 # Soon
 - [ ] Batch messages to clients
@@ -56,6 +57,5 @@
 
 # Later
 
-- [ ] Don't destroy backend on redeploy. 
 - [ ] Write a player for the data. 
 - [ ] Add the ability for rooms.
