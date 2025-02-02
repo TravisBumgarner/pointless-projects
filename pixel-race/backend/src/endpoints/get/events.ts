@@ -9,7 +9,6 @@ export const events = (req: Request, res: Response) => {
   res.setHeader("Connection", "keep-alive");
 
   res.flushHeaders();
-
   const clientId = clients.addClient(res);
 
   req.on("close", () => {

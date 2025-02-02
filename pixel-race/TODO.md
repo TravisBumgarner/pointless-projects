@@ -17,13 +17,13 @@
 - [ ] Rate Limiting
     - [x] Users
     - [ ] Cloudflare
-    - [ ] How often someone can paint. 
+    - [ ] How often someone can paint. - If IP is already queued, can't queue again.
     - [ ] How to stop a bot from spinning up a bunch of browsers / scripts?
-    - [ ] Repatcha
-- [ ] How much memory are things going to take
-    - [ ] Storing user connections 
-    - [ ] Storing Queue
-    - [ ] Storing Canvas
+    - [ ] ~~Repatcha~~
+- [x] How much memory are things going to take
+    - [x] Storing user connections 
+    - [x] Storing Queue
+    - [x] Storing Canvas
 
 # Priority
 - [ ] OG tags
@@ -40,3 +40,12 @@
     - How to play
     - What's going on
 - [ ] Learn more link
+
+# Soon
+
+- [ ] Analytics (Not Google)
+- [ ] Audit with friend (P)
+
+# Later
+
+- [ ] Write a player for the data. 
