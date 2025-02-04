@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import Alert from "./AlertManager";
 import { init } from "./api";
 import Canvas from "./Canvas";
-import ColorPicker from "./ColorPicker";
 import ErrorHandler from "./ErrorHandler";
 import MoreFromTheCreator from "./MoreFromTheCreator";
 import PaintSidebar from "./PaintSidebar";
@@ -16,6 +15,8 @@ function App() {
   const setPoints = useStore((state) => state.setPoints);
   const setQueue = useStore((state) => state.setQueue);
   const setError = useStore((state) => state.setError);
+  const placeInQueue = useStore((state) => state.placeInQueue);
+  const canPaint = placeInQueue === 0;
   
   useEffect(() => {
     init().then((response) => {
@@ -46,15 +47,13 @@ function App() {
           justifyContent: "center",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", width: "200px" }}>
-          <h1 style={{ textAlign: "center" }}>Colab Canvas</h1>
-          <QueueSidebar />
-          <PaintSidebar />
+        <div style={{ display: "flex", flexDirection: "column", width: "220px", marginRight: '10px' }}>
+          <h1 style={{ textAlign: "center" }}>Paint Together</h1>
+          {canPaint ? <PaintSidebar /> : <QueueSidebar />}
           <MoreFromTheCreator />
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <Canvas />
-          <ColorPicker />
         </div>
       </div>
     </div>

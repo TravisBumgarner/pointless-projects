@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { PAINTING_TIME_MS } from "../../shared";
+import { useMemo } from "react";
 import { postQueue } from "./api";
 import useStore from "./store";
 
@@ -11,53 +10,7 @@ const Queue = () => {
   const placeInQueue = useStore((state) => state.placeInQueue);
   const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
   const setError = useStore((state) => state.setError);
-  const setTempPoints = useStore((state) => state.setTempPoints);
-  const [timeRemaining, setTimeRemaining] = useState(PAINTING_TIME_MS / 1000);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-
-  const reset = useCallback(() => {
-    setTimeRemaining(PAINTING_TIME_MS / 1000);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setPlaceInQueue(null);
-    setTempPoints({});  
-  }, [setPlaceInQueue, setTempPoints]);
-
-  useEffect(() => {
-    // Once the user finishes their turn, their placeInQueue is set to null so we reset.
-    if (placeInQueue === null) {
-      reset();
-    }
-  }, [placeInQueue, reset]);
-
-
-  const startTimer = useCallback(() => {
-    intervalRef.current = setInterval(() => {
-      setTimeRemaining((prev) => {
-        if (prev === 1) {
-          reset();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => {
-      reset();
-    };
-  }, [reset]);
-
-  useEffect(() => {
-    if (placeInQueue === 0) {
-      startTimer();
-    }
-  }, [placeInQueue, startTimer]);
-
-  useEffect(() => {
-    if (placeInQueue === 0 && timeRemaining === 0) {
-      addAlert("Your time has expired, please queue again.");
-      reset();
-    }
-  }, [timeRemaining, placeInQueue, addAlert, reset]);
+  const setShowWelcomeModal = useStore((state) => state.setShowWelcomeModal);
 
   const joinQueue = async () => {
     if (!clientId) {
@@ -82,12 +35,12 @@ const Queue = () => {
 
   const display = useMemo(() => {
     if (placeInQueue === 0) {
-      return `Time Remaining: ${timeRemaining}`;
+      return `Your turn!`;
     }
 
     if (placeInQueue === null) {
       if (queue === 0) {
-        return "No one painting";
+        return "Queue is Empty";
       }
 
       return `Queue: ${queue}`;
@@ -96,14 +49,15 @@ const Queue = () => {
     if (placeInQueue > 0) {
       return `Queue: ${placeInQueue} / ${queue}`;
     }
-  }, [placeInQueue, queue, timeRemaining]);
+  }, [placeInQueue, queue]);
 
   return (
     <div className="border">
-      <p style={{ textAlign: "center" }}>{display}</p>
-      <div>
+      <p style={{ textAlign: "center", marginBottom: '5px' }}>{display}</p>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", gap: '5px' }}>
+        <button onClick={() => setShowWelcomeModal(true)}>How to Play</button>
         <button disabled={placeInQueue !== null} onClick={joinQueue}>
-          Join Queue
+          Queue
         </button>
       </div>
     </div>

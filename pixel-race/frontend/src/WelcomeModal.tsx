@@ -1,11 +1,8 @@
-import { useState } from "react";
+import useStore from "./store";
 
 const WelcomeModal = () => {
-  const [showWelcomeModal, setShowWelcomeModal] = useState(true);
-
-  const closeWelcomeModal = () => {
-    setShowWelcomeModal(false);
-  };
+  const showWelcomeModal = useStore((state) => state.showWelcomeModal);
+  const setShowWelcomeModal = useStore((state) => state.setShowWelcomeModal);
 
   if (!showWelcomeModal) return null;
 
@@ -31,8 +28,15 @@ const WelcomeModal = () => {
       >
         <h1>Welcome!</h1>
         <p>Queue up, wait your turn, draw some pixels, and paint together!</p>
+        <p>Instructions:</p>
+        <ul>
+          <li>Join Queue</li>
+          <li>Wait your turn</li>
+          <li>Select color and draw on canvas</li>
+          <li>Click "Paint" to submit</li>
+        </ul>
 
-        <button onClick={closeWelcomeModal}>Let's Go!</button>
+        <button onClick={() => setShowWelcomeModal(false)}>Let's Go!</button>
       </div>
     </div>
   );

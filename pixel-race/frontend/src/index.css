@@ -1,7 +1,16 @@
+/* Reset CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
 :root {
   --primary-color: #44a2ff;
   --secondary-color: #ff7eea;
   --tertiary-color: #ff87f1;
+  --destructive-color: #ff4444;
   --neutral-light-color: #dfdfdf;
   --neutral-medium-color: #808080;
   --neutral-dark-color: #434343;
@@ -25,9 +34,9 @@ body, html, #root {
 }
 
 .border {
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 10px;
-  margin: 10px;
+  margin: 5px 0;
   background-color: var(--neutral-dark-color);
 }
 
@@ -39,6 +48,10 @@ body {
 
 h1 {
   font-size: 24px;
+}
+
+ul, ol {
+  margin-left: 20px;
 }
 
 button {
@@ -55,10 +68,17 @@ button {
   transition: border-color 0.25s;
   width: 100%;
 
+  &.destructive {
+    border-color: var(--destructive-color);
+    color: var(--destructive-color);
+  }
+
   &:hover{
     border-color: var(--secondary-color);
     color: var(--secondary-color);
   }
+
+
 
   &:disabled {
     color: var(--disabled-color);

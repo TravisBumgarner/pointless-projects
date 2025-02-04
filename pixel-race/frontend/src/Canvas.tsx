@@ -17,6 +17,9 @@ const PaintApp = () => {
   const tempPoints = useStore((state) => state.tempPoints);
   const setTempPoints = useStore((state) => state.setTempPoints);
   const selectedColorKey = useStore((state) => state.selectedColorKey);
+  const placeInQueue = useStore((state) => state.placeInQueue);
+  const canPaint = placeInQueue === 0;
+
 
   // useEffect(() => {
   //   setTimeout(() => {
@@ -70,6 +73,8 @@ const PaintApp = () => {
   }, [tempPoints, points]);
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!canPaint) return
+
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     const rect = canvas?.getBoundingClientRect();
@@ -99,7 +104,7 @@ const PaintApp = () => {
   return (
     <div className="border">
       <canvas
-        style={{ backgroundColor: "#FFFFFF", borderRadius: "10px", display: "block" }}
+        style={{ cursor: canPaint ? "pointer" : "not-allowed", backgroundColor: "#FFFFFF", borderRadius: "5px", display: "block" }}
         ref={canvasRef}
         width={CANVAS_WIDTH_PIXELS}
         height={CANVAS_HEIGHT_PIXELS}

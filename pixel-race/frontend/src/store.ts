@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ErrorType } from '../../shared';
+import { ErrorType, PAINTING_TIME_MS } from '../../shared';
 import { PointColor, PointMap } from '../../shared/types';
 
 interface EventState {
@@ -10,7 +10,9 @@ interface EventState {
   placeInQueue: number | null;
   error: ErrorType | null;
   tempPoints: PointMap;
+  timeRemaining: number;
   selectedColorKey: PointColor;
+  showWelcomeModal: boolean;
 
   getAndRemoveNextAlert: () => string | null;
 
@@ -23,6 +25,9 @@ interface EventState {
   setError: (error: ErrorType) => void;
   setTempPoints: (tempPoints: PointMap) => void;
   setSelectedColorKey: (selectedColorKey: PointColor) => void;
+  resetTimeRemaining: () => void;
+  tickTimeRemaining: () => void;
+  setShowWelcomeModal: (showWelcomeModal: boolean) => void;
 }
 
 const useStore = create<EventState>((set, get) => ({
@@ -34,7 +39,8 @@ const useStore = create<EventState>((set, get) => ({
   error: null,
   tempPoints: {},
   selectedColorKey: "a",
-  
+  timeRemaining: PAINTING_TIME_MS / 1000,
+  showWelcomeModal: true,
   getAndRemoveNextAlert: () => {
     const alerts = get().alerts;
     if (alerts.length === 0) return null;
@@ -55,6 +61,9 @@ const useStore = create<EventState>((set, get) => ({
   setError: (error) => set({ error }),
   setTempPoints: (tempPoints) => set({ tempPoints }),
   setSelectedColorKey: (selectedColorKey) => set({ selectedColorKey }),
+  resetTimeRemaining: () => set({ timeRemaining: PAINTING_TIME_MS / 1000 }),
+  tickTimeRemaining: () => set(state => ({ timeRemaining: state.timeRemaining - 1 })),
+  setShowWelcomeModal: (showWelcomeModal) => set({ showWelcomeModal }),
 }));
 
 export default useStore;

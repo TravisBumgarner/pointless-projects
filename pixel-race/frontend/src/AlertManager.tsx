@@ -32,10 +32,10 @@ const Alert = () => {
         <div
           key={alert.id}
           style={{
-            borderColor: "var(--border-color)",
+            border: "2px solid var(--background-color)",
             textAlign: "center",
-            color: "var(--border-color)",
-            backgroundColor: "var(--neutral-dark-color)",
+            color: "var(--background-color)",
+            backgroundColor: "var(--primary-color)",
             padding: 16,
             borderRadius: 8,
             width: '200px',
