@@ -3,3 +3,4 @@
 *.png
 somehash-venv/
 node_modules/
+build/
