@@ -7,7 +7,7 @@ function App() {
   return (
     <>
     <div
-      style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+      style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", maxWidth: '800px', margin: '0 auto' }}
     >
       {Object.entries(output).map(
         ([file, { hash, aspect_ratio, version }]) => {

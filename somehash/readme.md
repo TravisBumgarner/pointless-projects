@@ -18,5 +18,3 @@ Proof of concept exploring what it would take to recreate https://blurha.sh/ fro
     1. Start server (`yarn start`)
 1. Run Frontend
     1. Navigate to http://localhost:3000/
-
-## React App

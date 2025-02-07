@@ -33,7 +33,7 @@ const Column = ({ color: initialColor }: { color: string }) => {
     }, timeout + 250);
   }, [timeout]);
 
-  return <div style={{ flexGrow: 1, backgroundColor: color }}></div>;
+  return <div style={{ flexGrow: 1, backgroundColor: color, pointerEvents: 'none' }}></div>;
 };
 
 const AnimatedLinesPreview = ({
@@ -56,6 +56,7 @@ const AnimatedLinesPreview = ({
         width: SHARED_WIDTH * aspect_ratio,
         display: "flex",
         flexDirection: "row",
+        pointerEvents: 'none',
       }}
     >
       {COLORS.map((color) => {
