@@ -48,7 +48,7 @@ function App() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", width: "220px", marginRight: '10px' }}>
-          <h1 style={{ textAlign: "center" }}>Paint Together</h1>
+          <h1 style={{ textAlign: "center" }}>Paint Together!</h1>
           {canPaint ? <PaintSidebar /> : <QueueSidebar />}
           <MoreFromTheCreator />
         </div>

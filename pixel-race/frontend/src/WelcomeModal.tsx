@@ -27,14 +27,12 @@ const WelcomeModal = () => {
         }}
       >
         <h1>Welcome!</h1>
-        <p>Queue up, wait your turn, draw some pixels, and paint together!</p>
-        <p>Instructions:</p>
-        <ul>
-          <li>Join Queue</li>
-          <li>Wait your turn</li>
-          <li>Select color and draw on canvas</li>
-          <li>Click "Paint" to submit</li>
-        </ul>
+        <ol>
+          <li>Join Queue.</li>
+          <li>Wait your turn.</li>
+          <li>Select color(s) and draw on canvas.<br/>You have 30 seconds!</li>
+          <li>Click "Paint" to submit.</li>
+        </ol>
 
         <button onClick={() => setShowWelcomeModal(false)}>Let's Go!</button>
       </div>

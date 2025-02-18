@@ -55,10 +55,10 @@ const Queue = () => {
     <div className="border">
       <p style={{ textAlign: "center", marginBottom: '5px' }}>{display}</p>
       <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", gap: '5px' }}>
-        <button onClick={() => setShowWelcomeModal(true)}>How to Play</button>
         <button disabled={placeInQueue !== null} onClick={joinQueue}>
           Queue
         </button>
+        <button onClick={() => setShowWelcomeModal(true)}>How to Play</button>
       </div>
     </div>
   );

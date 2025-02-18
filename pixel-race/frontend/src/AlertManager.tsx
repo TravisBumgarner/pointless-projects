@@ -19,7 +19,7 @@ const Alert = () => {
         
         setTimeout(() => {
           setVisibleAlerts(prev => prev.filter(alert => alert.id !== newAlert.id));
-        }, 5000);
+        }, 5_000);
       }
     }
   }, [alerts, getAndRemoveNextAlert]);
@@ -27,8 +27,8 @@ const Alert = () => {
   if (visibleAlerts.length === 0) return null;
 
   return (
-    <div style={{ position: "fixed", bottom: 16, left: 16, zIndex: 998 }}>
-      {visibleAlerts.map((alert, index) => (
+    <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", display: 'flex', flexDirection: 'column-reverse', alignItems: 'center', zIndex: 998 }}>
+      {visibleAlerts.map((alert) => (
         <div
           key={alert.id}
           style={{
@@ -39,7 +39,7 @@ const Alert = () => {
             padding: 16,
             borderRadius: 8,
             width: '200px',
-            marginTop: index > 0 ? 8 : 0,
+            marginBottom: 8,
           }}
         >
           {alert.message}

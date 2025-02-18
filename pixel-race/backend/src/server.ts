@@ -12,7 +12,9 @@ app.use(cors());
 app.use(express.json());
 app.use(limiter);
 
-app.get('/ok', (_req: Request, res: Response) => res.send('OK'));
+app.get('/ok', (_req: Request, res: Response) => {
+  res.send('OK')
+});
 app.get('/events', endpoints.get.events);
 app.get('/init', endpoints.get.init);
 app.post('/paint', endpoints.post.paint);

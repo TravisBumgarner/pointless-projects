@@ -7,3 +7,4 @@ build/
 .env.production
 .env.development
 backup.json
+venv/

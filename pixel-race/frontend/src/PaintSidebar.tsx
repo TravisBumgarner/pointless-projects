@@ -87,7 +87,6 @@ const PaintSidebar = () => {
     }
   }, [placeInQueue, startTimer]);
 
-  console.log(timeRemaining);
   return (
     <div
       style={{
