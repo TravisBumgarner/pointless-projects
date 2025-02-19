@@ -8,11 +8,13 @@ const URL = `${import.meta.env.VITE_API_BASE_URL}/events`;
 const useEventSource = () => {
   const setClientId = useStore((state) => state.setClientId);
   const setQueue = useStore((state) => state.setQueue);
+  const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
   const setPoints = useStore((state) => state.setPoints);
   const addAlert = useStore((state) => state.addAlert);
   const moveUpInQueue = useStore((state) => state.moveUpInQueue);
   const setError = useStore((state) => state.setError);
   const stateError = useStore((state) => state.error);
+  const setCanPaint = useStore((state) => state.setCanPaint);
 
   useEffect(() => {
     const eventSource = new EventSource(URL);
@@ -26,6 +28,8 @@ const useEventSource = () => {
         }
         case SSEMessageType.YourTurn: {
           addAlert(`You can paint!`);
+          setCanPaint(true);
+          
           break;
         }
         case SSEMessageType.YouAreNext: {
@@ -44,9 +48,10 @@ const useEventSource = () => {
           moveUpInQueue();
           break;
         }
-        case SSEMessageType.UserInfo: {
-          // addAlert(event.message)
-          alert("We should depreciate user info.") 
+        case SSEMessageType.TurnOver: {
+          setCanPaint(false);
+          // There's a race condition with trying to setPlaceInQUeue to null with YourTurn so putting here. 
+          setPlaceInQueue(null);
           break;
         }
         case SSEMessageType.System: {
@@ -81,7 +86,9 @@ const useEventSource = () => {
     addAlert,
     moveUpInQueue,
     setError,
-    stateError
+    stateError,
+    setCanPaint,
+    setPlaceInQueue
   ]);
 };
 

@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { ErrorType, PAINTING_TIME_MS } from '../../shared';
-import { PointColor, PointMap } from '../../shared/types';
+import { create } from "zustand";
+import { ErrorType, PAINTING_TIME_MS } from "../../shared";
+import { PointColor, PointMap } from "../../shared/types";
 
 interface EventState {
   queue: number;
@@ -13,6 +13,7 @@ interface EventState {
   timeRemaining: number;
   selectedColorKey: PointColor;
   showWelcomeModal: boolean;
+  canPaint: boolean;
 
   getAndRemoveNextAlert: () => string | null;
 
@@ -28,6 +29,7 @@ interface EventState {
   resetTimeRemaining: () => void;
   tickTimeRemaining: () => void;
   setShowWelcomeModal: (showWelcomeModal: boolean) => void;
+  setCanPaint: (canPaint: boolean) => void;
 }
 
 const useStore = create<EventState>((set, get) => ({
@@ -39,31 +41,42 @@ const useStore = create<EventState>((set, get) => ({
   error: null,
   tempPoints: {},
   selectedColorKey: "a",
+  canPaint: false,
   timeRemaining: PAINTING_TIME_MS / 1000,
-  showWelcomeModal: true,
+  showWelcomeModal: false,
   getAndRemoveNextAlert: () => {
     const alerts = get().alerts;
     if (alerts.length === 0) return null;
-    
+
     const nextAlert = alerts[0];
     set({ alerts: alerts.slice(1) });
     return nextAlert;
   },
-  
+
   setQueue: (queue: number) => set({ queue }),
-  setPoints: (points: PointMap) => set((state) => ({ 
-    points: { ...state.points, ...points } 
-  })),
+  setPoints: (points: PointMap) =>
+    set((state) => ({
+      points: { ...state.points, ...points },
+    })),
   setClientId: (clientId) => set({ clientId }),
-  addAlert: (alert) => set(state => ({alerts: [...state.alerts, alert]})),
-  setPlaceInQueue: (placeInQueue) => set({ placeInQueue }),
-  moveUpInQueue: () => set(state => ({ placeInQueue: state.placeInQueue ? state.placeInQueue - 1 : null })),
+  addAlert: (alert) => set((state) => ({ alerts: [...state.alerts, alert] })),
+  setPlaceInQueue: (placeInQueue) =>
+    set(() => {
+      console.log("placeInQueue", placeInQueue);
+      return { placeInQueue };
+    }),
+  moveUpInQueue: () =>
+    set((state) => ({
+      placeInQueue: state.placeInQueue ? state.placeInQueue - 1 : null,
+    })),
   setError: (error) => set({ error }),
   setTempPoints: (tempPoints) => set({ tempPoints }),
   setSelectedColorKey: (selectedColorKey) => set({ selectedColorKey }),
   resetTimeRemaining: () => set({ timeRemaining: PAINTING_TIME_MS / 1000 }),
-  tickTimeRemaining: () => set(state => ({ timeRemaining: state.timeRemaining - 1 })),
+  tickTimeRemaining: () =>
+    set((state) => ({ timeRemaining: state.timeRemaining - 1 })),
   setShowWelcomeModal: (showWelcomeModal) => set({ showWelcomeModal }),
+  setCanPaint: (canPaint) => set({ canPaint }),
 }));
 
 export default useStore;

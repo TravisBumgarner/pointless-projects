@@ -10,14 +10,22 @@ export const events = (req: Request, res: Response) => {
 
   res.flushHeaders();
   const clientId = clients.addClient(res);
+  console.log("adding", clientId);
 
   req.on("close", () => {
     const { before, after } = queue.getClientIdsBeforeAndAfter(clientId);
     clients.removeClient(clientId);
-
     queue.remove(clientId);
-    clients.bulkMessage(before, { type: SSEMessageType.Queue, size: queue.size(), shouldAdvanceInQueue: false });
-    clients.bulkMessage(after, { type: SSEMessageType.Queue, size: queue.size(), shouldAdvanceInQueue: true });
+    clients.bulkMessage(before, {
+      type: SSEMessageType.Queue,
+      size: queue.size(),
+      shouldAdvanceInQueue: false,
+    });
+    clients.bulkMessage(after, {
+      type: SSEMessageType.Queue,
+      size: queue.size(),
+      shouldAdvanceInQueue: true,
+    });
   });
 
   clients.messageOne(clientId, { type: SSEMessageType.Auth, clientId });

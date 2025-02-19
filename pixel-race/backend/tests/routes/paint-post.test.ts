@@ -73,7 +73,7 @@ describe("POST /paint", () => {
   it("should not permit painting invalid colors", async () => {
     const clientId = uuidv4();
     queue.add(clientId);
-    queue.processQueue()
+    queue.processQueue(false)
     const points = { "0_0": "AA" };
 
     const response = await request(app)
@@ -87,7 +87,7 @@ describe("POST /paint", () => {
   it("should permit painting valid indices", async () => {
     const clientId = uuidv4();
     queue.add(clientId);
-    queue.processQueue()
+    queue.processQueue(false)
     const points = { 
       "0_0": "A", 
       [`${CANVAS_WIDTH_PIXELS - 1}_${CANVAS_HEIGHT_PIXELS - 1}`]: "B",
@@ -104,7 +104,7 @@ describe("POST /paint", () => {
   it("should not permit painting invalid indices", async () => {
     const clientId = uuidv4();
     queue.add(clientId);
-    queue.processQueue()
+    queue.processQueue(false)
     const points = { 
       [`${CANVAS_WIDTH_PIXELS}_${CANVAS_HEIGHT_PIXELS}`]: "B" 
     };
@@ -120,7 +120,7 @@ describe("POST /paint", () => {
   it("should permit painting if the current client", async () => {
     const clientId = uuidv4();
     queue.add(clientId);
-    queue.processQueue()
+    queue.processQueue(false)
     const points = { "0_0": "A" };
 
     await pause(1000);

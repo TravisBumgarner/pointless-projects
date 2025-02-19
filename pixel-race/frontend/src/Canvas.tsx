@@ -17,8 +17,7 @@ const PaintApp = () => {
   const tempPoints = useStore((state) => state.tempPoints);
   const setTempPoints = useStore((state) => state.setTempPoints);
   const selectedColorKey = useStore((state) => state.selectedColorKey);
-  const placeInQueue = useStore((state) => state.placeInQueue);
-  const canPaint = placeInQueue === 0;
+  const canPaint = useStore((state) => state.canPaint);
 
 
   // useEffect(() => {

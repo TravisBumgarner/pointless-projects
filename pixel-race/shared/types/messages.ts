@@ -7,7 +7,7 @@ export enum SSEMessageType {
   System = "system", // System message
   Auth = "auth", // Client has authenticated with a clientId
   Queue = "queue", // Updates to queue
-  UserInfo = "user_info", // User info message
+  TurnOver = "turn_over", // Current client is done painting
 }
 
 export type PaintMessage = {
@@ -36,11 +36,6 @@ export type SystemMessage = {
   message: ConnectionStatus;
 };
 
-export type UserInfoMessage = {
-  type: SSEMessageType.UserInfo;
-  message: string;
-};
-
 export type YourTurnMessage = {
   type: SSEMessageType.YourTurn;
 };
@@ -49,11 +44,15 @@ export type YouAreNextMessage = {
   type: SSEMessageType.YouAreNext;
 };
 
+export type TurnOverMessage = {
+  type: SSEMessageType.TurnOver;
+};
+
 export type SSEMessage =
   | PaintMessage
   | AuthMessage
   | SystemMessage
   | QueueMessage
-  | UserInfoMessage
   | YourTurnMessage
-  | YouAreNextMessage;
+  | YouAreNextMessage
+  | TurnOverMessage

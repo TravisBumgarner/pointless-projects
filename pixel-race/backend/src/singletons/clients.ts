@@ -2,21 +2,22 @@ import { Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { SSEMessage } from "../../../shared";
 
-interface Client {
-  write: (data: string) => void;
-}
 
 class Clients {
-  private clients: Map<string, Client> = new Map();
+  private clients: Map<string, Response> = new Map();
 
   public addClient(client: Response) {
     const clientId = uuidv4();
-    this.clients.set(clientId, { write: (data: string) => client.write(data) });
+    this.clients.set(clientId, client);
     return clientId;
   }
 
   public removeClient(clientId: string) {
-    this.clients.delete(clientId);
+    const client = this.clients.get(clientId);
+    if (client) {
+      client.end();
+      this.clients.delete(clientId);
+    }
   }
 
   public messageAllExcept(senderIds: string[], message: SSEMessage) {

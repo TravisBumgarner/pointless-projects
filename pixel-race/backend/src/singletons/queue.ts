@@ -4,7 +4,7 @@ import { clients } from './clients';
 class Queue {
     private clientIds: Set<string> = new Set();
     private queue: string[] = [];
-    private currentClientId: string | null = null;
+    public currentClientId: string | null = null;
     private currentClientTimer: NodeJS.Timeout | null = null;
 
     private startPaintingTimer() {
@@ -31,7 +31,7 @@ class Queue {
             this.clientIds.add(clientId);
             this.queue.push(clientId);
         }
-        this.processQueue();
+        this.processQueue(false);
     }
 
     public remove(clientId: string) {
@@ -39,8 +39,7 @@ class Queue {
         this.queue = this.queue.filter(id => id !== clientId);
         if (this.currentClientId === clientId) {
             this.clearPaintingTimer();
-            this.currentClientId = null;
-            this.processQueue();
+            this.processQueue(true);
         }
     }
 
@@ -69,11 +68,16 @@ class Queue {
     
     // Process the queue when a client is added or removed.
     // Called when a client is released from painting or the time limit for painting is reached.
-    public processQueue() {
+    public processQueue(clearCurrentId: boolean) {
+        console.log("Processing queue", this.currentClientId);
+        if(clearCurrentId){
+            this.currentClientId = null;
+        }
+
         if (this.currentClientId) {
             return; // Someone is currently painting
         }
-
+        
         const currentClientId = this.getNextClient();
         if (currentClientId) {
             this.currentClientId = currentClientId;
@@ -103,8 +107,10 @@ class Queue {
     public releaseCurrentClient() {
         if (this.currentClientId) {
             this.clearPaintingTimer();
-            this.currentClientId = null;
-            this.processQueue();
+            clients.messageOne(this.currentClientId, {
+                type: SSEMessageType.TurnOver,
+            })
+            this.processQueue(true);
         }
     }
 

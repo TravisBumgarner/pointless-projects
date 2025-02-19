@@ -9,14 +9,16 @@ import QueueSidebar from "./QueueSidebar";
 import useStore from "./store";
 import useEventSource from "./useEventSource";
 import WelcomeModal from "./WelcomeModal";
+import { useTimer } from "./useTimer";
+
 function App() {
   useEventSource();
-
+  useTimer();
+  
   const setPoints = useStore((state) => state.setPoints);
   const setQueue = useStore((state) => state.setQueue);
   const setError = useStore((state) => state.setError);
-  const placeInQueue = useStore((state) => state.placeInQueue);
-  const canPaint = placeInQueue === 0;
+  const canPaint = useStore((state) => state.canPaint);
   
   useEffect(() => {
     init().then((response) => {
@@ -48,7 +50,7 @@ function App() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", width: "220px", marginRight: '10px' }}>
-          <h1 style={{ textAlign: "center" }}>Paint Together!</h1>
+          <h1>Paint Together!</h1>
           {canPaint ? <PaintSidebar /> : <QueueSidebar />}
           <MoreFromTheCreator />
         </div>
