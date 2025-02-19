@@ -10,7 +10,7 @@ const PaintSidebar = () => {
   const addAlert = useStore((state) => state.addAlert);
   const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
   const setTempPoints = useStore((state) => state.setTempPoints);
-  
+
   const canPaint = useStore((state) => state.canPaint);
   const hasPainted = Object.keys(tempPoints).length > 0;
   const clientId = useStore((state) => state.clientId);
@@ -43,43 +43,41 @@ const PaintSidebar = () => {
         justifyContent: "space-between",
       }}
     >
-      <div className="border">
-        <p style={{ fontSize: "20px" }}>
-          <span style={{ fontWeight: "bold" }}>{pointsLeft}</span> Pixels
-        </p>
-      </div>
-      <div className="border">
-        <p style={{ fontSize: "20px" }}>
-          <span style={{ fontWeight: "bold" }}>{timeRemaining}s</span> Remaining
-        </p>
-      </div>
       <ColorPicker />
       <div
         className="border"
         style={{
-          flexGrow: 1,
-          textAlign: "center",
           display: "flex",
+          gap: "10px",
           flexDirection: "row",
-          justifyContent: "center",
           alignItems: "center",
+          justifyContent: "space-between"
         }}
       >
+        
+        <p style={{ fontSize: "20px", textAlign: "center" }}>
+          <span style={{ fontWeight: "bold" }}>{timeRemaining}</span> seconds left to
+          draw <span style={{ fontWeight: "bold" }}>{pointsLeft}</span> Pixels
+        </p>
+        <div>
         <button
           disabled={!hasPainted}
           onClick={clearTempPoints}
           className="destructive"
+          style={{ width: "90px", marginRight: "10px" }}
         >
           Clear
         </button>
         <button
-          style={{ marginLeft: "5px" }}
+          style={{ width: "90px" }}
           disabled={!canPaint || !hasPainted}
           onClick={handlePaint}
         >
           Submit
         </button>
+        </div>
       </div>
+      
     </div>
   );
 };

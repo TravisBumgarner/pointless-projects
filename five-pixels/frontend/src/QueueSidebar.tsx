@@ -52,14 +52,24 @@ const Queue = () => {
   }, [placeInQueue, queue]);
 
   return (
-    <div className="border">
-      <p style={{ textAlign: "center", marginBottom: '5px' }}>{display}</p>
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", gap: '5px' }}>
-        <button disabled={placeInQueue !== null} onClick={joinQueue}>
-          Queue
-        </button>
-        <button onClick={() => setShowWelcomeModal(true)}>How to Play</button>
-      </div>
+    <div
+      className="border"
+      style={{ display: "flex", flexDirection: "row", alignItems: 'center', width: "100%", gap: '10px'}}
+    >
+      <p style={{ width: '250px', textAlign: "center" }}>{display}</p>
+      <button
+        style={{ flex: "1 1 0" }}
+        disabled={placeInQueue !== null}
+        onClick={joinQueue}
+      >
+        Queue
+      </button>
+      <button
+        style={{ flex: "1 1 0" }}
+        onClick={() => setShowWelcomeModal(true)}
+      >
+        How to Play
+      </button>
     </div>
   );
 };

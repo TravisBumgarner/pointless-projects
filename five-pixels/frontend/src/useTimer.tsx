@@ -13,6 +13,7 @@ export const useTimer = () => {
     const canPaint = useStore((state) => state.canPaint);
 
     useEffect(() => { 
+      console.log(timeRemaining);
       if (timeRemaining <= 3 && timeRemaining > 0){
         playSound("beep");
       } else if (timeRemaining === 0) {
@@ -55,7 +56,7 @@ export const useTimer = () => {
       }, [timeRemaining, addAlert, reset]);
     
       useEffect(() => {
-        if (canPaint!) reset();
+        if (!canPaint) reset();
       }, [canPaint, reset]);
 
       useEffect(() => {

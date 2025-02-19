@@ -19,30 +19,6 @@ const PaintApp = () => {
   const selectedColorKey = useStore((state) => state.selectedColorKey);
   const canPaint = useStore((state) => state.canPaint);
 
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     randomlyFillCanvasPixels();
-  //   }, 1000);
-  // }, []);
-
-  // const randomlyFillCanvasPixels = () => {
-  //   const canvas = canvasRef.current;
-  //   if (!canvas) return;
-    
-  //   const context = canvas.getContext("2d");
-  //   if (!context) return;
-    
-  //   for (let i = 0; i < CANVAS_WIDTH_PIXELS; i += CANVAS_GRID_SIZE) {
-  //     for (let j = 0; j < CANVAS_HEIGHT_PIXELS; j += CANVAS_GRID_SIZE) {
-  //       const randomColorKey = Object.keys(COLOR_MAP)[Math.floor(Math.random() * Object.keys(COLOR_MAP).length)];
-  //       const randomColor = COLOR_MAP[randomColorKey as keyof typeof COLOR_MAP];
-  //       context.fillStyle = randomColor;
-  //       context.fillRect(i, j, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
-  //     }
-  //   }
-  // };
-
   const paintCanvas = (points: PointMap) => {
     const canvas = canvasRef.current;
     const context = canvas!.getContext("2d")!;
@@ -103,7 +79,7 @@ const PaintApp = () => {
   return (
     <div className="border">
       <canvas
-        style={{ cursor: canPaint ? "pointer" : "not-allowed", backgroundColor: "#FFFFFF", borderRadius: "5px", display: "block" }}
+        style={{ width: '100%', aspectRatio: '1/1', cursor: canPaint ? "pointer" : "not-allowed", backgroundColor: "#FFFFFF", borderRadius: "5px", display: "block" }}
         ref={canvasRef}
         width={CANVAS_WIDTH_PIXELS}
         height={CANVAS_HEIGHT_PIXELS}

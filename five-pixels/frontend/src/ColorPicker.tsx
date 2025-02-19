@@ -14,7 +14,7 @@ const ColorPicker = () => {
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
         margin: '0 auto'
@@ -25,7 +25,7 @@ const ColorPicker = () => {
           margin: "5px",
           flexShrink: 0,
           borderRadius: "5px",
-          width: "100%",
+          width: "50px",
           height: "50px",
           backgroundColor: COLOR_MAP[selectedColorKey],
         }}
@@ -39,8 +39,8 @@ const ColorPicker = () => {
               onClick={() => handleColorClick(char as PointColor)}
               style={{
                 borderRadius: "5px",
-                width: "31px",
-                height: "31px",
+                width: "29px",
+                height: "29px",
                 backgroundColor: COLOR_MAP[char as PointColor],
                 cursor: "pointer",
               }}

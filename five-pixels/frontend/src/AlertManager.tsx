@@ -24,10 +24,14 @@ const Alert = () => {
     }
   }, [alerts, getAndRemoveNextAlert]);
 
+  const handleClose = (id: number) => {
+    setVisibleAlerts(prev => prev.filter(alert => alert.id !== id));
+  };
+
   if (visibleAlerts.length === 0) return null;
 
   return (
-    <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", display: 'flex', flexDirection: 'column-reverse', alignItems: 'center', zIndex: 998 }}>
+    <div style={{display: 'flex', flexDirection: 'row', gap: 8, flexWrap: 'wrap'}}>
       {visibleAlerts.map((alert) => (
         <div
           key={alert.id}
@@ -36,13 +40,24 @@ const Alert = () => {
             textAlign: "center",
             color: "var(--background-color)",
             backgroundColor: "var(--primary-color)",
-            padding: 16,
+            padding: '8px 20px',
             borderRadius: 8,
-            width: '200px',
-            marginBottom: 8,
+            position: 'relative',
           }}
         >
           {alert.message}
+          <span
+            onClick={() => handleClose(alert.id)}
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 4,
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            &times;
+          </span>
         </div>
       ))}
     </div>
