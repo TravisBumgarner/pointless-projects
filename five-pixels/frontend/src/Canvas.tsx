@@ -47,25 +47,25 @@ const PaintApp = () => {
     }
   }, [tempPoints, points]);
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canPaint) return
+  const handlePaint = (x: number, y: number) => {
+    if (!canPaint) return;
 
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     const rect = canvas?.getBoundingClientRect();
     if (!rect) return;
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
 
-    const snappedX = Math.floor(x / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
-    const snappedY = Math.floor(y / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
-    const newPoint: PointKey  = `${snappedX}_${snappedY}`;
+    const scaleX = canvas!.width / rect.width;
+    const scaleY = canvas!.height / rect.height;
+
+    const snappedX = Math.floor((x - rect.left) * scaleX / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
+    const snappedY = Math.floor((y - rect.top) * scaleY / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
+    const newPoint: PointKey = `${snappedX}_${snappedY}`;
 
     if (Object.keys(tempPoints).length >= MAX_PAINT_POINTS && !tempPoints[newPoint]) {
       addAlert(`Only ${MAX_PAINT_POINTS} can be plotted.`);
       return;
     }
-
 
     context!.fillStyle = COLOR_MAP[selectedColorKey];
     context!.fillRect(snappedX, snappedY, CANVAS_GRID_SIZE, CANVAS_GRID_SIZE);
@@ -76,6 +76,15 @@ const PaintApp = () => {
     });
   };
 
+  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    handlePaint(event.clientX, event.clientY);
+  };
+
+  const handleTouchStart = (event: React.TouchEvent<HTMLCanvasElement>) => {
+    const touch = event.touches[0];
+    handlePaint(touch.clientX, touch.clientY);
+  };
+
   return (
     <div className="border">
       <canvas
@@ -84,6 +93,7 @@ const PaintApp = () => {
         width={CANVAS_WIDTH_PIXELS}
         height={CANVAS_HEIGHT_PIXELS}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
       ></canvas>
     </div>
   );

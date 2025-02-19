@@ -3,7 +3,7 @@ const MoreFromTheCreator = () => {
     <div
       style={{
         width: "100%",
-        marginBottom: '10px',
+        marginBottom: '5px',
         display: "flex",
         alignItems: "center",
         flexDirection: "row",

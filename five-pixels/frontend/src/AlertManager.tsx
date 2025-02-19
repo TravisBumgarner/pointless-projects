@@ -40,7 +40,7 @@ const Alert = () => {
             textAlign: "center",
             color: "var(--background-color)",
             backgroundColor: "var(--primary-color)",
-            padding: '8px 20px',
+            padding: '4px 16px 4px 8px',
             borderRadius: 8,
             position: 'relative',
           }}
@@ -50,7 +50,7 @@ const Alert = () => {
             onClick={() => handleClose(alert.id)}
             style={{
               position: 'absolute',
-              top: 0,
+              top: 4,
               right: 4,
               cursor: 'pointer',
               fontWeight: 'bold'

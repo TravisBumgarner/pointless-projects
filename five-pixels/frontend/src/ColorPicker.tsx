@@ -39,8 +39,8 @@ const ColorPicker = () => {
               onClick={() => handleColorClick(char as PointColor)}
               style={{
                 borderRadius: "5px",
-                width: "29px",
-                height: "29px",
+                width: "28px",
+                height: "28px",
                 backgroundColor: COLOR_MAP[char as PointColor],
                 cursor: "pointer",
               }}

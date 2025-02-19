@@ -51,33 +51,32 @@ const PaintSidebar = () => {
           gap: "10px",
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
         }}
       >
-        
-        <p style={{ fontSize: "20px", textAlign: "center" }}>
-          <span style={{ fontWeight: "bold" }}>{timeRemaining}</span> seconds left to
-          draw <span style={{ fontWeight: "bold" }}>{pointsLeft}</span> Pixels
+        <p style={{ flexGrow: 1, fontSize: "16px", textAlign: "center" }}>
+          <span style={{ fontWeight: "bold" }}>{timeRemaining}</span> seconds
+          left to draw <span style={{ fontWeight: "bold" }}>{pointsLeft}</span>{" "}
+          Pixels
         </p>
-        <div>
-        <button
-          disabled={!hasPainted}
-          onClick={clearTempPoints}
-          className="destructive"
-          style={{ width: "90px", marginRight: "10px" }}
-        >
-          Clear
-        </button>
-        <button
-          style={{ width: "90px" }}
-          disabled={!canPaint || !hasPainted}
-          onClick={handlePaint}
-        >
-          Submit
-        </button>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <button
+            disabled={!hasPainted}
+            onClick={clearTempPoints}
+            className="destructive"
+            style={{ width: "90px", marginRight: "10px" }}
+          >
+            Clear
+          </button>
+          <button
+            style={{ width: "90px" }}
+            disabled={!canPaint || !hasPainted}
+            onClick={handlePaint}
+          >
+            Submit
+          </button>
         </div>
       </div>
-      
     </div>
   );
 };
