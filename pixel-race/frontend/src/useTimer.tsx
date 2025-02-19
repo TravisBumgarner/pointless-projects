@@ -10,7 +10,6 @@ export const useTimer = () => {
     const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
     const setTempPoints = useStore((state) => state.setTempPoints);
     const canPaint = useStore((state) => state.canPaint);
-    const setCanPaint = useStore((state) => state.setCanPaint);
 
     const startTimer = useCallback(() => {
         if (intervalRef.current) {

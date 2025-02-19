@@ -1,3 +1,4 @@
+import { PAINTING_TIME_MS } from "../../shared";
 import useStore from "./store";
 
 const WelcomeModal = () => {
@@ -30,7 +31,7 @@ const WelcomeModal = () => {
         <ol>
           <li>Join Queue.</li>
           <li>Wait your turn.</li>
-          <li>Select color(s) and draw on canvas.<br/>You have 30 seconds!</li>
+          <li>Select color(s) and draw on canvas.<br/>You have {Math.round(PAINTING_TIME_MS / 1000)} seconds!</li>
           <li>Click "Paint" to submit.</li>
         </ol>
 
