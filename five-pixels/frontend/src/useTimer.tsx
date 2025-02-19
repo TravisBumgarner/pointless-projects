@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import useStore from "./store";
+import { playSound } from "./utilities";
 
 export const useTimer = () => {
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -10,6 +11,14 @@ export const useTimer = () => {
     const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
     const setTempPoints = useStore((state) => state.setTempPoints);
     const canPaint = useStore((state) => state.canPaint);
+
+    useEffect(() => { 
+      if (timeRemaining <= 3 && timeRemaining > 0){
+        playSound("beep");
+      } else if (timeRemaining === 0) {
+        playSound("gameOver"); 
+      }
+    }, [timeRemaining]);
 
     const startTimer = useCallback(() => {
         if (intervalRef.current) {
@@ -41,6 +50,7 @@ export const useTimer = () => {
         if (timeRemaining === 0) {
             // Only alert here. Everything else in next useEffect.
             addAlert("Your time has expired.");
+            reset();
         }
       }, [timeRemaining, addAlert, reset]);
     

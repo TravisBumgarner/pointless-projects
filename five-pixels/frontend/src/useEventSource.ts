@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { ErrorType } from "../../shared";
 import { SSEMessage, SSEMessageType } from "../../shared/types";
 import useStore from "./store";
+import { playSound } from "./utilities";
 
 const URL = `${import.meta.env.VITE_API_BASE_URL}/events`;
 
@@ -28,12 +29,14 @@ const useEventSource = () => {
         }
         case SSEMessageType.YourTurn: {
           addAlert(`You can paint!`);
+          playSound('beep')
           setCanPaint(true);
           
           break;
         }
         case SSEMessageType.YouAreNext: {
           addAlert("You're up next!")
+          playSound('beep')
           break;
         }
         case SSEMessageType.Queue: {
