@@ -4,6 +4,7 @@ const MoreFromTheCreator = () => {
       style={{
         width: "100%",
         marginBottom: '5px',
+        padding: '0 5px',
         display: "flex",
         alignItems: "center",
         flexDirection: "row",
