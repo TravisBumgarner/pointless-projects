@@ -29,14 +29,15 @@ const useEventSource = () => {
         }
         case SSEMessageType.YourTurn: {
           addAlert(`You can paint!`);
-          playSound('beep')
+          playSound("beep");
           setCanPaint(true);
-          
+          document.title = "You can paint!";
           break;
         }
         case SSEMessageType.YouAreNext: {
-          addAlert("You're up next!")
-          playSound('beep')
+          addAlert("You're up next!");
+          playSound("beep");
+          document.title = "You're up next!";
           break;
         }
         case SSEMessageType.Queue: {
@@ -53,7 +54,8 @@ const useEventSource = () => {
         }
         case SSEMessageType.TurnOver: {
           setCanPaint(false);
-          // There's a race condition with trying to setPlaceInQUeue to null with YourTurn so putting here. 
+          document.title = "Five Pixels"
+          // There's a race condition with trying to setPlaceInQUeue to null with YourTurn so putting here.
           setPlaceInQueue(null);
           break;
         }
@@ -91,7 +93,7 @@ const useEventSource = () => {
     setError,
     stateError,
     setCanPaint,
-    setPlaceInQueue
+    setPlaceInQueue,
   ]);
 };
 
