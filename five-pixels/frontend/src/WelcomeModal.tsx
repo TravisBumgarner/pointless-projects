@@ -27,11 +27,13 @@ const WelcomeModal = () => {
             maxWidth: '500px'
         }}
       >
-        <h1>Welcome!</h1>
-        <ol>
-          <li>Join Queue.</li>
-          <li>Wait your turn.</li>
-          <li>Select color(s) and draw on canvas.<br/>You have {Math.round(PAINTING_TIME_MS / 1000)} seconds!</li>
+        <h1>How To:</h1>
+        <ol style={{margin: '15px 0'}}>
+          <li>Click "Queue".</li>
+          <li>Wait Your Turn.</li>
+          <li>Select Colors.</li>
+          <li>Paint On Canvas.</li>
+          <li>You have {Math.round(PAINTING_TIME_MS / 1000)} seconds!</li>
           <li>Click "Paint" to submit.</li>
         </ol>
 

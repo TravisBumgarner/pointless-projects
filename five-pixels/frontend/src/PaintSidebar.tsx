@@ -45,12 +45,12 @@ const PaintSidebar = () => {
     >
       <div className="border">
         <p style={{ fontSize: "20px" }}>
-          <span style={{ fontWeight: "bold" }}>{pointsLeft}</span> Pixels Left
+          <span style={{ fontWeight: "bold" }}>{pointsLeft}</span> Pixels
         </p>
       </div>
       <div className="border">
         <p style={{ fontSize: "20px" }}>
-          <span style={{ fontWeight: "bold" }}>{timeRemaining}s</span> To Go
+          <span style={{ fontWeight: "bold" }}>{timeRemaining}s</span> Remaining
         </p>
       </div>
       <ColorPicker />

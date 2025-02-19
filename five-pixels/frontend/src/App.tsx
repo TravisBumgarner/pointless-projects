@@ -49,7 +49,7 @@ function App() {
           justifyContent: "center",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", width: "220px", marginRight: '10px' }}>
+        <div style={{ textAlign: 'center', display: "flex", flexDirection: "column", width: "220px", marginRight: '10px' }}>
           <h1>Five Pixels!</h1>
           {canPaint ? <PaintSidebar /> : <QueueSidebar />}
           <MoreFromTheCreator />
