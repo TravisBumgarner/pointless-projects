@@ -50,7 +50,7 @@ function App() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", width: "220px", marginRight: '10px' }}>
-          <h1>Paint Together!</h1>
+          <h1>Five Pixels!</h1>
           {canPaint ? <PaintSidebar /> : <QueueSidebar />}
           <MoreFromTheCreator />
         </div>
