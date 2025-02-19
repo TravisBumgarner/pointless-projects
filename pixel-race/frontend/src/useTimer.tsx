@@ -32,7 +32,6 @@ export const useTimer = () => {
     
       useEffect(() => {
         return () => {
-          console.log('cleanup');
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
           }
@@ -51,7 +50,6 @@ export const useTimer = () => {
       }, [canPaint, reset]);
 
       useEffect(() => {
-        console.log('can paint??', canPaint)
         if (canPaint) {
           const cleanup = startTimer();
           return cleanup;

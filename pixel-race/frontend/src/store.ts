@@ -62,7 +62,6 @@ const useStore = create<EventState>((set, get) => ({
   addAlert: (alert) => set((state) => ({ alerts: [...state.alerts, alert] })),
   setPlaceInQueue: (placeInQueue) =>
     set(() => {
-      console.log("placeInQueue", placeInQueue);
       return { placeInQueue };
     }),
   moveUpInQueue: () =>

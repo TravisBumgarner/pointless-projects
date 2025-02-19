@@ -29,7 +29,6 @@ const Queue = () => {
         addAlert("You have joined the queue.");
       }
       setQueue(response.queueSize);
-      console.log('setting size')
       setPlaceInQueue(response.queueSize);
     }
   };

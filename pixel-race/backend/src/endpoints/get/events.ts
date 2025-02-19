@@ -10,7 +10,6 @@ export const events = (req: Request, res: Response) => {
 
   res.flushHeaders();
   const clientId = clients.addClient(res);
-  console.log("adding", clientId);
 
   req.on("close", () => {
     const { before, after } = queue.getClientIdsBeforeAndAfter(clientId);

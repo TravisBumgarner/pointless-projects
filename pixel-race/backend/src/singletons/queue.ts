@@ -69,7 +69,6 @@ class Queue {
     // Process the queue when a client is added or removed.
     // Called when a client is released from painting or the time limit for painting is reached.
     public processQueue(clearCurrentId: boolean) {
-        console.log("Processing queue", this.currentClientId);
         if(clearCurrentId){
             this.currentClientId = null;
         }
