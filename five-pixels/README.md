@@ -1,4 +1,6 @@
-# Server Setup
+# About
+
+Multiplayer canvas where people queue up to paint, one at a time.
 
 ## Break Glass
 
