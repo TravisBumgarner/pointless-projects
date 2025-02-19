@@ -38,6 +38,7 @@ a {
   text-align: center;
   color: white;
   text-decoration: none;
+  display: block;
 }
 
 .border {

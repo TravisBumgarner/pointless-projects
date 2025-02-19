@@ -35,8 +35,8 @@ function App() {
     <div
       style={{
         margin: '20px auto 0',
-
         width: "510px",
+        maxWidth: "100vw",
       }}
     >
       <Header />

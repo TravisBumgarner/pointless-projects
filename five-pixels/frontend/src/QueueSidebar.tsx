@@ -56,16 +56,16 @@ const Queue = () => {
       className="border"
       style={{ display: "flex", flexDirection: "row", alignItems: 'center', width: "100%", gap: '10px'}}
     >
-      <p style={{ width: '250px', textAlign: "center" }}>{display}</p>
+      <p style={{ flexGrow: 1, textAlign: "center" }}>{display}</p>
       <button
-        style={{ flex: "1 1 0" }}
+        style={{ width: '75px'}}
         disabled={placeInQueue !== null}
         onClick={joinQueue}
       >
         Queue
       </button>
       <button
-        style={{ flex: "1 1 0" }}
+        style={{width: '125px'}}
         onClick={() => setShowWelcomeModal(true)}
       >
         How to Play

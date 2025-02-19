@@ -11,7 +11,7 @@ const MoreFromTheCreator = () => {
       }}
     >
       <h1>Five Pixels</h1>
-      <div>
+      <div style={{display: 'flex', flexDirection: 'row'}}>
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -20,7 +20,7 @@ const MoreFromTheCreator = () => {
           }}
           href="https://travisbumgarner.dev"
         >
-          More from the Creator
+          Creator Info
         </a>
         <a
           target="_blank"
