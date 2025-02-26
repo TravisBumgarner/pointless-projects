@@ -4,16 +4,17 @@ import { init } from "./api";
 import Canvas from "./Canvas";
 import ErrorHandler from "./ErrorHandler";
 import Header from "./Header";
+import { useTabManager } from "./hooks/useTabManager";
 import PaintSidebar from "./PaintSidebar";
 import QueueSidebar from "./QueueSidebar";
 import useStore from "./store";
 import useEventSource from "./useEventSource";
-import WelcomeModal from "./WelcomeModal";
 import { useTimer } from "./useTimer";
-
+import WelcomeModal from "./WelcomeModal";
 function App() {
   useEventSource();
   useTimer();
+  useTabManager();
 
   const setPoints = useStore((state) => state.setPoints);
   const setQueue = useStore((state) => state.setQueue);
@@ -34,7 +35,7 @@ function App() {
   return (
     <div
       style={{
-        margin: '5px auto 0',
+        margin: "5px auto 0",
         width: "510px",
         maxWidth: "100vw",
       }}
