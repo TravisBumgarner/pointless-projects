@@ -10,6 +10,13 @@ const ErrorHandler = () => {
 
   const message = useMemo(() => {
     switch (error) {
+      case ErrorType.OneTabError:
+        return (
+          <p>
+            Only one tab is allowed to be open at a time. Please close all other
+            and refresh.
+          </p>
+        );
       case ErrorType.ConnectionError:
         return <p>Connection to server lost, refresh page.</p>;
       case ErrorType.RateLimitError:
@@ -47,7 +54,7 @@ const ErrorHandler = () => {
     >
       <div style={{ maxWidth: "500px" }}>
         <p>{message}</p>
-       {action}
+        {action}
       </div>
     </div>
   );

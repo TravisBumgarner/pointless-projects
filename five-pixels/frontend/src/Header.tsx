@@ -3,8 +3,8 @@ const MoreFromTheCreator = () => {
     <div
       style={{
         width: "100%",
-        marginBottom: '5px',
-        padding: '0 5px',
+        marginBottom: "5px",
+        padding: "0 5px",
         display: "flex",
         alignItems: "center",
         flexDirection: "row",
@@ -12,7 +12,7 @@ const MoreFromTheCreator = () => {
       }}
     >
       <h1>Five Pixels</h1>
-      <div style={{display: 'flex', flexDirection: 'row'}}>
+      <div style={{ display: "flex", flexDirection: "row" }}>
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -26,7 +26,7 @@ const MoreFromTheCreator = () => {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://github.com/TravisBumgarner/pointless-projects/tree/main/pixel-race"
+          href="https://github.com/TravisBumgarner/pointless-projects/tree/main/five-pixels"
         >
           Github
         </a>
