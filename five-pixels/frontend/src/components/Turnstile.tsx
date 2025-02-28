@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import useTurnstile from "../hooks/useTurnstile";
 
 interface TurnstileProps {
   siteKey: string;
@@ -6,23 +6,7 @@ interface TurnstileProps {
 }
 
 const Turnstile = ({ siteKey, onVerify }: TurnstileProps) => {
-  const divRef = useRef<HTMLDivElement>(null);
-  const widgetId = useRef<number>();
-
-  useEffect(() => {
-    if (!window.turnstile || !divRef.current) return;
-
-    widgetId.current = window.turnstile.render(divRef.current, {
-      sitekey: siteKey,
-      callback: onVerify,
-    });
-
-    return () => {
-      if (widgetId.current) {
-        window.turnstile.remove(widgetId.current);
-      }
-    };
-  }, [siteKey, onVerify]);
+  const divRef = useTurnstile({ siteKey, onVerify });
 
   return <div ref={divRef} />;
 };

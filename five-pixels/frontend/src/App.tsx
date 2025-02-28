@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import Alert from "./AlertManager";
 import { init } from "./api";
 import Canvas from "./Canvas";
-import LoginForm from "./components/LoginForm";
 import ErrorHandler from "./ErrorHandler";
 import Header from "./Header";
 import { useTabManager } from "./hooks/useTabManager";
@@ -42,7 +41,6 @@ function App() {
         maxWidth: "100vw",
       }}
     >
-      <LoginForm />
       <Header />
       <WelcomeModal />
       <ErrorHandler />

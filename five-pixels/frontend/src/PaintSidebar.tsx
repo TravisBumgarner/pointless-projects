@@ -1,6 +1,8 @@
+import { useState, useCallback } from "react";
 import { MAX_PAINT_POINTS } from "../../shared";
 import { postPaint } from "./api";
 import ColorPicker from "./ColorPicker";
+import useTurnstile from "./hooks/useTurnstile";
 import useStore from "./store";
 
 const PaintSidebar = () => {
@@ -15,6 +17,16 @@ const PaintSidebar = () => {
   const hasPainted = Object.keys(tempPoints).length > 0;
   const clientId = useStore((state) => state.clientId);
   const setError = useStore((state) => state.setError);
+  const [token, setToken] = useState("");
+
+  const handleVerify = useCallback((token: string) => {
+    console.log("Verification token received:", token);
+    setToken(token);
+  }, []);
+
+  const turnstileRef = useTurnstile({
+    onVerify: handleVerify,
+  });
 
   const clearTempPoints = () => {
     setTempPoints({});
@@ -26,7 +38,7 @@ const PaintSidebar = () => {
       return;
     }
 
-    const response = await postPaint(tempPoints, clientId);
+    const response = await postPaint(token, tempPoints, clientId);
     if ("error" in response) {
       setError(response.error);
     } else {
@@ -43,6 +55,7 @@ const PaintSidebar = () => {
         justifyContent: "space-between",
       }}
     >
+      <div ref={turnstileRef} style={{ height: "100px" }} />
       <ColorPicker />
       <div
         className="border"

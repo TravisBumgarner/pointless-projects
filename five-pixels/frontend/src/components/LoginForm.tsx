@@ -1,27 +1,20 @@
-import Turnstile from "./Turnstile";
+import { useTurnstile } from "../hooks/useTurnstile";
+import useStore from "../store";
 
-const LoginForm = () => {
-  const handleVerify = async (token: string) => {
-    // Send token to your backend for verification
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/verify`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      }
-    );
+export default function LoginForm() {
+  const setError = useStore((state) => state.setError);
+  const setPoints = useStore((state) => state.setPoints);
+  const setQueue = useStore((state) => state.setQueue);
 
-    if (response.ok) {
-      // Continue with form submission
+  const onVerify = async (token: string) => {
+    const response = await init(token);
+    if ("error" in response) {
+      setError(response.error);
+    } else {
+      setPoints(response.canvas);
+      setQueue(response.queue);
     }
   };
 
-  return (
-    <form>
-      <Turnstile siteKey="0x4AAAAAAA-7n5-_4jek6S7A" onVerify={handleVerify} />
-    </form>
-  );
-};
-
-export default LoginForm;
+  return <div id="turnstile" ref={useTurnstile(onVerify)} />;
+} 
