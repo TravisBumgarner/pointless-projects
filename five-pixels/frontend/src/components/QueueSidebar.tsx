@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { postQueue } from "../api";
 import useStore from "../store";
 import Turnstile from "./Turnstile";
@@ -13,8 +13,10 @@ const Queue = () => {
   const setError = useStore((state) => state.setError);
   const setShowWelcomeModal = useStore((state) => state.setShowWelcomeModal);
   const [token, setToken] = useState<string | null>(null);
-  console.log("token", token);
-  const joinQueue = async () => {
+  const [shouldTriggerTurnstile, setShouldTriggerTurnstile] = useState(false);
+
+  const joinQueue = useCallback(async () => {
+    setShouldTriggerTurnstile(false);
     if (!clientId) {
       addAlert("Something went wrong. Please refresh the page.");
       return;
@@ -39,7 +41,13 @@ const Queue = () => {
       setQueue(response.queueSize);
       setPlaceInQueue(response.queueSize);
     }
-  };
+  }, [addAlert, clientId, setError, setQueue, setPlaceInQueue, token]);
+
+  useEffect(() => {
+    if (token) {
+      joinQueue();
+    }
+  }, [token, joinQueue]);
 
   const display = useMemo(() => {
     if (placeInQueue === 0) {
@@ -58,8 +66,7 @@ const Queue = () => {
       return `Queue: ${placeInQueue} / ${queue}`;
     }
   }, [placeInQueue, queue]);
-  console.log("placeInQueue", placeInQueue);
-  console.log("token", token);
+
   return (
     <div
       className="border"
@@ -71,14 +78,14 @@ const Queue = () => {
         gap: "10px",
       }}
     >
-      <Turnstile setToken={setToken} />
+      {shouldTriggerTurnstile && <Turnstile setToken={setToken} />}
       <p style={{ flexGrow: 1, textAlign: "center" }}>{display}</p>
       <button
         style={{ width: "100px" }}
-        disabled={placeInQueue !== null || !token}
-        onClick={joinQueue}
+        disabled={placeInQueue !== null || !!token || shouldTriggerTurnstile}
+        onClick={() => setShouldTriggerTurnstile(true)}
       >
-        {!token ? "Authing..." : "Queue"}
+        Queue
       </button>
       <button
         style={{ width: "125px" }}

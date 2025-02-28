@@ -25,7 +25,7 @@ export const init = async (): Promise<InitResponse | ErrorResponse> => {
     };
   } catch {
     return {
-      error: ErrorType.RateLimitError,
+      error: ErrorType.UnknownError,
     };
   }
 };

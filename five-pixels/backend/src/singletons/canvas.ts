@@ -1,6 +1,7 @@
 import fs from "fs";
-import { PointMap } from "../../../shared";
 import path from "path";
+import { PointMap } from "../../../shared";
+import config from "./config";
 export class Canvas {
   data: Record<string, string> = {};
 
@@ -10,16 +11,16 @@ export class Canvas {
 
   private backup() {
     const backup = JSON.stringify(this.data);
-    fs.writeFileSync("./backup.json", backup);
+    fs.writeFileSync(config.backupPath, backup);
   }
 
   private restore() {
-    if (!fs.existsSync("./backup.json")) return;
+    if (!fs.existsSync(config.backupPath)) return;
     console.log(
       "Restoring canvas from abs path:",
-      path.resolve("./backup.json")
+      path.resolve(config.backupPath)
     );
-    const backup = fs.readFileSync("./backup.json", "utf8");
+    const backup = fs.readFileSync(config.backupPath, "utf8");
     this.data = JSON.parse(backup);
   }
 

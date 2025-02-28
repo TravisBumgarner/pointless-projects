@@ -69,7 +69,7 @@ const PaintSidebar = () => {
         </p>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <button
-            disabled={!hasPainted || token === null}
+            disabled={!hasPainted}
             onClick={clearTempPoints}
             className="destructive"
             style={{ width: "90px", marginRight: "10px" }}

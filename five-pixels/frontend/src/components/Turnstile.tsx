@@ -1,24 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 
 const useTurnstile = ({
-  setToken,
+  callback,
 }: {
-  setToken: (token: string | null) => void;
+  callback: (token: string | null) => void;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
+    const intervalId = setInterval(() => {
+      // There appears to be a race condition where the turnstile script is not
+      // available immediately, so we need to check if it's available before
+      // rendering the widget.
+      if (ref.current && window.turnstile) {
+        const widgetId = window.turnstile.render(ref.current, {
+          sitekey: "0x4AAAAAAA-7n5-_4jek6S7A",
+          callback,
+        });
+        clearInterval(intervalId); // Stop checking once it's available
 
-    const widgetId = window.turnstile.render(ref.current, {
-      sitekey: "0x4AAAAAAA-7n5-_4jek6S7A",
-      callback: setToken,
-    });
+        return () => {
+          window.turnstile.remove(widgetId);
+        };
+      } else {
+        console.log("Turnstile unavailable, trying again...");
+      }
+    }, 1000); // Check every second
 
-    return () => {
-      window.turnstile.remove(widgetId);
-    };
-  }, [setToken]);
+    return () => clearInterval(intervalId); // Clean up on unmount
+  }, [callback]);
 
   return ref;
 };
@@ -28,14 +38,20 @@ const Turnstile = ({
 }: {
   setToken: (token: string | null) => void;
 }) => {
-  const turnstileRef = useTurnstile({ setToken });
   const [visible, setVisible] = useState(true);
 
-  useEffect(() => {
+  const triggerHide = () => {
     setTimeout(() => {
-      setVisible(true);
+      setVisible(false);
     }, 1000);
-  }, []);
+  };
+
+  const callback = (token: string | null) => {
+    setToken(token);
+    triggerHide();
+  };
+
+  const turnstileRef = useTurnstile({ callback });
 
   if (!visible) return null;
 

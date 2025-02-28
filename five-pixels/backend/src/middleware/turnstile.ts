@@ -18,6 +18,7 @@ const verifyTurnstileMiddleware = async (
   try {
     const isValid = await verifyTurnstileToken(token);
     if (!isValid) {
+      console.log("Invalid turnstile token", token);
       return res.status(400).json({ error: "No thanks" });
     }
     next();
