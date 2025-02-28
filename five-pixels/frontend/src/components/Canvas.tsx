@@ -66,6 +66,19 @@ const PaintApp = () => {
       CANVAS_GRID_SIZE;
     const newPoint: PointKey = `${snappedX}_${snappedY}`;
 
+    if (tempPoints[newPoint]) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [newPoint]: _, ...remainingPoints } = tempPoints;
+      setTempPoints(remainingPoints);
+      context!.clearRect(
+        snappedX,
+        snappedY,
+        CANVAS_GRID_SIZE,
+        CANVAS_GRID_SIZE
+      );
+      return;
+    }
+
     if (
       Object.keys(tempPoints).length >= MAX_PAINT_POINTS &&
       !tempPoints[newPoint]

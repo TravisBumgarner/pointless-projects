@@ -9,18 +9,19 @@ import { limiter, requestCounter } from "./singletons/rateLimit";
 const app = express();
 const port = 8000;
 
-app.set("trust proxy", true);
 app.use(express.json());
-app.use(limiter);
-app.use(requestCounter);
 app.use(cors());
-app.use(verifyTurnstileMiddleware);
 
 app.get("/ok", (_req: Request, res: Response) => {
   res.send("OK");
 });
 app.get("/events", endpoints.get.events);
 app.get("/init", endpoints.get.init);
+
+// Rate limiting below.
+app.use(limiter);
+app.use(requestCounter);
+app.use(verifyTurnstileMiddleware);
 app.post("/paint", endpoints.post.paint);
 app.post("/queue", endpoints.post.queue);
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const useTurnstile = ({
   callback,
@@ -38,28 +38,13 @@ const Turnstile = ({
 }: {
   setToken: (token: string | null) => void;
 }) => {
-  const [visible, setVisible] = useState(true);
-
-  const triggerHide = () => {
-    setTimeout(() => {
-      setVisible(false);
-    }, 1000);
-  };
-
-  const callback = (token: string | null) => {
-    setToken(token);
-    triggerHide();
-  };
-
-  const turnstileRef = useTurnstile({ callback });
-
-  if (!visible) return null;
+  const turnstileRef = useTurnstile({ callback: setToken });
 
   return (
     <div
       style={{
         position: "fixed",
-        bottom: 10,
+        top: 10,
         right: 10,
       }}
       ref={turnstileRef}
