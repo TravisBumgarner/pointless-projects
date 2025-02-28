@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { MAX_PAINT_POINTS } from "../../shared";
 import { postPaint } from "./api";
 import ColorPicker from "./ColorPicker";
-import Turnstile from "./components/Turnstile";
 import useStore from "./store";
 
 const PaintSidebar = () => {
@@ -17,7 +15,7 @@ const PaintSidebar = () => {
   const hasPainted = Object.keys(tempPoints).length > 0;
   const clientId = useStore((state) => state.clientId);
   const setError = useStore((state) => state.setError);
-  const [token, setToken] = useState("");
+  const token = useStore((state) => state.turnstileToken);
 
   const clearTempPoints = () => {
     setTempPoints({});
@@ -26,6 +24,11 @@ const PaintSidebar = () => {
   const handlePaint = async () => {
     if (!clientId) {
       addAlert("You are not logged in, try refreshing the page.");
+      return;
+    }
+
+    if (!token) {
+      addAlert("Something went wrong, please refresh the page.");
       return;
     }
 
@@ -46,7 +49,6 @@ const PaintSidebar = () => {
         justifyContent: "space-between",
       }}
     >
-      <Turnstile onVerify={setToken} />
       <ColorPicker />
       <div
         className="border"
@@ -65,7 +67,7 @@ const PaintSidebar = () => {
         </p>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <button
-            disabled={!hasPainted || token === ""}
+            disabled={!hasPainted || token === null}
             onClick={clearTempPoints}
             className="destructive"
             style={{ width: "90px", marginRight: "10px" }}

@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import useStore from "../store";
 
-interface TurnstileProps {
-  onVerify: (token: string) => void;
-}
-
-const useTurnstile = ({ onVerify }: { onVerify: (token: string) => void }) => {
+const useTurnstile = () => {
+  const setTurnstileToken = useStore((state) => state.setTurnstileToken);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -12,35 +10,21 @@ const useTurnstile = ({ onVerify }: { onVerify: (token: string) => void }) => {
 
     const widgetId = window.turnstile.render(ref.current, {
       sitekey: "0x4AAAAAAA-7n5-_4jek6S7A",
-      callback: onVerify,
+      callback: setTurnstileToken,
     });
 
     return () => {
       window.turnstile.remove(widgetId);
     };
-  }, [onVerify]);
+  }, [setTurnstileToken]);
 
   return ref;
 };
 
-const Turnstile = ({ onVerify }: TurnstileProps) => {
-  const handleVerify = useCallback(
-    (token: string) => {
-      onVerify(token);
-    },
-    [onVerify]
-  );
+const Turnstile = () => {
+  const turnstileRef = useTurnstile();
 
-  const turnstileRef = useTurnstile({
-    onVerify: handleVerify,
-  });
-
-  return (
-    <div
-      ref={turnstileRef}
-      style={{ position: "fixed", top: "10px", left: "10px" }}
-    />
-  );
+  return <div ref={turnstileRef} />;
 };
 
 export default Turnstile;

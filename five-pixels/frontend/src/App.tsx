@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Alert from "./AlertManager";
 import { init } from "./api";
 import Canvas from "./Canvas";
+import Turnstile from "./components/Turnstile";
 import ErrorHandler from "./ErrorHandler";
 import Header from "./Header";
 import { useTabManager } from "./hooks/useTabManager";
@@ -41,6 +42,7 @@ function App() {
         maxWidth: "100vw",
       }}
     >
+      <Turnstile />
       <Header />
       <WelcomeModal />
       <ErrorHandler />
