@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Alert from "./AlertManager";
 import { init } from "./api";
 import Canvas from "./Canvas";
+import LoginForm from "./components/LoginForm";
 import ErrorHandler from "./ErrorHandler";
 import Header from "./Header";
 import { useTabManager } from "./hooks/useTabManager";
@@ -11,6 +12,7 @@ import useStore from "./store";
 import useEventSource from "./useEventSource";
 import { useTimer } from "./useTimer";
 import WelcomeModal from "./WelcomeModal";
+
 function App() {
   useEventSource();
   useTimer();
@@ -40,6 +42,7 @@ function App() {
         maxWidth: "100vw",
       }}
     >
+      <LoginForm />
       <Header />
       <WelcomeModal />
       <ErrorHandler />
