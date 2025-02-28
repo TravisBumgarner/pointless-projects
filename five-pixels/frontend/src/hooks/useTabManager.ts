@@ -14,7 +14,6 @@ export const useTabManager = () => {
 
     // Listen for messages from the worker
     worker.port.onmessage = (e: MessageEvent) => {
-      console.log("Received from worker:", e.data);
       if (e.data.type === "TAB_STATUS" && !e.data.isFirstTab) {
         setError(ErrorType.OneTabError);
       }
