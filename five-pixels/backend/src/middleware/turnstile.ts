@@ -7,7 +7,7 @@ const verifyTurnstileMiddleware = async (
   next: NextFunction
 ) => {
   console.log("verify", req.originalUrl);
-  if (req.method !== "POST" || req.path !== "/paint") {
+  if (req.method !== "POST") {
     return next();
   }
 

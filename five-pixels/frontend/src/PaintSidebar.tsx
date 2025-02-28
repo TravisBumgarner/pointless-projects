@@ -1,8 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { MAX_PAINT_POINTS } from "../../shared";
 import { postPaint } from "./api";
 import ColorPicker from "./ColorPicker";
-import useTurnstile from "./hooks/useTurnstile";
+import Turnstile from "./components/Turnstile";
 import useStore from "./store";
 
 const PaintSidebar = () => {
@@ -19,26 +19,17 @@ const PaintSidebar = () => {
   const setError = useStore((state) => state.setError);
   const [token, setToken] = useState("");
 
-  const handleVerify = useCallback((token: string) => {
-    console.log("Verification token received:", token);
-    setToken(token);
-  }, []);
-
-  const turnstileRef = useTurnstile({
-    onVerify: handleVerify,
-  });
-
   const clearTempPoints = () => {
     setTempPoints({});
   };
 
   const handlePaint = async () => {
     if (!clientId) {
-      addAlert("You are not logged in.");
+      addAlert("You are not logged in, try refreshing the page.");
       return;
     }
 
-    const response = await postPaint(token, tempPoints, clientId);
+    const response = await postPaint({ token, points: tempPoints, clientId });
     if ("error" in response) {
       setError(response.error);
     } else {
@@ -55,7 +46,7 @@ const PaintSidebar = () => {
         justifyContent: "space-between",
       }}
     >
-      <div ref={turnstileRef} style={{ height: "100px" }} />
+      <Turnstile onVerify={setToken} />
       <ColorPicker />
       <div
         className="border"
@@ -74,7 +65,7 @@ const PaintSidebar = () => {
         </p>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <button
-            disabled={!hasPainted}
+            disabled={!hasPainted || token === ""}
             onClick={clearTempPoints}
             className="destructive"
             style={{ width: "90px", marginRight: "10px" }}

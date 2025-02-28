@@ -30,11 +30,15 @@ export const init = async (): Promise<InitResponse | ErrorResponse> => {
   }
 };
 
-export const postPaint = async (
-  token: string,
-  points: PointMap,
-  clientId: string
-): Promise<PostPaintResponse | ErrorResponse> => {
+export const postPaint = async ({
+  token,
+  points,
+  clientId,
+}: {
+  token: string;
+  points: PointMap;
+  clientId: string;
+}): Promise<PostPaintResponse | ErrorResponse> => {
   const body = {
     points,
     clientId,
@@ -60,10 +64,13 @@ export const postPaint = async (
   };
 };
 
-export const postQueue = async (
-  clientId: string,
-  token: string
-): Promise<QueuePostResponse | ErrorResponse> => {
+export const postQueue = async ({
+  clientId,
+  token,
+}: {
+  clientId: string;
+  token: string;
+}): Promise<QueuePostResponse | ErrorResponse> => {
   const response = await fetch(`${API_URL}/queue`, {
     method: "POST",
     headers: {

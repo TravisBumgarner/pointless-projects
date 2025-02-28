@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { postQueue } from "./api";
+import Turnstile from "./components/Turnstile";
 import useStore from "./store";
 
 const Queue = () => {
@@ -11,13 +12,14 @@ const Queue = () => {
   const setPlaceInQueue = useStore((state) => state.setPlaceInQueue);
   const setError = useStore((state) => state.setError);
   const setShowWelcomeModal = useStore((state) => state.setShowWelcomeModal);
+  const [token, setToken] = useState("");
 
   const joinQueue = async () => {
     if (!clientId) {
       addAlert("Something went wrong. Please refresh the page.");
       return;
     }
-    const response = await postQueue(clientId);
+    const response = await postQueue({ token, clientId });
     if ("error" in response) {
       setError(response.error);
     } else {
@@ -54,18 +56,25 @@ const Queue = () => {
   return (
     <div
       className="border"
-      style={{ display: "flex", flexDirection: "row", alignItems: 'center', width: "100%", gap: '10px'}}
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        width: "100%",
+        gap: "10px",
+      }}
     >
+      <Turnstile onVerify={setToken} />
       <p style={{ flexGrow: 1, textAlign: "center" }}>{display}</p>
       <button
-        style={{ width: '75px'}}
-        disabled={placeInQueue !== null}
+        style={{ width: "75px" }}
+        disabled={placeInQueue !== null || token === ""}
         onClick={joinQueue}
       >
         Queue
       </button>
       <button
-        style={{width: '125px'}}
+        style={{ width: "125px" }}
         onClick={() => setShowWelcomeModal(true)}
       >
         How to Play
