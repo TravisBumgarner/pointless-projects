@@ -1,11 +1,9 @@
 import { PAINTING_TIME_MS } from "../../../shared";
 import useStore from "../store";
-import Turnstile from "./Turnstile";
 
 const WelcomeModal = () => {
   const showWelcomeModal = useStore((state) => state.showWelcomeModal);
   const setShowWelcomeModal = useStore((state) => state.setShowWelcomeModal);
-  const token = useStore((state) => state.turnstileToken);
   if (!showWelcomeModal) return null;
 
   return (
@@ -37,10 +35,8 @@ const WelcomeModal = () => {
           <li>You have {Math.round(PAINTING_TIME_MS / 1000)} seconds!</li>
           <li>Click "Paint" to submit.</li>
         </ol>
-        <Turnstile />
         <button
           style={{ marginTop: "15px" }}
-          disabled={token === null}
           onClick={() => setShowWelcomeModal(false)}
         >
           Let's Go!

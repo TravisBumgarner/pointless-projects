@@ -14,7 +14,6 @@ interface EventState {
   selectedColorKey: PointColor;
   showWelcomeModal: boolean;
   canPaint: boolean;
-  turnstileToken: string | null;
 
   getAndRemoveNextAlert: () => string | null;
 
@@ -31,7 +30,6 @@ interface EventState {
   tickTimeRemaining: () => void;
   setShowWelcomeModal: (showWelcomeModal: boolean) => void;
   setCanPaint: (canPaint: boolean) => void;
-  setTurnstileToken: (token: string | null) => void;
 }
 
 const useStore = create<EventState>((set, get) => ({
@@ -45,7 +43,6 @@ const useStore = create<EventState>((set, get) => ({
   selectedColorKey: "a",
   canPaint: false,
   timeRemaining: PAINTING_TIME_MS / 1000,
-  turnstileToken: null,
   showWelcomeModal: true,
   getAndRemoveNextAlert: () => {
     const alerts = get().alerts;
@@ -79,7 +76,6 @@ const useStore = create<EventState>((set, get) => ({
     set((state) => ({ timeRemaining: state.timeRemaining - 1 })),
   setShowWelcomeModal: (showWelcomeModal) => set({ showWelcomeModal }),
   setCanPaint: (canPaint) => set({ canPaint }),
-  setTurnstileToken: (token) => set({ turnstileToken: token }),
 }));
 
 export default useStore;
