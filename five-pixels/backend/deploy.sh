@@ -30,6 +30,12 @@ ssh $SERVER_USER@$SERVER_HOST "echo $NODE_VERSION > $BACKEND_DIR/.nvmrc"
 echo "Cleaning up existing deployment..."
 ssh $SERVER_USER@$SERVER_HOST "rm -rf $BACKEND_DIR/*"
 
+# Throw error if .env.production file doesn't exist
+if [ ! -f .env.production ]; then
+    echo "Error: .env.production file not found"
+    exit 1
+fi
+
 # Upload the build files
 echo "Uploading build to the server..."
 scp -r .env.production run.sh build package.json yarn.lock $SERVER_USER@$SERVER_HOST:$BACKEND_DIR

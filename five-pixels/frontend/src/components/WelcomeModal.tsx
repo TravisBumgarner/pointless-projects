@@ -1,6 +1,6 @@
-import { PAINTING_TIME_MS } from "../../shared";
-import Turnstile from "./components/Turnstile";
-import useStore from "./store";
+import { PAINTING_TIME_MS } from "../../../shared";
+import useStore from "../store";
+import Turnstile from "./Turnstile";
 
 const WelcomeModal = () => {
   const showWelcomeModal = useStore((state) => state.showWelcomeModal);

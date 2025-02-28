@@ -4,14 +4,16 @@ import express, { Request, Response } from "express";
 import endpoints from "./endpoints";
 import { verifyTurnstileMiddleware } from "./middleware/turnstile";
 import log from "./singletons/log";
-import limiter from "./singletons/rateLimit";
+import { limiter, requestCounter } from "./singletons/rateLimit";
 
 const app = express();
 const port = 8000;
 
-app.use(cors());
+app.set("trust proxy", true);
 app.use(express.json());
 app.use(limiter);
+app.use(requestCounter);
+app.use(cors());
 app.use(verifyTurnstileMiddleware);
 
 app.get("/ok", (_req: Request, res: Response) => {

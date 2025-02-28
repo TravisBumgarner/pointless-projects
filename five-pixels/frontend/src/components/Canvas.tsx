@@ -6,9 +6,9 @@ import {
   MAX_PAINT_POINTS,
   PointKey,
   PointMap,
-} from "../../shared";
-import { COLOR_MAP } from "./consts";
-import useStore from "./store";
+} from "../../../shared";
+import { COLOR_MAP } from "../consts";
+import useStore from "../store";
 
 const PaintApp = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -58,11 +58,18 @@ const PaintApp = () => {
     const scaleX = canvas!.width / rect.width;
     const scaleY = canvas!.height / rect.height;
 
-    const snappedX = Math.floor((x - rect.left) * scaleX / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
-    const snappedY = Math.floor((y - rect.top) * scaleY / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
+    const snappedX =
+      Math.floor(((x - rect.left) * scaleX) / CANVAS_GRID_SIZE) *
+      CANVAS_GRID_SIZE;
+    const snappedY =
+      Math.floor(((y - rect.top) * scaleY) / CANVAS_GRID_SIZE) *
+      CANVAS_GRID_SIZE;
     const newPoint: PointKey = `${snappedX}_${snappedY}`;
 
-    if (Object.keys(tempPoints).length >= MAX_PAINT_POINTS && !tempPoints[newPoint]) {
+    if (
+      Object.keys(tempPoints).length >= MAX_PAINT_POINTS &&
+      !tempPoints[newPoint]
+    ) {
       addAlert(`Only ${MAX_PAINT_POINTS} can be plotted.`);
       return;
     }
@@ -88,7 +95,14 @@ const PaintApp = () => {
   return (
     <div className="border">
       <canvas
-        style={{ width: '100%', aspectRatio: '1/1', cursor: canPaint ? "pointer" : "not-allowed", backgroundColor: "#FFFFFF", borderRadius: "5px", display: "block" }}
+        style={{
+          width: "100%",
+          aspectRatio: "1/1",
+          cursor: canPaint ? "pointer" : "not-allowed",
+          backgroundColor: "#FFFFFF",
+          borderRadius: "5px",
+          display: "block",
+        }}
         ref={canvasRef}
         width={CANVAS_WIDTH_PIXELS}
         height={CANVAS_HEIGHT_PIXELS}

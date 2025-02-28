@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { postQueue } from "./api";
-import useStore from "./store";
+import { postQueue } from "../api";
+import useStore from "../store";
 
 const Queue = () => {
   const clientId = useStore((state) => state.clientId);

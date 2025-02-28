@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { ErrorType } from "../../shared";
-import useStore from "./store";
+import { ErrorType } from "../../../shared";
+import useStore from "../store";
 
 const ErrorHandler = () => {
   const error = useStore((state) => state.error);

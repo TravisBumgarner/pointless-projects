@@ -1,17 +1,16 @@
 import { useEffect } from "react";
-import Alert from "./AlertManager";
 import { init } from "./api";
-import Canvas from "./Canvas";
-import Turnstile from "./components/Turnstile";
-import ErrorHandler from "./ErrorHandler";
-import Header from "./Header";
+import AlertManager from "./components/AlertManager";
+import Canvas from "./components/Canvas";
+import ErrorHandler from "./components/ErrorHandler";
+import Header from "./components/Header";
+import PaintSidebar from "./components/PaintSidebar";
+import QueueSidebar from "./components/QueueSidebar";
+import WelcomeModal from "./components/WelcomeModal";
+import useEventSource from "./hooks/useEventSource";
 import { useTabManager } from "./hooks/useTabManager";
-import PaintSidebar from "./PaintSidebar";
-import QueueSidebar from "./QueueSidebar";
+import { useTimer } from "./hooks/useTimer";
 import useStore from "./store";
-import useEventSource from "./useEventSource";
-import { useTimer } from "./useTimer";
-import WelcomeModal from "./WelcomeModal";
 
 function App() {
   useEventSource();
@@ -42,13 +41,12 @@ function App() {
         maxWidth: "100vw",
       }}
     >
-      <Turnstile />
       <Header />
       <WelcomeModal />
       <ErrorHandler />
       <Canvas />
       {canPaint ? <PaintSidebar /> : <QueueSidebar />}
-      <Alert />
+      <AlertManager />
     </div>
   );
 }

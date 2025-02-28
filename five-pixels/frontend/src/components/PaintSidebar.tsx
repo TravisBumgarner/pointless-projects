@@ -1,7 +1,7 @@
-import { MAX_PAINT_POINTS } from "../../shared";
-import { postPaint } from "./api";
+import { MAX_PAINT_POINTS } from "../../../shared";
+import { postPaint } from "../api";
+import useStore from "../store";
 import ColorPicker from "./ColorPicker";
-import useStore from "./store";
 
 const PaintSidebar = () => {
   const tempPoints = useStore((state) => state.tempPoints);
