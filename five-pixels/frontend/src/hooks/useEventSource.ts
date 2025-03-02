@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { ErrorType } from "../../shared";
-import { SSEMessage, SSEMessageType } from "../../shared/types";
-import useStore from "./store";
-import { playSound } from "./utilities";
+import { ErrorType } from "../../../shared";
+import { SSEMessage, SSEMessageType } from "../../../shared/types";
+import useStore from "../store";
+import { playSound } from "../utilities";
 
 const URL = `${import.meta.env.VITE_API_BASE_URL}/events`;
 
@@ -54,7 +54,7 @@ const useEventSource = () => {
         }
         case SSEMessageType.TurnOver: {
           setCanPaint(false);
-          document.title = "Five Pixels"
+          document.title = "Five Pixels";
           // There's a race condition with trying to setPlaceInQUeue to null with YourTurn so putting here.
           setPlaceInQueue(null);
           break;

@@ -43,7 +43,7 @@ const useStore = create<EventState>((set, get) => ({
   selectedColorKey: "a",
   canPaint: false,
   timeRemaining: PAINTING_TIME_MS / 1000,
-  showWelcomeModal: false,
+  showWelcomeModal: true,
   getAndRemoveNextAlert: () => {
     const alerts = get().alerts;
     if (alerts.length === 0) return null;

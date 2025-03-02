@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
-import useStore from "./store";
-import { playSound } from "./utilities";
+import useStore from "../store";
+import { playSound } from "../utilities";
 
 export const useTimer = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);

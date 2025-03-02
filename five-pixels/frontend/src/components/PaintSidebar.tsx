@@ -1,8 +1,9 @@
-import { MAX_PAINT_POINTS } from "../../shared";
-import { postPaint } from "./api";
+import { useState } from "react";
+import { MAX_PAINT_POINTS } from "../../../shared";
+import { postPaint } from "../api";
+import useStore from "../store";
 import ColorPicker from "./ColorPicker";
-import useStore from "./store";
-
+import Turnstile from "./Turnstile";
 const PaintSidebar = () => {
   const tempPoints = useStore((state) => state.tempPoints);
   const pointsLeft = MAX_PAINT_POINTS - Object.keys(tempPoints).length;
@@ -15,6 +16,7 @@ const PaintSidebar = () => {
   const hasPainted = Object.keys(tempPoints).length > 0;
   const clientId = useStore((state) => state.clientId);
   const setError = useStore((state) => state.setError);
+  const [token, setToken] = useState<string | null>(null);
 
   const clearTempPoints = () => {
     setTempPoints({});
@@ -22,11 +24,16 @@ const PaintSidebar = () => {
 
   const handlePaint = async () => {
     if (!clientId) {
-      addAlert("You are not logged in.");
+      addAlert("You are not logged in, try refreshing the page.");
       return;
     }
 
-    const response = await postPaint(tempPoints, clientId);
+    if (!token) {
+      addAlert("Something went wrong, please refresh the page.");
+      return;
+    }
+
+    const response = await postPaint({ token, points: tempPoints, clientId });
     if ("error" in response) {
       setError(response.error);
     } else {
@@ -43,6 +50,7 @@ const PaintSidebar = () => {
         justifyContent: "space-between",
       }}
     >
+      <Turnstile setToken={setToken} />
       <ColorPicker />
       <div
         className="border"
@@ -70,10 +78,10 @@ const PaintSidebar = () => {
           </button>
           <button
             style={{ width: "90px" }}
-            disabled={!canPaint || !hasPainted}
+            disabled={!canPaint || !hasPainted || !token}
             onClick={handlePaint}
           >
-            Submit
+            {!token ? "Authing..." : "Submit"}
           </button>
         </div>
       </div>
