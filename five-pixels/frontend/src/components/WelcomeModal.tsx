@@ -1,10 +1,9 @@
-import { PAINTING_TIME_MS } from "../../shared";
-import useStore from "./store";
+import { PAINTING_TIME_MS } from "../../../shared";
+import useStore from "../store";
 
 const WelcomeModal = () => {
   const showWelcomeModal = useStore((state) => state.showWelcomeModal);
   const setShowWelcomeModal = useStore((state) => state.setShowWelcomeModal);
-
   if (!showWelcomeModal) return null;
 
   return (
@@ -24,11 +23,11 @@ const WelcomeModal = () => {
     >
       <div
         style={{
-            maxWidth: '500px'
+          maxWidth: "500px",
         }}
       >
         <h1>How To:</h1>
-        <ol style={{margin: '15px 0'}}>
+        <ol style={{ margin: "15px 0 15px 20px" }}>
           <li>Click "Queue".</li>
           <li>Wait Your Turn.</li>
           <li>Select Colors.</li>
@@ -36,8 +35,12 @@ const WelcomeModal = () => {
           <li>You have {Math.round(PAINTING_TIME_MS / 1000)} seconds!</li>
           <li>Click "Paint" to submit.</li>
         </ol>
-
-        <button onClick={() => setShowWelcomeModal(false)}>Let's Go!</button>
+        <button
+          style={{ marginTop: "15px" }}
+          onClick={() => setShowWelcomeModal(false)}
+        >
+          Let's Go!
+        </button>
       </div>
     </div>
   );

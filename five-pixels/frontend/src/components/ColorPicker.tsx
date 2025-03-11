@@ -1,6 +1,6 @@
-import { PointColor } from "../../shared";
-import { COLOR_MAP } from "./consts";
-import useStore from "./store";
+import { PointColor } from "../../../shared";
+import { COLOR_MAP } from "../consts";
+import useStore from "../store";
 
 const ColorPicker = () => {
   const setSelectedColorKey = useStore((state) => state.setSelectedColorKey);
@@ -17,9 +17,9 @@ const ColorPicker = () => {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        margin: '0 auto'
+        margin: "0 auto",
       }}
-      >
+    >
       <div
         style={{
           margin: "5px",
@@ -30,7 +30,14 @@ const ColorPicker = () => {
           backgroundColor: COLOR_MAP[selectedColorKey],
         }}
       />
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: 'center', gap: '5px'}}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "5px",
+        }}
+      >
         {Object.keys(COLOR_MAP)
           .sort((a, b) => parseInt(a) - parseInt(b))
           .map((char) => (
