@@ -36,6 +36,13 @@ const About = () => {
           inspirado.
         </p>
         <p>Y así nació Cinco Colores.</p>
+        <p>
+          - Travis (
+          <Link style={{ color: "black" }} to="http://travisbumgarner.dev/">
+            Aprender más
+          </Link>
+          )
+        </p>
         <h1>About</h1>
         <p>
           When I was young, my mom told me I could choose the color of my room.
@@ -49,6 +56,17 @@ const About = () => {
           fell in love. Every time I pass by a colorful house, I feel inspired.
         </p>
         <p>And thus, Cinco Colores was born.</p>
+        <p>
+          - Travis (
+          <Link
+            style={{ color: "black" }}
+            target="_blank"
+            to="http://travisbumgarner.dev/"
+          >
+            Learn more
+          </Link>
+          )
+        </p>
       </p>
     </div>
   );
