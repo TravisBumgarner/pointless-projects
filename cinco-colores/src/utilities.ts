@@ -1,7 +1,7 @@
 /**
  * Takes in a hex color background and returns white or black based on what the contrast should be.
  */
-export const getContrastColor = (hexColor: string): string => {
+export const getContrastColor = (hexColor: string, invert = false): string => {
   // Remove # if present
   const color = hexColor.replace("#", "");
 
@@ -19,6 +19,8 @@ export const getContrastColor = (hexColor: string): string => {
   const luminance =
     0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
 
+  let shouldReturnDark = luminance > 0.179;
+  shouldReturnDark = invert ? !shouldReturnDark : shouldReturnDark;
   // Return black or white based on luminance
-  return luminance > 0.179 ? "#000000" : "#ffffff";
+  return shouldReturnDark ? "#000000" : "#ffffff";
 };

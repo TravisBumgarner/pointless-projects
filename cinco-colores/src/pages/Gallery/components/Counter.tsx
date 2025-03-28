@@ -1,4 +1,3 @@
-import { SWATCH_SIZE } from "../../../consts";
 import { getContrastColor } from "../../../utilities";
 
 const Counter = ({
@@ -13,8 +12,8 @@ const Counter = ({
   return (
     <div
       style={{
-        width: SWATCH_SIZE * 2,
-        height: SWATCH_SIZE,
+        width: `calc(var(--swatch-size) * 2)`,
+        height: `calc(var(--swatch-size))`,
         backgroundColor,
         display: "flex",
         justifyContent: "center",
@@ -22,9 +21,13 @@ const Counter = ({
       }}
     >
       <p style={{ color: getContrastColor(backgroundColor) }}>
-        <span style={{ fontSize: "140px" }}>{current}</span>{" "}
-        <span style={{ fontSize: "200px" }}>/</span>
-        <span style={{ fontSize: "160px" }}>{total}</span>
+        <span style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}>
+          {current}
+        </span>{" "}
+        <span style={{ fontSize: `calc(var(--swatch-size) * 0.25)` }}>/</span>
+        <span style={{ fontSize: `calc(var(--swatch-size) * 0.8)` }}>
+          {total}
+        </span>
       </p>
     </div>
   );

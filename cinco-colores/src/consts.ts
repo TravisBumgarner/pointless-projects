@@ -1,1 +1,0 @@
-export const SWATCH_SIZE = 200

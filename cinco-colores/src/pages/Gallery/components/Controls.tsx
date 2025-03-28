@@ -1,4 +1,7 @@
-import { SWATCH_SIZE } from "../../../consts";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { IoMdShuffle } from "react-icons/io";
+import styled from "styled-components";
+import { getContrastColor } from "../../../utilities";
 
 const Controls = ({
   handlePreviousPalette,
@@ -16,36 +19,59 @@ const Controls = ({
   randomBackgroundColor: string;
 }) => {
   return (
-    <div>
-      <button
-        style={{ ...sharedStyled, backgroundColor: previousBackgroundColor }}
+    <div style={{ display: "flex" }}>
+      <Button
+        bgColor={previousBackgroundColor}
+        title="Anterior / Previous"
         onClick={handlePreviousPalette}
       >
-        Previous
-      </button>
-      <button
-        style={{ ...sharedStyled, backgroundColor: nextBackgroundColor }}
+        <GrFormPrevious
+          color={getContrastColor(previousBackgroundColor)}
+          style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}
+        />
+      </Button>
+      <Button
+        bgColor={nextBackgroundColor}
+        title="Próximo / Next"
         onClick={handleNextPalette}
       >
-        Next
-      </button>
-      <button
-        style={{ ...sharedStyled, backgroundColor: randomBackgroundColor }}
+        <GrFormNext
+          color={getContrastColor(nextBackgroundColor)}
+          style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}
+        />
+      </Button>
+      <Button
+        bgColor={randomBackgroundColor}
+        title="Al azar / Random"
         onClick={handleRandomPalette}
       >
-        Random
-      </button>
+        <IoMdShuffle
+          color={getContrastColor(randomBackgroundColor)}
+          style={{ fontSize: `calc(var(--swatch-size) * 0.3)` }}
+        />
+      </Button>
     </div>
   );
 };
 
-const sharedStyled = {
-  width: (SWATCH_SIZE * 2) / 3,
-  height: SWATCH_SIZE / 2,
-  border: "none",
-  color: "black",
-  fontSize: "16px",
-  cursor: "pointer",
-};
+const Button = styled.button<{ bgColor: string }>`
+  width: calc(var(--swatch-size) * 2 / 3);
+  height: calc(var(--swatch-size) / 2);
+  border: none;
+  color: black;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.bgColor};
 
+  &:hover {
+    fill: red;
+    background-color: ${(props) =>
+      `color-mix(in srgb, ${props.bgColor} 50%, ${getContrastColor(
+        props.bgColor,
+        true
+      )})`};
+  }
+`;
 export default Controls;
