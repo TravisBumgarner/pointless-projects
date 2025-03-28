@@ -1,0 +1,2 @@
+- [x] Initial Boilerplate
+- [ ] Add script for syncing palettes

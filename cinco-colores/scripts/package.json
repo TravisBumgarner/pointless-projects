@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "sync-palettes": "ts-node sync-palettes.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.14",
+    "ts-node": "^10.9.2"
+  }
+}

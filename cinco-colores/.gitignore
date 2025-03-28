@@ -8,3 +8,4 @@ build/
 .env.development
 backup.json
 venv/
+.DS_Store
