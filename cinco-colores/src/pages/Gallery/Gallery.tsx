@@ -41,27 +41,35 @@ function App() {
           style={{
             display: "flex",
             flexDirection: "column",
+            justifyContent: "space-between",
             gap: "var(--gutter-spacing)",
           }}
         >
-          <Counter
-            backgroundColor={colorPalettes[zeroIndexedId].colors[0]}
-            current={zeroIndexedId + 1}
-            total={colorPalettes.length}
-          />
-          <Palette colors={colorPalettes[zeroIndexedId].colors} />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--gutter-spacing)",
+            }}
+          >
+            <Counter
+              backgroundColor={colorPalettes[zeroIndexedId].colors[0]}
+              current={zeroIndexedId + 1}
+              total={colorPalettes.length}
+            />
+            <Palette colors={colorPalettes[zeroIndexedId].colors} />
 
-          <Controls
-            handlePreviousPalette={handlePreviousPalette}
-            handleNextPalette={handleNextPalette}
-            handleRandomPalette={handleRandomPalette}
-            previousBackgroundColor={colorPalettes[zeroIndexedId].colors[1]}
-            nextBackgroundColor={colorPalettes[zeroIndexedId].colors[2]}
-            randomBackgroundColor={colorPalettes[zeroIndexedId].colors[3]}
-            copyBackgroundColor={colorPalettes[zeroIndexedId].colors[4]}
-            colors={colorPalettes[zeroIndexedId].colors}
-          />
-
+            <Controls
+              handlePreviousPalette={handlePreviousPalette}
+              handleNextPalette={handleNextPalette}
+              handleRandomPalette={handleRandomPalette}
+              previousBackgroundColor={colorPalettes[zeroIndexedId].colors[1]}
+              nextBackgroundColor={colorPalettes[zeroIndexedId].colors[2]}
+              randomBackgroundColor={colorPalettes[zeroIndexedId].colors[3]}
+              copyBackgroundColor={colorPalettes[zeroIndexedId].colors[4]}
+              colors={colorPalettes[zeroIndexedId].colors}
+            />
+          </div>
           <Navigation bgColor={colorPalettes[zeroIndexedId].colors[5]} />
         </div>
         <Photo src={colorPalettes[zeroIndexedId].src} />

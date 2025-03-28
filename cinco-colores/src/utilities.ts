@@ -2,7 +2,10 @@
  * Takes in a hex color background and returns white or black based on what the contrast should be.
  */
 export const getContrastColor = (hexColor: string, invert = false): string => {
-  // Remove # if present
+  if (hexColor.startsWith("rgb")) {
+    hexColor = rgbToHex(hexColor)!;
+  }
+  console.log("hexColor", hexColor);
   const color = hexColor.replace("#", "");
 
   // Convert hex to rgb
@@ -22,5 +25,16 @@ export const getContrastColor = (hexColor: string, invert = false): string => {
   let shouldReturnDark = luminance > 0.179;
   shouldReturnDark = invert ? !shouldReturnDark : shouldReturnDark;
   // Return black or white based on luminance
+
+  console.log("setting", shouldReturnDark ? "#000000" : "#ffffff");
   return shouldReturnDark ? "#000000" : "#ffffff";
+};
+
+export const rgbToHex = (rgb: string) => {
+  const match = rgb.match(/\d+/g); // Extracts the numbers
+  if (!match) return null;
+
+  return `#${match
+    .map((num) => parseInt(num).toString(16).padStart(2, "0")) // Convert to hex
+    .join("")}`; // Join and ensure uppercase
 };

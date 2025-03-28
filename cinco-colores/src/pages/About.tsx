@@ -1,12 +1,22 @@
 import { GrFormClose } from "react-icons/gr";
 import { Link } from "react-router-dom";
+import { getContrastColor } from "../utilities";
 
 const About = () => {
+  let background = getComputedStyle(document.body).backgroundColor;
+
+  if (background === "rgba(0, 0, 0, 0)") {
+    // For some reason, on page load, the background is rgba(0, 0, 0, 0). This project isn't permanent so we're hacking it.
+    background = "#F5F5F5";
+  }
+
+  console.log("bg", background);
   return (
     <div
       style={{
         fontFamily: "Satoshi",
         fontSize: "20px",
+        color: getContrastColor(background),
       }}
     >
       <div style={{ position: "relative" }}>
@@ -16,7 +26,7 @@ const About = () => {
             top: 0,
             right: 0,
             textDecoration: "none",
-            color: "black",
+            color: getContrastColor(background),
           }}
           to="/"
         >
@@ -39,7 +49,12 @@ const About = () => {
       <p>Y así nació Cinco Colores.</p>
       <p>
         - Travis (
-        <Link style={{ color: "black" }} to="http://travisbumgarner.dev/">
+        <Link
+          style={{
+            color: getContrastColor(background),
+          }}
+          to="http://travisbumgarner.dev/"
+        >
           Aprender más
         </Link>
         )
@@ -60,7 +75,9 @@ const About = () => {
       <p>
         - Travis (
         <Link
-          style={{ color: "black" }}
+          style={{
+            color: getContrastColor(background),
+          }}
           target="_blank"
           to="http://travisbumgarner.dev/"
         >

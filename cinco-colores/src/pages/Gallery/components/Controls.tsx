@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { IoMdShuffle } from "react-icons/io";
+import { LiaCopy } from "react-icons/lia";
 import styled from "styled-components";
 import { getContrastColor } from "../../../utilities";
 import Background from "./Background";
@@ -23,6 +25,16 @@ const Controls = ({
   copyBackgroundColor: string;
   colors: string[];
 }) => {
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") handlePreviousPalette();
+      if (e.key === "ArrowRight") handleNextPalette();
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [handlePreviousPalette, handleNextPalette]);
+
   const copyColors = () => {
     navigator.clipboard.writeText(colors.join(", "));
   };
@@ -65,21 +77,25 @@ const Controls = ({
             style={{ fontSize: `calc(var(--swatch-size) * 0.3)` }}
           />
         </Button>
+        <Button
+          $bgColor={copyBackgroundColor}
+          onClick={copyColors}
+          title="Copiar / Copy"
+        >
+          <LiaCopy
+            color={getContrastColor(copyBackgroundColor)}
+            style={{ fontSize: `calc(var(--swatch-size) * 0.3)` }}
+          />
+        </Button>
       </div>
       <Background />
-      <Button
-        style={{ width: "100%", fontSize: `calc(var(--swatch-size) * 0.3)` }}
-        $bgColor={copyBackgroundColor}
-        onClick={copyColors}
-      >
-        Copiar / Copy
-      </Button>
     </div>
   );
 };
 
 const Button = styled.button<{ $bgColor: string }>`
-  width: calc(var(--swatch-size) * 2 / 3);
+  flex-shrink: 0;
+  width: calc(var(--swatch-size) / 2);
   height: calc(var(--swatch-size) / 2);
   border: none;
   color: black;

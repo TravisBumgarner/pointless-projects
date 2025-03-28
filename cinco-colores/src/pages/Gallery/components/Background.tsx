@@ -26,6 +26,7 @@ const Background = () => {
         <ColorButton
           key={color}
           $color={color}
+          title={`Cambiar fondo / Change background`}
           onMouseEnter={() => setBackground(color)}
           onMouseLeave={() => setBackground(originalColor)}
           onClick={() => {
