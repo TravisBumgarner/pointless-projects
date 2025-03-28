@@ -3,18 +3,10 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'Satoshi';
-    src: url('/fonts/Satoshi-Regular.woff2') format('woff2'),
-         url('/fonts/Satoshi-Regular.woff') format('woff');
+    src: url('/fonts/Satoshi-Variable.woff2') format('woff2'),
+         url('/fonts/Satoshi-Variable.woff') format('woff'),
+         url('/fonts/Satoshi-Variable.ttf') format('ttf');
     font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  @font-face {
-    font-family: 'Satoshi';
-    src: url('/fonts/Satoshi-Bold.woff2') format('woff2'),
-         url('/fonts/Satoshi-Bold.woff') format('woff');
-    font-weight: 700;
     font-style: normal;
     font-display: swap;
   }

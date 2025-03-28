@@ -14,7 +14,7 @@ const Button = styled(Link)<{ $bgColor: string }>`
   display: block;
   text-decoration: none;
   color: ${(props) => getContrastColor(props.$bgColor)};
-  font-size: calc(var(--swatch-size) * 0.2);
+  font-size: calc(var(--swatch-size) * 0.3);
   width: calc(var(--swatch-size) * 2);
   height: calc(var(--swatch-size) * 0.5);
   display: flex;

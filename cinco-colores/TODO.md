@@ -1,3 +1,10 @@
 - [x] Initial Boilerplate
 - [x] Add script for syncing palettes
-- [x] Add about page. ==
+- [x] Add about page. 
+- [x] Rest of the owl.
+- [ ] Implement Analytics
+- [ ] Background color picker
+- [ ] Figure out deploys to not spend extra money.
+- [ ] load images in
+- [ ] Add kmeans to color picker
+- [ ] Proofread colors

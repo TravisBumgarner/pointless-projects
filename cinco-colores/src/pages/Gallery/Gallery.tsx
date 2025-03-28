@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { colorPalettes } from "../../data/palettes";
 import Controls from "./components/Controls";
@@ -10,25 +9,22 @@ import Photo from "./components/Photo";
 function App() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [paletteIndex, setPaletteIndex] = useState(Number(id) - 1 || 0);
 
-  useEffect(() => {
-    navigate(`/photo/${paletteIndex + 1}`);
-  }, [paletteIndex, navigate]);
+  const zeroIndexedId = Number.isNaN(Number(id)) ? 0 : Number(id) - 1;
 
   const handleNextPalette = () => {
-    setPaletteIndex((prevIndex) => (prevIndex + 1) % colorPalettes.length);
+    const nextId = (zeroIndexedId + 1) % colorPalettes.length;
+    navigate(`/${nextId + 1}`);
   };
 
   const handlePreviousPalette = () => {
-    setPaletteIndex(
-      (prevIndex) =>
-        (prevIndex - 1 + colorPalettes.length) % colorPalettes.length
-    );
+    const prevId =
+      (zeroIndexedId - 1 + colorPalettes.length) % colorPalettes.length;
+    navigate(`/${prevId + 1}`);
   };
 
   const handleRandomPalette = () => {
-    setPaletteIndex(Math.floor(Math.random() * colorPalettes.length));
+    navigate(`/${Math.floor(Math.random() * colorPalettes.length)}`);
   };
 
   return (
@@ -48,24 +44,24 @@ function App() {
           }}
         >
           <Counter
-            backgroundColor={colorPalettes[paletteIndex].colors[0]}
-            current={paletteIndex + 1}
+            backgroundColor={colorPalettes[zeroIndexedId].colors[0]}
+            current={zeroIndexedId + 1}
             total={colorPalettes.length}
           />
-          <Palette colors={colorPalettes[paletteIndex].colors} />
+          <Palette colors={colorPalettes[zeroIndexedId].colors} />
 
           <Controls
             handlePreviousPalette={handlePreviousPalette}
             handleNextPalette={handleNextPalette}
             handleRandomPalette={handleRandomPalette}
-            previousBackgroundColor={colorPalettes[paletteIndex].colors[1]}
-            nextBackgroundColor={colorPalettes[paletteIndex].colors[2]}
-            randomBackgroundColor={colorPalettes[paletteIndex].colors[3]}
+            previousBackgroundColor={colorPalettes[zeroIndexedId].colors[1]}
+            nextBackgroundColor={colorPalettes[zeroIndexedId].colors[2]}
+            randomBackgroundColor={colorPalettes[zeroIndexedId].colors[3]}
           />
 
-          <Navigation bgColor={colorPalettes[paletteIndex].colors[4]} />
+          <Navigation bgColor={colorPalettes[zeroIndexedId].colors[4]} />
         </div>
-        <Photo src={colorPalettes[paletteIndex].src} />
+        <Photo src={colorPalettes[zeroIndexedId].src} />
       </div>
     </div>
   );
