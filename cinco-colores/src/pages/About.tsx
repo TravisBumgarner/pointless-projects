@@ -1,6 +1,28 @@
+import { GrFormClose } from "react-icons/gr";
+import { Link } from "react-router-dom";
+
 const About = () => {
   return (
-    <div>
+    <div
+      style={{
+        fontFamily: "Satoshi",
+        fontSize: "20px",
+      }}
+    >
+      <div style={{ position: "relative" }}>
+        <Link
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            textDecoration: "none",
+            color: "black",
+          }}
+          to="/"
+        >
+          <GrFormClose style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }} />
+        </Link>
+      </div>
       <h1>Sobre</h1>
       <p>
         Cuando era chiquito, mi mamá me dijo que podía escoger el color de mi
@@ -9,9 +31,9 @@ const About = () => {
         paredes blancas, yo era un poquito raro.
         <p>
           En 2015, llegué a México por primera vez. La gente de México, sin
-          preguntar a nadie, escogió colores muy brillantes para pintar sus
-          casas. Me enamoré. Cada vez que paso por una casa muy bonita, me
-          siento inspirado a usar esos colores para diseñar un sitio web.
+          preguntarle a nadie, escogió colores muy brillantes para pintar sus
+          casas. Me enamoré. Cada vez que paso por una casa colorida, me siento
+          inspirado.
         </p>
         <p>Y así nació Cinco Colores.</p>
         <h1>About</h1>
@@ -24,12 +46,10 @@ const About = () => {
         <p>
           In 205, I arrived to Mexico for the first time. The people of Mexico,
           without asking anybody, chose bright colors to paint their houses. I
-          fell in love. Every time I pass by a pretty house, I feel inspired to
-          use those colors to design a website.
+          fell in love. Every time I pass by a colorful house, I feel inspired.
         </p>
-        <p>And thus, Cinco Colors was born.</p>
+        <p>And thus, Cinco Colores was born.</p>
       </p>
-      <p>This is the about page.</p>
     </div>
   );
 };
