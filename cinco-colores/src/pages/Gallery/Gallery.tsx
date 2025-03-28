@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { colorPalettes } from "../../data/palettes";
+import Controls from "./components/Controls";
 import Counter from "./components/Counter";
 import Palette from "./components/Palette";
-import { colorPalettes } from "../../data/palettes";
+import Photo from "./components/Photo";
+
+const GUTTER_SPACING = "30px";
 
 function App() {
   const navigate = useNavigate();
@@ -30,14 +34,34 @@ function App() {
 
   return (
     <div>
-      <Palette
-        colors={colorPalettes[paletteIndex].colors}
-        photo={colorPalettes[paletteIndex].image}
-      />
-      <button onClick={handlePreviousPalette}>Previous</button>
-      <button onClick={handleNextPalette}>Next</button>
-      <button onClick={handleRandomPalette}>Random</button>
-      <Counter current={paletteIndex + 1} total={colorPalettes.length} />
+      <div
+        style={{ display: "flex", flexDirection: "row", gap: GUTTER_SPACING }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: GUTTER_SPACING,
+          }}
+        >
+          <Counter
+            backgroundColor={colorPalettes[paletteIndex].colors[0]}
+            current={paletteIndex + 1}
+            total={colorPalettes.length}
+          />
+          <Palette colors={colorPalettes[paletteIndex].colors} />
+
+          <Controls
+            handlePreviousPalette={handlePreviousPalette}
+            handleNextPalette={handleNextPalette}
+            handleRandomPalette={handleRandomPalette}
+            previousBackgroundColor={colorPalettes[paletteIndex].colors[1]}
+            nextBackgroundColor={colorPalettes[paletteIndex].colors[2]}
+            randomBackgroundColor={colorPalettes[paletteIndex].colors[3]}
+          />
+        </div>
+        <Photo src={colorPalettes[paletteIndex].src} />
+      </div>
     </div>
   );
 }

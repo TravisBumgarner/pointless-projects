@@ -32,8 +32,8 @@ async function syncPalettes() {
   // Add new images with empty color arrays
   const newPalettes = [
     ...palettes,
-    ...newImages.map((image) => ({
-      image,
+    ...newImages.map((src) => ({
+      src,
       colors: [],
     })),
   ];

@@ -43,11 +43,7 @@ const CustomPalette = () => {
       <button onClick={() => fileRef.current?.click()}>Upload Image</button>
 
       {image && (
-        <img
-          src={image}
-          alt="Upload Preview"
-          style={{ maxWidth: "500px", borderRadius: "10px" }}
-        />
+        <img src={image} alt="Upload Preview" style={{ maxWidth: "500px" }} />
       )}
 
       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>

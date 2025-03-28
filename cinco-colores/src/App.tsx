@@ -1,3 +1,4 @@
+import "./app.css";
 import Navigation from "./components/Navigation";
 import Router from "./components/Router";
 
