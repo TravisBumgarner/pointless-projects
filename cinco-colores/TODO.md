@@ -7,7 +7,8 @@
 - [ ] Figure out deploys to not spend extra money.
 - [x] load images in
 - [x] Add kmeans to color picker
-- [ ] Proofread colors
-- [ ] commit new preset to photo repo
+- [x] Proofread colors
+- [x] commit new preset to photo repo
 - [ ] mobile friendly
-- [ ] Keyboard commands
+- [x] Keyboard commands
+- [ ] Update pointlessprojects root site.
