@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Counter from "./Counter";
-import Palette from "./Palette";
-import { colorPalettes } from "./palettes";
+import Counter from "./components/Counter";
+import Palette from "./components/Palette";
+import { colorPalettes } from "../../data/palettes";
 
 function App() {
   const navigate = useNavigate();

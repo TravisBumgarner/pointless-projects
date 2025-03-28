@@ -1,2 +1,3 @@
 - [x] Initial Boilerplate
-- [ ] Add script for syncing palettes
+- [x] Add script for syncing palettes
+- [ ] Add about page. 

@@ -1,5 +1,5 @@
-import Navigation from "./Navigation";
-import Router from "./Router";
+import Navigation from "./components/Navigation";
+import Router from "./components/Router";
 
 function App() {
   return (

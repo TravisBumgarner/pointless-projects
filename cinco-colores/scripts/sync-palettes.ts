@@ -8,8 +8,14 @@ type Palette = {
 
 async function syncPalettes() {
   // Read existing palettes
-  const palettesPath = path.join(process.cwd(), "..", "src", "palettes.json");
-  const imagesDir = path.join(process.cwd(), "..", "src", "images");
+  const palettesPath = path.join(
+    process.cwd(),
+    "..",
+    "src",
+    "data",
+    "palettes.json"
+  );
+  const imagesDir = path.join(process.cwd(), "..", "src", "data", "images");
 
   const palettes = JSON.parse(await fs.readFile(palettesPath, "utf-8"));
   const existingImages = new Set(palettes.map((p: Palette) => p.image));

@@ -1,5 +1,6 @@
 const Palette = ({ colors, photo }: { colors: string[]; photo: string }) => {
-  const imagePath = new URL(`./images/${photo}`, import.meta.url).href;
+  const imagePath = new URL(`../../../data/images/${photo}`, import.meta.url)
+    .href;
 
   return (
     <div
