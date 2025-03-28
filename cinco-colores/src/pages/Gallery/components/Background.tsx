@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { getContrastColor } from "../../../utilities";
 
 const Container = styled.div`
   display: flex;
@@ -11,17 +10,11 @@ const ColorButton = styled.button<{ $color: string }>`
   background: ${(props) => props.$color};
   cursor: pointer;
   border: 0;
-
-  &:hover {
-    background-color: ${(props) =>
-      `color-mix(in srgb, ${props.$color} 50%, ${getContrastColor(
-        props.$color
-      )})`};
-  }
 `;
 
 const Background = () => {
   const colors = ["#F5F5F5", "#E0E0E0", "#ababab", "#131313"];
+  let originalColor = document.body.style.background || "#fff";
 
   const setBackground = (color: string) => {
     document.body.style.background = color;
@@ -33,7 +26,12 @@ const Background = () => {
         <ColorButton
           key={color}
           $color={color}
-          onClick={() => setBackground(color)}
+          onMouseEnter={() => setBackground(color)}
+          onMouseLeave={() => setBackground(originalColor)}
+          onClick={() => {
+            setBackground(color);
+            originalColor = color;
+          }}
         />
       ))}
     </Container>

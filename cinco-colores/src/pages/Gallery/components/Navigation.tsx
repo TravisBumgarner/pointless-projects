@@ -21,6 +21,13 @@ const Button = styled(Link)<{ $bgColor: string }>`
   align-items: center;
   justify-content: center;
   background-color: ${(props) => props.$bgColor};
+  &:hover {
+    background-color: ${(props) =>
+      `color-mix(in srgb, ${props.$bgColor} 50%, ${getContrastColor(
+        props.$bgColor,
+        true
+      )})`};
+  }
 `;
 
 export default Navigation;

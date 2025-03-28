@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { colorPalettes } from "../../data/palettes";
-import Background from "./components/Background";
 import Controls from "./components/Controls";
 import Counter from "./components/Counter";
 import Navigation from "./components/Navigation";
@@ -45,7 +44,6 @@ function App() {
             gap: "var(--gutter-spacing)",
           }}
         >
-          <Background />
           <Counter
             backgroundColor={colorPalettes[zeroIndexedId].colors[0]}
             current={zeroIndexedId + 1}
@@ -60,9 +58,11 @@ function App() {
             previousBackgroundColor={colorPalettes[zeroIndexedId].colors[1]}
             nextBackgroundColor={colorPalettes[zeroIndexedId].colors[2]}
             randomBackgroundColor={colorPalettes[zeroIndexedId].colors[3]}
+            copyBackgroundColor={colorPalettes[zeroIndexedId].colors[4]}
+            colors={colorPalettes[zeroIndexedId].colors}
           />
 
-          <Navigation bgColor={colorPalettes[zeroIndexedId].colors[4]} />
+          <Navigation bgColor={colorPalettes[zeroIndexedId].colors[5]} />
         </div>
         <Photo src={colorPalettes[zeroIndexedId].src} />
       </div>

@@ -16,7 +16,7 @@ const Palette = ({ colors }: { colors: string[] }) => {
             style={{
               backgroundColor: color,
               width: `calc(var(--swatch-size))`,
-              height: `calc(var(--swatch-size))`,
+              height: `calc(var(--swatch-size) * 0.5)`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

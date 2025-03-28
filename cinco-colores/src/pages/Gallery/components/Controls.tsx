@@ -2,6 +2,7 @@ import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { IoMdShuffle } from "react-icons/io";
 import styled from "styled-components";
 import { getContrastColor } from "../../../utilities";
+import Background from "./Background";
 
 const Controls = ({
   handlePreviousPalette,
@@ -10,6 +11,8 @@ const Controls = ({
   previousBackgroundColor,
   nextBackgroundColor,
   randomBackgroundColor,
+  copyBackgroundColor,
+  colors,
 }: {
   handlePreviousPalette: () => void;
   handleNextPalette: () => void;
@@ -17,38 +20,59 @@ const Controls = ({
   previousBackgroundColor: string;
   nextBackgroundColor: string;
   randomBackgroundColor: string;
+  copyBackgroundColor: string;
+  colors: string[];
 }) => {
+  const copyColors = () => {
+    navigator.clipboard.writeText(colors.join(", "));
+  };
+
   return (
-    <div style={{ display: "flex" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div style={{ display: "flex" }}>
+        <Button
+          $bgColor={previousBackgroundColor}
+          title="Anterior / Previous"
+          onClick={handlePreviousPalette}
+        >
+          <GrFormPrevious
+            color={getContrastColor(previousBackgroundColor)}
+            style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}
+          />
+        </Button>
+        <Button
+          $bgColor={nextBackgroundColor}
+          title="Próximo / Next"
+          onClick={handleNextPalette}
+        >
+          <GrFormNext
+            color={getContrastColor(nextBackgroundColor)}
+            style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}
+          />
+        </Button>
+        <Button
+          $bgColor={randomBackgroundColor}
+          title="Al azar / Random"
+          onClick={handleRandomPalette}
+        >
+          <IoMdShuffle
+            color={getContrastColor(randomBackgroundColor)}
+            style={{ fontSize: `calc(var(--swatch-size) * 0.3)` }}
+          />
+        </Button>
+      </div>
+      <Background />
       <Button
-        $bgColor={previousBackgroundColor}
-        title="Anterior / Previous"
-        onClick={handlePreviousPalette}
+        style={{ width: "100%", fontSize: `calc(var(--swatch-size) * 0.3)` }}
+        $bgColor={copyBackgroundColor}
+        onClick={copyColors}
       >
-        <GrFormPrevious
-          color={getContrastColor(previousBackgroundColor)}
-          style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}
-        />
-      </Button>
-      <Button
-        $bgColor={nextBackgroundColor}
-        title="Próximo / Next"
-        onClick={handleNextPalette}
-      >
-        <GrFormNext
-          color={getContrastColor(nextBackgroundColor)}
-          style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}
-        />
-      </Button>
-      <Button
-        $bgColor={randomBackgroundColor}
-        title="Al azar / Random"
-        onClick={handleRandomPalette}
-      >
-        <IoMdShuffle
-          color={getContrastColor(randomBackgroundColor)}
-          style={{ fontSize: `calc(var(--swatch-size) * 0.3)` }}
-        />
+        Copiar / Copy
       </Button>
     </div>
   );
@@ -63,6 +87,7 @@ const Button = styled.button<{ $bgColor: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-family);
   background-color: ${(props) => props.$bgColor};
 
   &:hover {

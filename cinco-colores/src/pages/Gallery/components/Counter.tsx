@@ -13,7 +13,7 @@ const Counter = ({
     <div
       style={{
         width: `calc(var(--swatch-size) * 2)`,
-        height: `calc(var(--swatch-size))`,
+        height: `calc(var(--swatch-size) * 0.5)`,
         backgroundColor,
         display: "flex",
         justifyContent: "center",
@@ -21,11 +21,11 @@ const Counter = ({
       }}
     >
       <p style={{ color: getContrastColor(backgroundColor) }}>
-        <span style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}>
+        <span style={{ fontSize: `calc(var(--swatch-size) * 0.45)` }}>
           {current}
         </span>{" "}
         <span style={{ fontSize: `calc(var(--swatch-size) * 0.25)` }}>/</span>
-        <span style={{ fontSize: `calc(var(--swatch-size) * 0.8)` }}>
+        <span style={{ fontSize: `calc(var(--swatch-size) * 0.4)` }}>
           {total}
         </span>
       </p>
