@@ -3,10 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { colorPalettes } from "../../data/palettes";
 import Controls from "./components/Controls";
 import Counter from "./components/Counter";
+import Navigation from "./components/Navigation";
 import Palette from "./components/Palette";
 import Photo from "./components/Photo";
-
-const GUTTER_SPACING = "30px";
 
 function App() {
   const navigate = useNavigate();
@@ -35,13 +34,17 @@ function App() {
   return (
     <div>
       <div
-        style={{ display: "flex", flexDirection: "row", gap: GUTTER_SPACING }}
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "var(--gutter-spacing)",
+        }}
       >
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: GUTTER_SPACING,
+            gap: "var(--gutter-spacing)",
           }}
         >
           <Counter
@@ -59,6 +62,8 @@ function App() {
             nextBackgroundColor={colorPalettes[paletteIndex].colors[2]}
             randomBackgroundColor={colorPalettes[paletteIndex].colors[3]}
           />
+
+          <Navigation bgColor={colorPalettes[paletteIndex].colors[4]} />
         </div>
         <Photo src={colorPalettes[paletteIndex].src} />
       </div>

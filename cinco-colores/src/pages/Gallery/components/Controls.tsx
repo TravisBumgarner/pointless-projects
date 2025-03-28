@@ -21,7 +21,7 @@ const Controls = ({
   return (
     <div style={{ display: "flex" }}>
       <Button
-        bgColor={previousBackgroundColor}
+        $bgColor={previousBackgroundColor}
         title="Anterior / Previous"
         onClick={handlePreviousPalette}
       >
@@ -31,7 +31,7 @@ const Controls = ({
         />
       </Button>
       <Button
-        bgColor={nextBackgroundColor}
+        $bgColor={nextBackgroundColor}
         title="Próximo / Next"
         onClick={handleNextPalette}
       >
@@ -41,7 +41,7 @@ const Controls = ({
         />
       </Button>
       <Button
-        bgColor={randomBackgroundColor}
+        $bgColor={randomBackgroundColor}
         title="Al azar / Random"
         onClick={handleRandomPalette}
       >
@@ -54,7 +54,7 @@ const Controls = ({
   );
 };
 
-const Button = styled.button<{ bgColor: string }>`
+const Button = styled.button<{ $bgColor: string }>`
   width: calc(var(--swatch-size) * 2 / 3);
   height: calc(var(--swatch-size) / 2);
   border: none;
@@ -63,13 +63,12 @@ const Button = styled.button<{ bgColor: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => props.bgColor};
+  background-color: ${(props) => props.$bgColor};
 
   &:hover {
-    fill: red;
     background-color: ${(props) =>
-      `color-mix(in srgb, ${props.bgColor} 50%, ${getContrastColor(
-        props.bgColor,
+      `color-mix(in srgb, ${props.$bgColor} 50%, ${getContrastColor(
+        props.$bgColor,
         true
       )})`};
   }

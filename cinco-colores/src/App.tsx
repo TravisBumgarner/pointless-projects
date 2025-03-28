@@ -1,11 +1,10 @@
-import "./app.css";
-import Navigation from "./components/Navigation";
 import Router from "./components/Router";
+import { GlobalStyle } from "./styles";
 
 function App() {
   return (
     <div style={{ margin: "0 auto", maxWidth: "1200px" }}>
-      <Navigation />
+      <GlobalStyle />
       <Router />
     </div>
   );
