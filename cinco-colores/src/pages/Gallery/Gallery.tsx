@@ -28,14 +28,13 @@ function App() {
   };
 
   return (
-    <div>
+    <>
       <div
         style={{
           display: "flex",
           flexDirection: "row",
           gap: "var(--gutter-spacing)",
           height: "100%",
-          border: "1px solid black",
         }}
       >
         <div
@@ -65,7 +64,7 @@ function App() {
         </div>
         <Photo src={colorPalettes[zeroIndexedId].src} />
       </div>
-    </div>
+    </>
   );
 }
 

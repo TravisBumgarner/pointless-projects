@@ -6,6 +6,11 @@ import Gallery from "../pages/Gallery/Gallery";
 
 const PageTransition = ({ children }: { children: React.ReactNode }) => (
   <motion.div
+    style={{
+      height: "100%",
+      margin: "0 auto",
+      maxWidth: "1200px",
+    }}
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
