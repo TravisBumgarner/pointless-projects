@@ -3,9 +3,11 @@
 - [x] Add about page. 
 - [x] Rest of the owl.
 - [ ] Implement Analytics
-- [ ] Background color picker
+- [x] Background color picker
 - [ ] Figure out deploys to not spend extra money.
-- [ ] load images in
-- [ ] Add kmeans to color picker
+- [x] load images in
+- [x] Add kmeans to color picker
 - [ ] Proofread colors
 - [ ] commit new preset to photo repo
+- [ ] mobile friendly
+- [ ] Keyboard commands
