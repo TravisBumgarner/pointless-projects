@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { colorPalettes } from "../../data/palettes";
+import Background from "./components/Background";
 import Controls from "./components/Controls";
 import Counter from "./components/Counter";
 import Navigation from "./components/Navigation";
@@ -44,6 +45,7 @@ function App() {
             gap: "var(--gutter-spacing)",
           }}
         >
+          <Background />
           <Counter
             backgroundColor={colorPalettes[zeroIndexedId].colors[0]}
             current={zeroIndexedId + 1}
