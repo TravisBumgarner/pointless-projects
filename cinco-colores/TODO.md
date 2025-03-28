@@ -8,3 +8,4 @@
 - [ ] load images in
 - [ ] Add kmeans to color picker
 - [ ] Proofread colors
+- [ ] commit new preset to photo repo

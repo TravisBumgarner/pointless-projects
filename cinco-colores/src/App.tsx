@@ -3,7 +3,13 @@ import { GlobalStyle } from "./styles";
 
 function App() {
   return (
-    <div style={{ margin: "0 auto", maxWidth: "1200px" }}>
+    <div
+      style={{
+        margin: "0 auto",
+        maxWidth: "1200px",
+        height: "100%",
+      }}
+    >
       <GlobalStyle />
       <Router />
     </div>

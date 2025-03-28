@@ -6,7 +6,7 @@ const Photo = ({ src }: { src: string }) => {
     <div
       style={{
         maxWidth: "80vw",
-        maxHeight: "80vh",
+        maxHeight: "100%",
       }}
     >
       <img

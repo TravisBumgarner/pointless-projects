@@ -34,6 +34,8 @@ function App() {
           display: "flex",
           flexDirection: "row",
           gap: "var(--gutter-spacing)",
+          height: "100%",
+          border: "1px solid black",
         }}
       >
         <div
