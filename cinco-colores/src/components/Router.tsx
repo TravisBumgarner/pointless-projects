@@ -27,7 +27,7 @@ const Router = () => {
     <AnimatePresence mode="wait">
       <Routes location={location}>
         <Route
-          path="color-picker"
+          path="/cinco/color-picker"
           element={
             <PageTransition key={location.pathname}>
               <ColorPicker />
@@ -36,7 +36,7 @@ const Router = () => {
         />
 
         <Route
-          path="/about"
+          path="/cinco/about"
           element={
             <PageTransition key={location.pathname}>
               <About />
@@ -44,7 +44,7 @@ const Router = () => {
           }
         />
         <Route
-          path="/"
+          path="/cinco"
           element={
             <PageTransition key={location.pathname}>
               <Gallery />
@@ -52,7 +52,7 @@ const Router = () => {
           }
         />
         <Route
-          path="/:id"
+          path="/cinco/:id"
           element={
             <PageTransition key={location.pathname}>
               <Gallery />
