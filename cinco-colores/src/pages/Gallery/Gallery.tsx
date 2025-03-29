@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
+import styled from "styled-components";
 import { colorPalettes } from "../../data/palettes";
 import Controls from "./components/Controls";
 import Counter from "./components/Counter";
 import Navigation from "./components/Navigation";
 import Palette from "./components/Palette";
 import Photo from "./components/Photo";
-
-function App() {
+function Gallery() {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -28,54 +28,57 @@ function App() {
   };
 
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "var(--gutter-spacing)",
-          height: "100%",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            gap: "var(--gutter-spacing)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "var(--gutter-spacing)",
-            }}
-          >
-            <Counter
-              backgroundColor={colorPalettes[zeroIndexedId].colors[0]}
-              current={zeroIndexedId + 1}
-              total={colorPalettes.length}
-            />
-            <Palette colors={colorPalettes[zeroIndexedId].colors} />
-
-            <Controls
-              handlePreviousPalette={handlePreviousPalette}
-              handleNextPalette={handleNextPalette}
-              handleRandomPalette={handleRandomPalette}
-              previousBackgroundColor={colorPalettes[zeroIndexedId].colors[1]}
-              nextBackgroundColor={colorPalettes[zeroIndexedId].colors[2]}
-              randomBackgroundColor={colorPalettes[zeroIndexedId].colors[3]}
-              copyBackgroundColor={colorPalettes[zeroIndexedId].colors[4]}
-              colors={colorPalettes[zeroIndexedId].colors}
-            />
-          </div>
-          <Navigation bgColor={colorPalettes[zeroIndexedId].colors[5]} />
-        </div>
-        <Photo src={colorPalettes[zeroIndexedId].src} />
-      </div>
-    </>
+    <Wrapper>
+      <LeftColumnWrapper>
+        <Palette colors={colorPalettes[zeroIndexedId].colors} />
+        <SubWrapper>
+          <Counter
+            backgroundColor={colorPalettes[zeroIndexedId].colors[0]}
+            current={zeroIndexedId + 1}
+            total={colorPalettes.length}
+          />
+          <Controls
+            handlePreviousPalette={handlePreviousPalette}
+            handleNextPalette={handleNextPalette}
+            handleRandomPalette={handleRandomPalette}
+            previousBackgroundColor={colorPalettes[zeroIndexedId].colors[1]}
+            nextBackgroundColor={colorPalettes[zeroIndexedId].colors[2]}
+            randomBackgroundColor={colorPalettes[zeroIndexedId].colors[3]}
+            copyBackgroundColor={colorPalettes[zeroIndexedId].colors[4]}
+            colors={colorPalettes[zeroIndexedId].colors}
+          />
+        </SubWrapper>
+        <Navigation bgColor={colorPalettes[zeroIndexedId].colors[5]} />
+      </LeftColumnWrapper>
+      <Photo src={colorPalettes[zeroIndexedId].src} />
+    </Wrapper>
   );
 }
 
-export default App;
+const SubWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+  }
+`;
+
+const LeftColumnWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--gutter-spacing);
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: var(--gutter-spacing);
+  height: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+export default Gallery;

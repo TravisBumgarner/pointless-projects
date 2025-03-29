@@ -28,6 +28,12 @@ const Button = styled(Link)<{ $bgColor: string }>`
         true
       )})`};
   }
+
+  @media (max-width: 768px) {
+    position: fixed;
+    top: calc(var(--gutter-spacing) * 2);
+    right: calc(var(--gutter-spacing) * 2);
+  }
 `;
 
 export default Navigation;

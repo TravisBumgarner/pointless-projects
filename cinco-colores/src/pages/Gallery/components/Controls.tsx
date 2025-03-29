@@ -40,12 +40,7 @@ const Controls = ({
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <Wrapper>
       <div style={{ display: "flex" }}>
         <Button
           $bgColor={previousBackgroundColor}
@@ -89,9 +84,19 @@ const Controls = ({
         </Button>
       </div>
       <Background />
-    </div>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+  }
+`;
 
 const Button = styled.button<{ $bgColor: string }>`
   flex-shrink: 0;
