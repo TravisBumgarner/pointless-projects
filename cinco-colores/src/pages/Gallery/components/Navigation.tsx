@@ -4,7 +4,7 @@ import { getContrastColor } from "../../../utilities";
 
 const Navigation = ({ bgColor }: { bgColor: string }) => {
   return (
-    <Button $bgColor={bgColor} to="/cinco/about">
+    <Button $bgColor={bgColor} to="/seis/about">
       Sobre / About
     </Button>
   );

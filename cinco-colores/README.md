@@ -1,4 +1,4 @@
-# Cinco Colores
+# seis Colores
 
 Color palettes generated from Mexican architecture. 
 

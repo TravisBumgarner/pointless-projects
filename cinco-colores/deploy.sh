@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REMOTE_HOST="nfs_pointless_landing" # This value comes from ~/.ssh/config
-REMOTE_DIR="/home/public/cinco"
+REMOTE_DIR="/home/public/seis"
 LOCAL_DIR="./build"
 
 echo "Cleaning up remote directory..."

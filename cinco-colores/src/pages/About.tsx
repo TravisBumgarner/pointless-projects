@@ -10,7 +10,6 @@ const About = () => {
     background = "#F5F5F5";
   }
 
-  console.log("bg", background);
   return (
     <div
       style={{
@@ -28,7 +27,7 @@ const About = () => {
             textDecoration: "none",
             color: getContrastColor(background),
           }}
-          to="/"
+          to="/seis"
         >
           <GrFormClose style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }} />
         </Link>
@@ -46,7 +45,7 @@ const About = () => {
         casas. Me enamoré. Cada vez que paso por una casa colorida, me siento
         inspirado.
       </p>
-      <p>Y así nació Cinco Colores.</p>
+      <p>Y así nació seis Colores.</p>
       <p>
         - Travis (
         <Link
@@ -71,7 +70,7 @@ const About = () => {
         without asking anybody, chose bright colors to paint their houses. I
         fell in love. Every time I pass by a colorful house, I feel inspired.
       </p>
-      <p>And thus, Cinco Colores was born.</p>
+      <p>And thus, seis Colores was born.</p>
       <p>
         - Travis (
         <Link

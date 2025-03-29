@@ -14,17 +14,17 @@ function Gallery() {
 
   const handleNextPalette = () => {
     const nextId = (zeroIndexedId + 1) % colorPalettes.length;
-    navigate(`/cinco/${nextId + 1}`);
+    navigate(`/seis/${nextId + 1}`);
   };
 
   const handlePreviousPalette = () => {
     const prevId =
       zeroIndexedId - 1 < 0 ? colorPalettes.length - 1 : zeroIndexedId - 1;
-    navigate(`/cinco/${prevId + 1}`);
+    navigate(`/seis/${prevId + 1}`);
   };
 
   const handleRandomPalette = () => {
-    navigate(`/cinco/${Math.floor(Math.random() * colorPalettes.length)}`);
+    navigate(`/seis/${Math.floor(Math.random() * colorPalettes.length)}`);
   };
 
   return (
