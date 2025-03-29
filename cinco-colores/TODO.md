@@ -4,7 +4,7 @@
 - [x] Rest of the owl.
 - [ ] Implement Analytics
 - [x] Background color picker
-- [ ] Figure out deploys to not spend extra money.
+- [x] Figure out deploys to not spend extra money.
 - [x] load images in
 - [x] Add kmeans to color picker
 - [x] Proofread colors
