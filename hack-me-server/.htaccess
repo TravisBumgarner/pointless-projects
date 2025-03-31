@@ -1,0 +1,7 @@
+# Enable mod_rewrite
+RewriteEngine On
+
+# Redirect everything except files and directories to index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
