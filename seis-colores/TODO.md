@@ -1,0 +1,16 @@
+- [x] Initial Boilerplate
+- [x] Add script for syncing palettes
+- [x] Add about page. 
+- [x] Rest of the owl.
+- [ ] Implement Analytics
+- [x] Background color picker
+- [x] Figure out deploys to not spend extra money.
+- [x] load images in
+- [x] Add kmeans to color picker
+- [x] Proofread colors
+- [x] commit new preset to photo repo
+- [x] mobile friendly
+- [x] Keyboard commands
+- [ ] Update pointlessprojects root site.
+- [ ] Deploy to new subdomain
+- [ ] OG tags

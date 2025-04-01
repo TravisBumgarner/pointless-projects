@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.nfs
+server.log
+build/
+.env.production
+.env.development
+backup.json
+venv/
+.DS_Store
