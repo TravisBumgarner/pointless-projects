@@ -5,7 +5,6 @@ export const getContrastColor = (hexColor: string, invert = false): string => {
   if (hexColor.startsWith("rgb")) {
     hexColor = rgbToHex(hexColor)!;
   }
-  console.log("hexColor", hexColor);
   const color = hexColor.replace("#", "");
 
   // Convert hex to rgb
@@ -26,7 +25,6 @@ export const getContrastColor = (hexColor: string, invert = false): string => {
   shouldReturnDark = invert ? !shouldReturnDark : shouldReturnDark;
   // Return black or white based on luminance
 
-  console.log("setting", shouldReturnDark ? "#000000" : "#ffffff");
   return shouldReturnDark ? "#000000" : "#ffffff";
 };
 

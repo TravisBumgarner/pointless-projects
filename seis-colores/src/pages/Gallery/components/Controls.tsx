@@ -94,7 +94,12 @@ const Wrapper = styled.div`
   gap: 0;
 
   @media (max-width: 768px) {
-    flex-direction: row;
+    position: fixed;
+    bottom: var(--gutter-spacing);
+    left: var(--gutter-spacing);
+    right: var(--gutter-spacing);
+    flex-direction: row-reverse;
+    justify-content: space-between;
   }
 `;
 
@@ -117,6 +122,11 @@ const Button = styled.button<{ $bgColor: string }>`
         props.$bgColor,
         true
       )})`};
+  }
+
+  @media (max-width: 768px) {
+    width: calc(var(--swatch-size));
+    height: calc(var(--swatch-size));
   }
 `;
 export default Controls;

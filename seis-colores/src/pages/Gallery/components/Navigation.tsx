@@ -4,7 +4,7 @@ import { getContrastColor } from "../../../utilities";
 
 const Navigation = ({ bgColor }: { bgColor: string }) => {
   return (
-    <Button $bgColor={bgColor} to="/seis/about">
+    <Button $bgColor={bgColor} to="/about">
       Sobre / About
     </Button>
   );
@@ -27,12 +27,6 @@ const Button = styled(Link)<{ $bgColor: string }>`
         props.$bgColor,
         true
       )})`};
-  }
-
-  @media (max-width: 768px) {
-    position: fixed;
-    top: calc(var(--gutter-spacing) * 2);
-    right: calc(var(--gutter-spacing) * 2);
   }
 `;
 

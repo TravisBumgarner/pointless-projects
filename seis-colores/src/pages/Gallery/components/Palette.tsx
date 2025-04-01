@@ -5,17 +5,7 @@ const Palette = ({ colors }: { colors: string[] }) => {
   return (
     <Wrapper>
       {colors.map((color) => (
-        <div
-          key={color}
-          style={{
-            backgroundColor: color,
-            width: `calc(var(--swatch-size))`,
-            height: `calc(var(--swatch-size)`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <Color key={color} $bgColor={color}>
           <p
             style={{
               color: getContrastColor(color),
@@ -24,11 +14,25 @@ const Palette = ({ colors }: { colors: string[] }) => {
           >
             {color}
           </p>
-        </div>
+        </Color>
       ))}
     </Wrapper>
   );
 };
+
+const Color = styled.div<{ $bgColor: string }>`
+  width: calc(var(--swatch-size));
+  height: calc(var(--swatch-size));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.$bgColor};
+
+  @media (max-width: 768px) {
+    width: calc(var(--swatch-size) * 1.5);
+    height: calc(var(--swatch-size) * 1.5);
+  }
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,7 +41,7 @@ const Wrapper = styled.div`
   flex-wrap: wrap;
 
   @media (max-width: 768px) {
-    width: calc(var(--swatch-size) * 6);
+    width: 100%;
   }
 `;
 

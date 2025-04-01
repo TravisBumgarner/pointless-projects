@@ -45,7 +45,7 @@ const About = () => {
         casas. Me enamoré. Cada vez que paso por una casa colorida, me siento
         inspirado.
       </p>
-      <p>Y así nació seis Colores.</p>
+      <p>Y así nació Seis Colores.</p>
       <p>
         - Travis (
         <Link
@@ -70,7 +70,7 @@ const About = () => {
         without asking anybody, chose bright colors to paint their houses. I
         fell in love. Every time I pass by a colorful house, I feel inspired.
       </p>
-      <p>And thus, seis Colores was born.</p>
+      <p>And thus, Seis Colores was born.</p>
       <p>
         - Travis (
         <Link

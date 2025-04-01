@@ -27,7 +27,7 @@ const Router = () => {
     <AnimatePresence mode="wait">
       <Routes location={location}>
         <Route
-          path="/seis/color-picker"
+          path="/color-picker"
           element={
             <PageTransition key={location.pathname}>
               <ColorPicker />
@@ -36,7 +36,7 @@ const Router = () => {
         />
 
         <Route
-          path="/seis/about"
+          path="/about"
           element={
             <PageTransition key={location.pathname}>
               <About />
@@ -44,7 +44,7 @@ const Router = () => {
           }
         />
         <Route
-          path="/seis"
+          path="/"
           element={
             <PageTransition key={location.pathname}>
               <Gallery />
@@ -52,9 +52,9 @@ const Router = () => {
           }
         />
         <Route
-          path="/seis/:id"
+          path="/:id"
           element={
-            <PageTransition key={location.pathname}>
+          <PageTransition key={location.pathname}>
               <Gallery />
             </PageTransition>
           }
