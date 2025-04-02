@@ -14,12 +14,14 @@ export const GlobalStyle = createGlobalStyle`
   :root {
     --swatch-size: min(120px, 10vw);
     --gutter-spacing: 1vw;
+    --background-color: #F5F5F5;
   }
 
   html,
   body {
     margin: 0;
     padding: 0;
+    font-family: "Satoshi", sans-serif;
   }
 
   html, body, #root {

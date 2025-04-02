@@ -49,7 +49,7 @@ const Controls = ({
         >
           <GrFormPrevious
             color={getContrastColor(previousBackgroundColor)}
-            style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}
+            style={{ fontSize: `calc(var(--swatch-size) * 0.8)` }}
           />
         </Button>
         <Button
@@ -59,7 +59,7 @@ const Controls = ({
         >
           <GrFormNext
             color={getContrastColor(nextBackgroundColor)}
-            style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }}
+            style={{ fontSize: `calc(var(--swatch-size) * 0.8)` }}
           />
         </Button>
         <Button
@@ -69,7 +69,7 @@ const Controls = ({
         >
           <IoMdShuffle
             color={getContrastColor(randomBackgroundColor)}
-            style={{ fontSize: `calc(var(--swatch-size) * 0.3)` }}
+            style={{ fontSize: `calc(var(--swatch-size) * 0.65)` }}
           />
         </Button>
         <Button
@@ -79,7 +79,7 @@ const Controls = ({
         >
           <LiaCopy
             color={getContrastColor(copyBackgroundColor)}
-            style={{ fontSize: `calc(var(--swatch-size) * 0.3)` }}
+            style={{ fontSize: `calc(var(--swatch-size) * 0.6)` }}
           />
         </Button>
       </div>
@@ -94,19 +94,22 @@ const Wrapper = styled.div`
   gap: 0;
 
   @media (max-width: 768px) {
+    border: var(--background-color) solid;
+    border-bottom-width: calc(var(--gutter-spacing) * 2);
+    border-left-width: calc(var(--gutter-spacing) * 2);
+    border-top-width: calc(var(--gutter-spacing));
+    border-right-width: calc(var(--gutter-spacing));
     position: fixed;
-    bottom: var(--gutter-spacing);
-    left: var(--gutter-spacing);
-    right: var(--gutter-spacing);
     flex-direction: row-reverse;
-    justify-content: space-between;
+    left: 0;
+    bottom: 0;
   }
 `;
 
 const Button = styled.button<{ $bgColor: string }>`
   flex-shrink: 0;
-  width: calc(var(--swatch-size) / 2);
-  height: calc(var(--swatch-size) / 2);
+  width: calc(var(--swatch-size) * 0.5);
+  height: calc(var(--swatch-size) * 0.5);
   border: none;
   color: black;
   cursor: pointer;
@@ -125,8 +128,8 @@ const Button = styled.button<{ $bgColor: string }>`
   }
 
   @media (max-width: 768px) {
-    width: calc(var(--swatch-size));
-    height: calc(var(--swatch-size));
+    width: calc(var(--swatch-size) * 1);
+    height: calc(var(--swatch-size) * 1);
   }
 `;
 export default Controls;

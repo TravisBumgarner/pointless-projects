@@ -13,17 +13,18 @@ const Photo = ({ src }: { src: string }) => {
 
 const Wrapper = styled.div`
   max-width: 80vw;
-  max-height: 100%;
+  height: 100%;
 
   @media (max-width: 768px) {
     max-width: 100%;
-    max-height: 70vh;
+    max-height: 75vh;
   }
 `;
 
 const StyledPhoto = styled.img`
   max-width: 100%;
   max-height: 100%;
+  object-fit: contain;
 `;
 
 export default Photo;

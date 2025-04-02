@@ -13,17 +13,18 @@ const About = () => {
   return (
     <div
       style={{
-        fontFamily: "Satoshi",
+        paddingBottom: "50px",
         fontSize: "20px",
         color: getContrastColor(background),
+        fontFamily: "Satoshi",
       }}
     >
       <div style={{ position: "relative" }}>
         <Link
           style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
+            position: "fixed",
+            top: "var(--gutter-spacing)",
+            right: "var(--gutter-spacing)",
             textDecoration: "none",
             color: getContrastColor(background),
           }}

@@ -81,6 +81,10 @@ const SubWrapper = styled.div`
   @media (max-width: 768px) {
     flex-direction: row;
   }
+
+  @media (max-width: 768px) {
+    gap: 0;
+  }
 `;
 
 const LeftColumnWrapper = styled.div`

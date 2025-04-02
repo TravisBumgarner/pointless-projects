@@ -28,6 +28,10 @@ const Button = styled(Link)<{ $bgColor: string }>`
         true
       )})`};
   }
+
+  @media (max-width: 768px) {
+    width: calc(var(--swatch-size) * 3);
+  }
 `;
 
 export default Navigation;
