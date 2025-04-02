@@ -13,6 +13,7 @@ const StyledPhoto = styled.img`
   object-fit: contain;
   min-height: 0;
   object-position: top left;
+  min-width: 0;
 `;
 
 export default Photo;
