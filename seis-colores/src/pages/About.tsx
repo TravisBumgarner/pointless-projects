@@ -22,21 +22,21 @@ const About = () => {
       <div style={{ position: "relative" }}>
         <Link
           style={{
-            display: "block",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             position: "fixed",
             top: "calc(var(--gutter-spacing) * 2)",
             right: "calc(var(--gutter-spacing) * 2)",
-            width: "calc(var(--swatch-size) * 0.75)",
-            height: "calc(var(--swatch-size) * 0.75)",
+            width: "50px",
+            height: "50px",
             textDecoration: "none",
             color: background,
             backgroundColor: getContrastColor(background),
           }}
           to="/seis"
         >
-          <GrFormClose
-            style={{ fontSize: `calc(var(--swatch-size) * 0.75)` }}
-          />
+          <GrFormClose style={{ fontSize: `40px` }} />
         </Link>
       </div>
       <h1 style={{ marginTop: 0 }}>Sobre</h1>
