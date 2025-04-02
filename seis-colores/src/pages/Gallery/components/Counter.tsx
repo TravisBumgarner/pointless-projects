@@ -32,10 +32,6 @@ const Wrapper = styled.div<{ $backgroundColor: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  @media (max-width: 768px) {
-    width: calc(var(--swatch-size) * 1.5);
-  }
 `;
 
 export default Counter;

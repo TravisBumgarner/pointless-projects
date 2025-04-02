@@ -29,7 +29,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background-color: #F5F5F5;
+    background-color: var(--background-color);
     font-family: "Anton SC", sans-serif;
     font-weight: 400;
     font-style: normal;
