@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import { getContrastColor } from "../../../utilities";
 
 const Counter = ({
@@ -10,16 +11,7 @@ const Counter = ({
   backgroundColor: string;
 }) => {
   return (
-    <div
-      style={{
-        width: `calc(var(--swatch-size) * 2)`,
-        height: `calc(var(--swatch-size) * 0.5)`,
-        backgroundColor,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <Wrapper $backgroundColor={backgroundColor}>
       <p style={{ color: getContrastColor(backgroundColor) }}>
         <span style={{ fontSize: `calc(var(--swatch-size) * 0.45)` }}>
           {current}
@@ -29,8 +21,22 @@ const Counter = ({
           {total}
         </span>
       </p>
-    </div>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div<{ $backgroundColor: string }>`
+  width: calc(var(--swatch-size) * 2);
+  height: calc(var(--swatch-size) * 0.5);
+  background-color: ${(props) => props.$backgroundColor};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    width: calc(var(--swatch-size) * 3);
+    height: calc(var(--swatch-size) * 0.75);
+  }
+`;
 
 export default Counter;

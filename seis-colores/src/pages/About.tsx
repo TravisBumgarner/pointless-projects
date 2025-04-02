@@ -13,23 +13,30 @@ const About = () => {
   return (
     <div
       style={{
-        fontFamily: "Satoshi",
+        paddingBottom: "50px",
         fontSize: "20px",
         color: getContrastColor(background),
+        fontFamily: "Satoshi",
       }}
     >
       <div style={{ position: "relative" }}>
         <Link
           style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
+            display: "block",
+            position: "fixed",
+            top: "calc(var(--gutter-spacing) * 2)",
+            right: "calc(var(--gutter-spacing) * 2)",
+            width: "calc(var(--swatch-size) * 0.75)",
+            height: "calc(var(--swatch-size) * 0.75)",
             textDecoration: "none",
-            color: getContrastColor(background),
+            color: background,
+            backgroundColor: getContrastColor(background),
           }}
           to="/seis"
         >
-          <GrFormClose style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }} />
+          <GrFormClose
+            style={{ fontSize: `calc(var(--swatch-size) * 0.75)` }}
+          />
         </Link>
       </div>
       <h1 style={{ marginTop: 0 }}>Sobre</h1>

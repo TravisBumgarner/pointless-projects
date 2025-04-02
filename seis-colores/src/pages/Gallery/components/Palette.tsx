@@ -6,19 +6,21 @@ const Palette = ({ colors }: { colors: string[] }) => {
     <Wrapper>
       {colors.map((color) => (
         <Color key={color} $bgColor={color}>
-          <p
-            style={{
-              color: getContrastColor(color),
-              fontSize: `calc(var(--swatch-size) * 0.25)`,
-            }}
-          >
-            {color}
-          </p>
+          <Text $color={getContrastColor(color)}>{color}</Text>
         </Color>
       ))}
     </Wrapper>
   );
 };
+
+const Text = styled.p<{ $color: string }>`
+  font-size: calc(var(--swatch-size) * 0.25);
+  color: ${(props) => props.$color};
+
+  @media (max-width: 768px) {
+    font-size: calc(var(--swatch-size) * 0.4);
+  }
+`;
 
 const Color = styled.div<{ $bgColor: string }>`
   width: calc(var(--swatch-size));

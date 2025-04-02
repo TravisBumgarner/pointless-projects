@@ -12,14 +12,16 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   :root {
-    --swatch-size: min(120px, 10vw);
+    --swatch-size: min(120px, 10vw, 15vh);
     --gutter-spacing: 1vw;
+    --background-color: #F5F5F5;
   }
 
   html,
   body {
     margin: 0;
     padding: 0;
+    font-family: "Satoshi", sans-serif;
   }
 
   html, body, #root {
@@ -27,7 +29,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background-color: #F5F5F5;
+    background-color: var(--background-color);
     font-family: "Anton SC", sans-serif;
     font-weight: 400;
     font-style: normal;

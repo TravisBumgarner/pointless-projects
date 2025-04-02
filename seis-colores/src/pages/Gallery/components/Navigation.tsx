@@ -21,12 +21,18 @@ const Button = styled(Link)<{ $bgColor: string }>`
   align-items: center;
   justify-content: center;
   background-color: ${(props) => props.$bgColor};
+
   &:hover {
     background-color: ${(props) =>
       `color-mix(in srgb, ${props.$bgColor} 50%, ${getContrastColor(
         props.$bgColor,
         true
       )})`};
+  }
+
+  @media (max-width: 768px) {
+    width: calc(var(--swatch-size) * 3);
+    height: calc(var(--swatch-size) * 0.75);
   }
 `;
 
