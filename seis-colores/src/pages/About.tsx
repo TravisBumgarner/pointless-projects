@@ -23,14 +23,14 @@ const About = () => {
         <Link
           style={{
             position: "fixed",
-            top: "var(--gutter-spacing)",
-            right: "var(--gutter-spacing)",
+            top: "calc(var(--gutter-spacing) * 2)",
+            right: "calc(var(--gutter-spacing) * 2)",
             textDecoration: "none",
             color: getContrastColor(background),
           }}
           to="/seis"
         >
-          <GrFormClose style={{ fontSize: `calc(var(--swatch-size) * 0.5)` }} />
+          <GrFormClose style={{ fontSize: `calc(var(--swatch-size))` }} />
         </Link>
       </div>
       <h1 style={{ marginTop: 0 }}>Sobre</h1>

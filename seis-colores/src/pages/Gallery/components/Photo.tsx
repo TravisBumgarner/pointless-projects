@@ -4,27 +4,15 @@ const Photo = ({ src }: { src: string }) => {
   const imagePath = new URL(`../../../data/images/${src}`, import.meta.url)
     .href;
 
-  return (
-    <Wrapper>
-      <StyledPhoto src={imagePath} />
-    </Wrapper>
-  );
+  return <StyledPhoto src={imagePath} />;
 };
 
-const Wrapper = styled.div`
-  max-width: 80vw;
-  height: 100%;
-
-  @media (max-width: 768px) {
-    max-width: 100%;
-    max-height: 75vh;
-  }
-`;
-
 const StyledPhoto = styled.img`
-  max-width: 100%;
-  max-height: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
   object-fit: contain;
+  min-height: 0;
+  object-position: top left;
 `;
 
 export default Photo;

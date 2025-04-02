@@ -12,7 +12,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   :root {
-    --swatch-size: min(120px, 10vw);
+    --swatch-size: min(120px, 10vw, 15vh);
     --gutter-spacing: 1vw;
     --background-color: #F5F5F5;
   }

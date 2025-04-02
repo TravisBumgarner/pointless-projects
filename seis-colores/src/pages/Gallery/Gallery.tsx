@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { colorPalettes } from "../../data/palettes";
 import Controls from "./components/Controls";
-import Counter from "./components/Counter";
 import Palette from "./components/Palette";
 import Photo from "./components/Photo";
 
@@ -51,6 +50,8 @@ function Gallery() {
         <Palette colors={colorPalettes[zeroIndexedId].colors} />
         <SubWrapper>
           <Controls
+            photoIndex={zeroIndexedId}
+            totalPhotos={colorPalettes.length}
             handlePreviousPalette={handlePreviousPalette}
             handleNextPalette={handleNextPalette}
             handleRandomPalette={handleRandomPalette}
@@ -86,6 +87,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   gap: var(--gutter-spacing);
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
   height: 100%;
 
   @media (max-width: 768px) {

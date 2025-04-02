@@ -18,11 +18,15 @@ const Controls = ({
   handleNextPalette,
   handleRandomPalette,
   colors,
+  photoIndex,
+  totalPhotos,
 }: {
   handlePreviousPalette: () => void;
   handleNextPalette: () => void;
   handleRandomPalette: () => void;
   colors: string[];
+  photoIndex: number;
+  totalPhotos: number;
 }) => {
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -60,8 +64,8 @@ const Controls = ({
     <Wrapper>
       <Counter
         backgroundColor={colors[5]}
-        current={currentIndex + 1}
-        total={COLORS.length}
+        current={photoIndex + 1}
+        total={totalPhotos}
       />
       <ButtonsWrapper>
         <div style={{ display: "flex" }}>
@@ -71,10 +75,7 @@ const Controls = ({
             title="Anterior / Previous"
             onClick={handlePreviousPalette}
           >
-            <GrFormPrevious
-              color={getContrastColor(colors[0])}
-              style={{ fontSize: `calc(var(--swatch-size) * 0.8)` }}
-            />
+            <GrFormPrevious color={getContrastColor(colors[0])} />
           </Button>
           <Button
             $size="large"
@@ -82,10 +83,7 @@ const Controls = ({
             title="Próximo / Next"
             onClick={handleNextPalette}
           >
-            <GrFormNext
-              color={getContrastColor(colors[1])}
-              style={{ fontSize: `calc(var(--swatch-size) * 0.8)` }}
-            />
+            <GrFormNext color={getContrastColor(colors[1])} />
           </Button>
         </div>
         <div style={{ display: "flex" }}>
@@ -95,10 +93,7 @@ const Controls = ({
             title="Al azar / Random"
             onClick={handleRandomPalette}
           >
-            <IoMdShuffle
-              color={getContrastColor(colors[2])}
-              style={{ fontSize: `calc(var(--swatch-size) * 0.65)` }}
-            />
+            <IoMdShuffle color={getContrastColor(colors[2])} />
           </Button>
           <Button
             $size="small"
@@ -106,10 +101,7 @@ const Controls = ({
             onClick={copyColors}
             title="Copiar / Copy"
           >
-            <LiaCopy
-              color={getContrastColor(colors[3])}
-              style={{ fontSize: `calc(var(--swatch-size) * 0.6)` }}
-            />
+            <LiaCopy color={getContrastColor(colors[3])} />
           </Button>
           <Button
             $size="small"
@@ -117,10 +109,7 @@ const Controls = ({
             title="Lighter background"
             onClick={cycleUp}
           >
-            <MdKeyboardDoubleArrowDown
-              color="#131313"
-              style={{ fontSize: "calc(var(--swatch-size) * 0.5)" }}
-            />
+            <MdKeyboardDoubleArrowDown color="#131313" />
           </Button>
           <Button
             $size="small"
@@ -128,10 +117,7 @@ const Controls = ({
             title="Darker background"
             onClick={cycleDown}
           >
-            <MdKeyboardDoubleArrowUp
-              color="#F5F5F5"
-              style={{ fontSize: "calc(var(--swatch-size) * 0.5)" }}
-            />
+            <MdKeyboardDoubleArrowUp color="#F5F5F5" />
           </Button>
         </div>
       </ButtonsWrapper>
@@ -151,14 +137,10 @@ const Wrapper = styled.div`
   gap: 0;
 
   @media (max-width: 768px) {
-    border: var(--background-color) solid;
-    border-bottom-width: calc(var(--gutter-spacing) * 2);
-    border-left-width: calc(var(--gutter-spacing) * 2);
-    border-top-width: calc(var(--gutter-spacing));
-    border-right-width: calc(var(--gutter-spacing));
     position: fixed;
-    right: 0;
-    bottom: 0;
+    border: calc(var(--gutter-spacing) * 1) solid var(--background-color);
+    right: var(--gutter-spacing);
+    bottom: var(--gutter-spacing);
   }
 `;
 
@@ -172,6 +154,14 @@ const Button = styled.button<{ $bgColor: string; $size: "small" | "large" }>`
     props.$size === "small"
       ? "calc(var(--swatch-size) * 0.5)"
       : "calc(var(--swatch-size) * 1)"};
+
+  > * {
+    font-size: ${(props) =>
+      props.$size === "small"
+        ? "calc(var(--swatch-size) * 0.4)"
+        : "calc(var(--swatch-size) * 1)"};
+  }
+  padding: 0;
   border: none;
   color: black;
   cursor: pointer;
@@ -192,12 +182,19 @@ const Button = styled.button<{ $bgColor: string; $size: "small" | "large" }>`
   @media (max-width: 768px) {
     width: ${(props) =>
       props.$size === "small"
-        ? "calc(var(--swatch-size) * 0.5)"
-        : "calc(var(--swatch-size) * 1)"};
+        ? "calc(var(--swatch-size) * 0.75)"
+        : "calc(var(--swatch-size) * 1.5)"};
     height: ${(props) =>
       props.$size === "small"
-        ? "calc(var(--swatch-size) * 0.5)"
-        : "calc(var(--swatch-size) * 1)"};
+        ? "calc(var(--swatch-size) * 0.75)"
+        : "calc(var(--swatch-size) * 1.5)"};
+
+    > * {
+      font-size: ${(props) =>
+        props.$size === "small"
+          ? "calc(var(--swatch-size) * 0.75)"
+          : "calc(var(--swatch-size) * 1.5)"};
+    }
   }
 `;
 export default Controls;

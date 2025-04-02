@@ -29,6 +29,11 @@ const Button = styled(Link)<{ $bgColor: string }>`
         true
       )})`};
   }
+
+  @media (max-width: 768px) {
+    width: calc(var(--swatch-size) * 3);
+    height: calc(var(--swatch-size) * 0.75);
+  }
 `;
 
 export default Navigation;
