@@ -16,6 +16,7 @@ const Palette = ({ colors }: { colors: string[] }) => {
 const Text = styled.p<{ $color: string }>`
   font-size: calc(var(--swatch-size) * 0.25);
   color: ${(props) => props.$color};
+  text-transform: uppercase;
 
   @media (max-width: 768px) {
     font-size: calc(var(--swatch-size) * 0.4);

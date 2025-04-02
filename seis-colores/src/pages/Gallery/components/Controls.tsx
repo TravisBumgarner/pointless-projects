@@ -175,7 +175,7 @@ const Button = styled.button<{ $bgColor: string; $size: "small" | "large" }>`
     background-color: ${(props) =>
       `color-mix(in srgb, ${props.$bgColor} 50%, ${getContrastColor(
         props.$bgColor,
-        true
+        false
       )})`};
   }
 

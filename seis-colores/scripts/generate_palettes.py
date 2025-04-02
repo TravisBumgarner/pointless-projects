@@ -31,7 +31,7 @@ def get_image_colors(image_path: str) -> list[str]:
     for center in kmeans.cluster_centers_:
         rgb = tuple(int(x) for x in center)
         hex_color = "#{:02x}{:02x}{:02x}".format(*rgb)
-        colors.append(hex_color)
+        colors.append(hex_color.upper())
 
     return colors
 
