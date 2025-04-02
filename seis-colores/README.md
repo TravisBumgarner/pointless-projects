@@ -9,3 +9,7 @@ Color palettes generated from Mexican architecture.
 1. Run `scripts/sync-palettes.ts` to add the palette to `src/palettes.json`
 1. Open localhost:5173/ ... and pick colors. Populate in `src/palettes.json`
  (add some syncing method here)
+
+ # Dev Notes
+
+ - On deploy of a build with no code changes, the server has an issue of not being able to find the bundle. 
