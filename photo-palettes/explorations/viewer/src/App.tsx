@@ -34,7 +34,7 @@ const Palette = ({
 
   return (
     <div>
-      <p style={{ width: "200px", margin: 0 }}>{algorithm}</p>
+      <p style={{ margin: 0 }}>{algorithm}</p>
       <div
         style={{
           display: "flex",

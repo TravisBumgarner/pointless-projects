@@ -1,11 +1,11 @@
-source ./venv/bin/activate
 
 echo "Syncing file names"
-python sync_files.py
+python3 sync_files.py
 
+cd python_src
+source ./venv/bin/activate
 
 echo "Running python-color-thief"
-cd python-src
 python python-color-thief.py
 
 
@@ -14,3 +14,6 @@ python python-kmeans.py
 
 echo "Running python-basic-pixel-count"
 python python-basic-pixel-count.py
+
+echo "Running python-basic-pixels-with-distance"
+python python-basic-pixels-with-distance.py
