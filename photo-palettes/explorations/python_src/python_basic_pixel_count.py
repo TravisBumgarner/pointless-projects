@@ -1,42 +1,30 @@
 from PIL import Image
 import numpy as np
-from sklearn.cluster import KMeans
 import json
 from utils import setup_dirs, setup_json
 
 
 def get_image_colors(image_path: str) -> list[str]:
-    # Load and resize image
+    # Load image
     img = Image.open(image_path)
 
-    # Downsample to max 200x200
-    scale = min(200 / img.size[0], 200 / img.size[1])
-    new_size = tuple(int(dim * scale) for dim in img.size)
-    img = img.resize(new_size, Image.Resampling.LANCZOS)
-
-    # Convert to numpy array and reshape
+    # Convert to numpy array
     pixels = np.array(img)
     pixels = pixels.reshape(-1, 3)
 
-    # Sample every 4th pixel
-    pixels = pixels[::4]
+    # Convert each pixel to hex
+    hex_colors = ["#{:02x}{:02x}{:02x}".format(r, g, b) for r, g, b in pixels]
 
-    # Run k-means
-    kmeans = KMeans(n_clusters=6, random_state=42)
-    kmeans.fit(pixels)
+    # Count frequencies and get top 6
+    unique, counts = np.unique(hex_colors, return_counts=True)
+    top_6_indices = np.argsort(counts)[-6:]
 
-    # Convert centroids to hex colors
-    colors = []
-    for center in kmeans.cluster_centers_:
-        rgb = tuple(int(x) for x in center)
-        hex_color = "#{:02x}{:02x}{:02x}".format(*rgb)
-        colors.append(hex_color.upper())
-
-    return colors
+    # Return top 6 colors in uppercase
+    return [unique[i].upper() for i in top_6_indices]
 
 
 def sync_palettes():
-    [palettes_path, images_dir] = setup_dirs("python-kmeans")
+    [palettes_path, images_dir] = setup_dirs("python_basic_pixel_count")
     [new_images, palettes] = setup_json(palettes_path, images_dir)
 
     # Add new images with extracted colors

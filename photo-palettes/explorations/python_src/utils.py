@@ -11,13 +11,12 @@ def setup_dirs(algorithm):
 
 
 def setup_json(palettes_path, images_dir):
-    # If DISABLE_CACHE env var exists, delete and recreate json
-    if os.getenv("DISABLE_CACHE"):
-        if palettes_path.exists():
-            palettes_path.unlink()
+    palettes_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # If DISABLE_CACHE env var exists or file doesn't exist, start fresh
+    if os.getenv("DISABLE_CACHE") or not palettes_path.exists():
         palettes = {}
     else:
-        palettes_path.parent.mkdir(parents=True, exist_ok=True)
         # Read existing palettes
         with open(palettes_path) as f:
             palettes = json.load(f)

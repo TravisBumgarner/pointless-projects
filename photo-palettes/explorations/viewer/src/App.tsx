@@ -1,6 +1,31 @@
 import { useMemo, useState } from "react";
 import data, { Algorithm } from "./data/palettes";
-import { sortByHue, sortByLightness, sortBySaturation } from "./utils";
+import {
+  getContrastColor,
+  sortByHue,
+  sortByLightness,
+  sortBySaturation,
+} from "./utils";
+
+const hexToRgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
+        result[3],
+        16
+      )})`
+    : null;
+};
+
+const hexToHsl = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? `hsl(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
+        result[3],
+        16
+      )})`
+    : null;
+};
 
 const Image = ({ src }: { src: string }) => {
   const imagePath = new URL(`./data/images/${src}`, import.meta.url).href;
@@ -48,23 +73,27 @@ const Palette = ({
             key={color}
             style={{
               backgroundColor: color,
-              width: "100px",
-              height: "50px",
+              width: "110px",
               display: "flex",
               justifyContent: "center",
               alignItems: "flex-end",
             }}
           >
-            <p
+            <ul
               style={{
                 margin: 0,
-                backgroundColor: "white",
                 width: "100%",
                 textTransform: "uppercase",
+                listStyleType: "none",
+                padding: 5,
+                fontSize: "12px",
+                color: getContrastColor(color),
               }}
             >
-              {color}
-            </p>
+              <li>{color}</li>
+              <li>{hexToRgb(color)}</li>
+              <li>{hexToHsl(color)}</li>
+            </ul>
           </div>
         ))}
       </div>
@@ -73,13 +102,17 @@ const Palette = ({
 };
 
 const Sort = ({
+  sortAscending,
+  setSortAscending,
   sortMethod,
   setSortMethod,
 }: {
+  sortAscending: boolean;
   sortMethod: string;
   setSortMethod: React.Dispatch<
     React.SetStateAction<"hue" | "saturation" | "lightness">
   >;
+  setSortAscending: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <div style={{ right: 16, bottom: 16, position: "fixed" }}>
@@ -87,25 +120,53 @@ const Sort = ({
       <div>
         <button
           style={{ backgroundColor: sortMethod === "hue" ? "red" : "silver" }}
-          onClick={() => setSortMethod("hue")}
+          onClick={() => {
+            if (sortMethod === "hue") {
+              setSortAscending(!sortAscending);
+            } else {
+              setSortMethod("hue");
+            }
+          }}
         >
-          Hue
+          Hue {sortMethod === "hue" ? (sortAscending ? "(Desc)" : "(Asc)") : ""}
         </button>
         <button
           style={{
             backgroundColor: sortMethod === "saturation" ? "red" : "silver",
           }}
-          onClick={() => setSortMethod("saturation")}
+          onClick={() => {
+            if (sortMethod === "saturation") {
+              setSortAscending(!sortAscending);
+            } else {
+              setSortMethod("saturation");
+            }
+          }}
         >
-          Saturation
+          Saturation{" "}
+          {sortMethod === "saturation"
+            ? sortAscending
+              ? "(Desc)"
+              : "(Asc)"
+            : ""}
         </button>
         <button
           style={{
             backgroundColor: sortMethod === "lightness" ? "red" : "silver",
           }}
-          onClick={() => setSortMethod("lightness")}
+          onClick={() => {
+            if (sortMethod === "lightness") {
+              setSortAscending(!sortAscending);
+            } else {
+              setSortMethod("lightness");
+            }
+          }}
         >
-          Lightness
+          Lightness{" "}
+          {sortMethod === "lightness"
+            ? sortAscending
+              ? "(Desc)"
+              : "(Asc)"
+            : ""}
         </button>
       </div>
     </div>
@@ -116,17 +177,25 @@ function App() {
   const [sortMethod, setSortMethod] = useState<
     "hue" | "saturation" | "lightness"
   >("hue");
+  const [sortAscending, setSortAscending] = useState(true);
 
   const sortingFunc = useMemo(() => {
-    switch (sortMethod) {
-      case "hue":
-        return sortByHue;
-      case "saturation":
-        return sortByLightness;
-      case "lightness":
-        return sortBySaturation;
-    }
-  }, [sortMethod]);
+    const baseSort = (() => {
+      switch (sortMethod) {
+        case "hue":
+          return sortByHue;
+        case "saturation":
+          return sortByLightness;
+        case "lightness":
+          return sortBySaturation;
+      }
+    })();
+
+    return (colors: string[]) => {
+      const sorted = baseSort(colors);
+      return sortAscending ? sorted : [...sorted].reverse();
+    };
+  }, [sortMethod, sortAscending]);
 
   return (
     <>
@@ -155,7 +224,12 @@ function App() {
           </div>
         ))}
       </div>
-      <Sort sortMethod={sortMethod} setSortMethod={setSortMethod} />
+      <Sort
+        sortAscending={sortAscending}
+        setSortAscending={setSortAscending}
+        sortMethod={sortMethod}
+        setSortMethod={setSortMethod}
+      />
     </>
   );
 }
