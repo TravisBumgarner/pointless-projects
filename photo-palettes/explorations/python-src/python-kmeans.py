@@ -2,8 +2,7 @@ from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
 import json
-import os
-from pathlib import Path
+from utils import setup_dirs, setup_json
 
 
 def get_image_colors(image_path: str) -> list[str]:
@@ -37,32 +36,8 @@ def get_image_colors(image_path: str) -> list[str]:
 
 
 def sync_palettes():
-    # Setup paths
-    root_dir = Path(__file__).parent.parent
-    palettes_path = root_dir / "viewer" / "src" / "data" / "python-kmeans.json"
-    images_dir = root_dir / "viewer" / "src" / "data" / "images"
-
-    # Create palettes.json if it doesn't exist
-    if not palettes_path.exists():
-        palettes_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(palettes_path, "w") as f:
-            json.dump({}, f)
-
-    # Read existing palettes
-    with open(palettes_path) as f:
-        palettes = json.load(f)
-
-    existing_images = {p["src"] for p in palettes}
-
-    # Get all images
-    image_files = [
-        f
-        for f in os.listdir(images_dir)
-        if f.lower().endswith((".jpg", ".jpeg", ".png", ".avif", ".webp"))
-    ]
-
-    # Find new images
-    new_images = [img for img in image_files if img not in existing_images]
+    [palettes_path, images_dir] = setup_dirs("python-kmeans")
+    [new_images, palettes] = setup_json(palettes_path, images_dir)
 
     # Add new images with extracted colors
     for image in new_images:

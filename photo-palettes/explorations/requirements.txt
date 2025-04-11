@@ -1,3 +1,4 @@
+colorthief==0.2.1
 joblib==1.4.2
 numpy==2.2.4
 pillow==11.1.0

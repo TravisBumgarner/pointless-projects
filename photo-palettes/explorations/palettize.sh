@@ -1,8 +1,13 @@
 source ./venv/bin/activate
 
-echo "Syncing files"
+echo "Syncing file names"
 python sync_files.py
 
+
+echo "Running python-color-thief"
+cd python-src
+python python-color-thief.py
+
+
 echo "Running python-kmeans"
-cd python-kmeans
-python main.py
+python python-kmeans.py
