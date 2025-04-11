@@ -131,10 +131,11 @@ function App() {
           <div
             key={image}
             style={{
-              height: "100vh",
+              minHeight: "100vh",
               flexDirection: "row",
               display: "flex",
               gap: "10px",
+              marginBottom: "100px",
             }}
           >
             <Image src={image} />

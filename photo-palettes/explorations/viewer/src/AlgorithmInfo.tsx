@@ -17,6 +17,11 @@ const algorithmDetails = {
     description:
       "Converts pixels to hex colors, counts frequencies, and selects top 6 most frequent colors.",
   },
+  [Algorithm.PythonColorDistance2]: {
+    name: Algorithm.PythonColorDistance2,
+    description:
+      "Uses CIEDE2000 color distance with a threshold of 2 to filter similar colors.",
+  },
   [Algorithm.PythonColorDistance10]: {
     name: Algorithm.PythonColorDistance10,
     description:
@@ -31,6 +36,16 @@ const algorithmDetails = {
     name: Algorithm.PythonColorDistance50,
     description:
       "Uses CIEDE2000 color distance with a threshold of 50 to filter similar colors.",
+  },
+  [Algorithm.PythonColorDistance20AndBlackDistance30]: {
+    name: Algorithm.PythonColorDistance20AndBlackDistance30,
+    description:
+      "Uses CIEDE2000 color distance with a threshold of 20 to filter similar colors and black with a distance of 30.",
+  },
+  [Algorithm.PythonColorDistance20AndWhiteDistance30]: {
+    name: Algorithm.PythonColorDistance20AndWhiteDistance30,
+    description:
+      "Uses CIEDE2000 color distance with a threshold of 20 to filter similar colors and white with a distance of 30.",
   },
 };
 
@@ -70,7 +85,7 @@ export const AlgorithmInfo = () => {
             padding: "16px",
             borderRadius: "8px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-            width: "350px",
+            width: "600px",
             maxHeight: "400px",
             overflowY: "auto",
           }}

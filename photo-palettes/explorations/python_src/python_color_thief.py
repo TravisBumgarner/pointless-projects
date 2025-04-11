@@ -18,7 +18,7 @@ def get_image_colors(image_path: str) -> list[str]:
 
 
 def sync_palettes():
-    [palettes_path, images_dir] = setup_dirs("python-color-thief")
+    [palettes_path, images_dir] = setup_dirs("python_color_thief")
     [new_images, palettes] = setup_json(palettes_path, images_dir)
 
     # Add new images with extracted colors
