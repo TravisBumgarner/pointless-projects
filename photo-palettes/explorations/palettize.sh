@@ -11,3 +11,6 @@ python python-color-thief.py
 
 echo "Running python-kmeans"
 python python-kmeans.py
+
+echo "Running python-basic-pixel-count"
+python python-basic-pixel-count.py

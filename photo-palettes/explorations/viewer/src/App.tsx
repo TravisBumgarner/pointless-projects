@@ -8,7 +8,13 @@ const Image = ({ src }: { src: string }) => {
   return (
     <img
       src={imagePath}
-      style={{ maxWidth: "500px", maxHeight: "500px" }}
+      style={{
+        maxWidth: "500px",
+        maxHeight: "500px",
+        position: "sticky",
+        top: "30px",
+        marginBottom: "30px",
+      }}
     ></img>
   );
 };
@@ -42,14 +48,21 @@ const Palette = ({
             key={color}
             style={{
               backgroundColor: color,
-              width: "75px",
+              width: "100px",
               height: "50px",
               display: "flex",
               justifyContent: "center",
               alignItems: "flex-end",
             }}
           >
-            <p style={{ margin: 0, backgroundColor: "white", width: "100%" }}>
+            <p
+              style={{
+                margin: 0,
+                backgroundColor: "white",
+                width: "100%",
+                textTransform: "uppercase",
+              }}
+            >
               {color}
             </p>
           </div>
