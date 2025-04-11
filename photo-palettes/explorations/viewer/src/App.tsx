@@ -1,46 +1,43 @@
 import { useMemo, useState } from "react";
+import { AlgorithmInfo } from "./AlgorithmInfo";
 import data, { Algorithm } from "./data/palettes";
+import Sort from "./Sort";
 import {
   getContrastColor,
+  hexToHslDisplay,
+  hexToRgbDisplay,
   sortByHue,
   sortByLightness,
   sortBySaturation,
 } from "./utils";
 
-const hexToRgb = (hex: string) => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
-        result[3],
-        16
-      )})`
-    : null;
-};
-
-const hexToHsl = (hex: string) => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? `hsl(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
-        result[3],
-        16
-      )})`
-    : null;
-};
-
 const Image = ({ src }: { src: string }) => {
   const imagePath = new URL(`./data/images/${src}`, import.meta.url).href;
 
   return (
-    <img
-      src={imagePath}
+    <div
       style={{
-        maxWidth: "500px",
-        maxHeight: "500px",
+        width: "400px",
+        height: "400px",
         position: "sticky",
         top: "30px",
         marginBottom: "30px",
+        borderRadius: "4px",
+        overflow: "hidden",
       }}
-    ></img>
+    >
+      <img
+        src={imagePath}
+        style={{
+          maxWidth: "100%",
+          maxHeight: "100%",
+          width: "auto",
+          height: "auto",
+          objectFit: "contain",
+          borderRadius: "4px",
+        }}
+      />
+    </div>
   );
 };
 
@@ -66,6 +63,7 @@ const Palette = ({
           flexDirection: "row",
           alignItems: "center",
           margin: "10px 0",
+          gap: "4px ",
         }}
       >
         {sortedColors.map((color) => (
@@ -73,7 +71,8 @@ const Palette = ({
             key={color}
             style={{
               backgroundColor: color,
-              width: "110px",
+              borderRadius: "4px",
+              width: "120px",
               display: "flex",
               justifyContent: "center",
               alignItems: "flex-end",
@@ -91,83 +90,11 @@ const Palette = ({
               }}
             >
               <li>{color}</li>
-              <li>{hexToRgb(color)}</li>
-              <li>{hexToHsl(color)}</li>
+              <li>{hexToRgbDisplay(color)}</li>
+              <li>{hexToHslDisplay(color)}</li>
             </ul>
           </div>
         ))}
-      </div>
-    </div>
-  );
-};
-
-const Sort = ({
-  sortAscending,
-  setSortAscending,
-  sortMethod,
-  setSortMethod,
-}: {
-  sortAscending: boolean;
-  sortMethod: string;
-  setSortMethod: React.Dispatch<
-    React.SetStateAction<"hue" | "saturation" | "lightness">
-  >;
-  setSortAscending: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  return (
-    <div style={{ right: 16, bottom: 16, position: "fixed" }}>
-      <p>Sort By:</p>
-      <div>
-        <button
-          style={{ backgroundColor: sortMethod === "hue" ? "red" : "silver" }}
-          onClick={() => {
-            if (sortMethod === "hue") {
-              setSortAscending(!sortAscending);
-            } else {
-              setSortMethod("hue");
-            }
-          }}
-        >
-          Hue {sortMethod === "hue" ? (sortAscending ? "(Desc)" : "(Asc)") : ""}
-        </button>
-        <button
-          style={{
-            backgroundColor: sortMethod === "saturation" ? "red" : "silver",
-          }}
-          onClick={() => {
-            if (sortMethod === "saturation") {
-              setSortAscending(!sortAscending);
-            } else {
-              setSortMethod("saturation");
-            }
-          }}
-        >
-          Saturation{" "}
-          {sortMethod === "saturation"
-            ? sortAscending
-              ? "(Desc)"
-              : "(Asc)"
-            : ""}
-        </button>
-        <button
-          style={{
-            backgroundColor: sortMethod === "lightness" ? "red" : "silver",
-          }}
-          onClick={() => {
-            if (sortMethod === "lightness") {
-              setSortAscending(!sortAscending);
-            } else {
-              setSortMethod("lightness");
-            }
-          }}
-        >
-          Lightness{" "}
-          {sortMethod === "lightness"
-            ? sortAscending
-              ? "(Desc)"
-              : "(Asc)"
-            : ""}
-        </button>
       </div>
     </div>
   );
@@ -207,7 +134,7 @@ function App() {
               height: "100vh",
               flexDirection: "row",
               display: "flex",
-              gap: "20px",
+              gap: "10px",
             }}
           >
             <Image src={image} />
@@ -230,6 +157,7 @@ function App() {
         sortMethod={sortMethod}
         setSortMethod={setSortMethod}
       />
+      <AlgorithmInfo />
     </>
   );
 }
