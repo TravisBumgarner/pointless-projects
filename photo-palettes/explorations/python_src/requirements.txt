@@ -1,9 +1,0 @@
-colormath==3.0.0
-colorthief==0.2.1
-joblib==1.4.2
-networkx==3.4.2
-numpy==2.2.4
-pillow==11.1.0
-scikit-learn==1.6.1
-scipy==1.15.2
-threadpoolctl==3.6.0
