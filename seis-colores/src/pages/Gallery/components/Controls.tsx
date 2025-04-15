@@ -121,7 +121,7 @@ const Controls = ({
           </Button>
         </div>
       </ButtonsWrapper>
-      <Navigation bgColor={colors[4]} />
+      <Navigation colors={colors} />
     </Wrapper>
   );
 };

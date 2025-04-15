@@ -2,11 +2,20 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { getContrastColor } from "../../../utilities";
 
-const Navigation = ({ bgColor }: { bgColor: string }) => {
+const Navigation = ({ colors }: { colors: string[] }) => {
   return (
-    <Button $bgColor={bgColor} to="/about">
-      Sobre / About
-    </Button>
+    <>
+      <Button $bgColor={colors[4]} to="/about">
+        Sobre / About
+      </Button>
+      <Button
+        target="_blank"
+        $bgColor={colors[1]}
+        to="https://photopalettes.com/"
+      >
+        Más / More
+      </Button>
+    </>
   );
 };
 
