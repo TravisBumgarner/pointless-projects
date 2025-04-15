@@ -12,7 +12,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   :root {
-    --swatch-size: min(120px, 10vw, 15vh);
+    --swatch-size: min(16vw);
     --gutter-spacing: 1vw;
     --background-color: #F5F5F5;
   }
@@ -33,7 +33,7 @@ export const GlobalStyle = createGlobalStyle`
     font-family: "Anton SC", sans-serif;
     font-weight: 400;
     font-style: normal;
-    padding: calc(var(--gutter-spacing) * 2);
+    /* padding: calc(var(--gutter-spacing) * 2); */
     box-sizing: border-box;
   }
 `;

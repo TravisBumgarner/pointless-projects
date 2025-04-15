@@ -14,38 +14,26 @@ const Palette = ({ colors }: { colors: string[] }) => {
 };
 
 const Text = styled.p<{ $color: string }>`
-  font-size: calc(var(--swatch-size) * 0.25);
+  font-size: 50px;
   color: ${(props) => props.$color};
   text-transform: uppercase;
-
-  @media (max-width: 768px) {
-    font-size: calc(var(--swatch-size) * 0.4);
-  }
+  padding: 0;
+  margin: 0;
 `;
 
 const Color = styled.div<{ $bgColor: string }>`
-  width: calc(var(--swatch-size));
-  height: calc(var(--swatch-size));
+  width: calc(100% / 6);
+  aspect-ratio: 2/1;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: ${(props) => props.$bgColor};
-
-  @media (max-width: 768px) {
-    width: calc(var(--swatch-size) * 1.5);
-    height: calc(var(--swatch-size) * 1.5);
-  }
 `;
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
-  width: calc(var(--swatch-size) * 2);
   flex-wrap: wrap;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
 `;
 
 export default Palette;

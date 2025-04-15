@@ -1,100 +1,57 @@
-import React from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { colorPalettes } from "../../data/palettes";
-import Controls from "./components/Controls";
 import Palette from "./components/Palette";
-import Photo from "./components/Photo";
 
 function Gallery() {
   const navigate = useNavigate();
   const { id } = useParams();
-
   const zeroIndexedId = Number.isNaN(Number(id)) ? 0 : Number(id) - 1;
 
-  const handleNextPalette = () => {
+  const handleNextPalette = useCallback(() => {
     const nextId = (zeroIndexedId + 1) % colorPalettes.length;
     navigate(`/${nextId + 1}`);
-  };
+  }, [zeroIndexedId, navigate]);
 
-  const handlePreviousPalette = () => {
+  const handlePreviousPalette = useCallback(() => {
     const prevId =
       zeroIndexedId - 1 < 0 ? colorPalettes.length - 1 : zeroIndexedId - 1;
     navigate(`/${prevId + 1}`);
-  };
+  }, [zeroIndexedId, navigate]);
 
-  const handleRandomPalette = () => {
-    navigate(`/${Math.floor(Math.random() * colorPalettes.length)}`);
-  };
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      console.log(e.key);
+      if (e.key === "ArrowLeft") handlePreviousPalette();
+      if (e.key === "ArrowRight") handleNextPalette();
+    };
 
-  React.useEffect(() => {
-    // Preload the next and previous photos
-    const nextId = (zeroIndexedId + 1) % colorPalettes.length;
-    const prevId =
-      zeroIndexedId - 1 < 0 ? colorPalettes.length - 1 : zeroIndexedId - 1;
-    //   const imagePath = new URL(`../../../data/images/${src}`, import.meta.url).href;
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [handlePreviousPalette, handleNextPalette]);
 
-    new Image().src = new URL(
-      `../../data/images/${colorPalettes[nextId].src}`,
-      import.meta.url
-    ).href;
-    new Image().src = new URL(
-      `../../data/images/${colorPalettes[prevId].src}`,
-      import.meta.url
-    ).href;
-  }, [zeroIndexedId]);
-
+  const imagePath = new URL(
+    `../../data/images/${colorPalettes[zeroIndexedId].src}`,
+    import.meta.url
+  ).href;
   return (
-    <Wrapper>
-      <LeftColumnWrapper>
-        <Palette colors={colorPalettes[zeroIndexedId].colors} />
-        <SubWrapper>
-          <Controls
-            photoIndex={zeroIndexedId}
-            totalPhotos={colorPalettes.length}
-            handlePreviousPalette={handlePreviousPalette}
-            handleNextPalette={handleNextPalette}
-            handleRandomPalette={handleRandomPalette}
-            colors={colorPalettes[zeroIndexedId].colors}
-          />
-        </SubWrapper>
-      </LeftColumnWrapper>
-      <Photo src={colorPalettes[zeroIndexedId].src} />
-    </Wrapper>
+    <div style={{ maxWidth: "1200px", height: "100%", margin: "0 auto" }}>
+      <Palette colors={colorPalettes[zeroIndexedId].colors} />
+      <StyledPhoto src={imagePath} />
+    </div>
   );
 }
 
-const SubWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--gutter-spacing);
-  @media (max-width: 768px) {
-    flex-direction: row;
-  }
-
-  @media (max-width: 768px) {
-    gap: 0;
-  }
-`;
-
-const LeftColumnWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--gutter-spacing);
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: var(--gutter-spacing);
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 0;
+const StyledPhoto = styled.img`
+  width: 100%;
   height: 100%;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+  object-fit: cover;
+  object-position: bottom right;
+  box-sizing: border-box;
+  flex-grow: 1;
+  min-width: 0;
+  min-height: 0;
 `;
 
 export default Gallery;
