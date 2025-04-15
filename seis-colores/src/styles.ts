@@ -14,7 +14,7 @@ export const GlobalStyle = createGlobalStyle`
   :root {
     --swatch-size: min(16vw);
     --gutter-spacing: 1vw;
-    --background-color: #F5F5F5;
+    --background-color: #ffffff;
   }
 
   html,
@@ -22,6 +22,7 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-family: "Satoshi", sans-serif;
+    background-color: #ffffff;
   }
 
   html, body, #root {
@@ -29,7 +30,6 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background-color: var(--background-color);
     font-family: "Anton SC", sans-serif;
     font-weight: 400;
     font-style: normal;
