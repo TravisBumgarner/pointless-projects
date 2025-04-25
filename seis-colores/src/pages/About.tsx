@@ -73,7 +73,7 @@ const About = () => {
         oddity.
       </p>
       <p>
-        In 205, I arrived to Mexico for the first time. The people of Mexico,
+        In 2015, I arrived to Mexico for the first time. The people of Mexico,
         without asking anybody, chose bright colors to paint their houses. I
         fell in love. Every time I pass by a colorful house, I feel inspired.
       </p>
