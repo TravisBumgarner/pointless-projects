@@ -10,9 +10,10 @@ const io = new Server(server, {
     origin: "*", // relaxed for dev; tighten in prod
   },
 });
-
+console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "production") {
   const frontendDist = path.join(__dirname, "../../frontend/dist");
+  console.log("ruda", frontendDist);
   app.use(express.static(frontendDist));
   app.get("*", (_req, res) => {
     res.sendFile(path.join(frontendDist, "index.html"));
