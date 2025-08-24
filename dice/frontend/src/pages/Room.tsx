@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 
 import socket from "../services/socket";
 import { useParams } from "react-router";
-import DiceRoller from "../components/DiceRoller";
+import DiceRoller from "../rollers/DiceRoller";
+import { Box, Button, TextField, Typography } from "@mui/material";
 
 interface DiceResult {
   user: string;
@@ -32,14 +33,53 @@ const Room = () => {
       socket.off("dice_result");
     };
   }, [room]);
-  console.log("results", results);
+
   return (
     <div>
-      <h2>Room</h2>
-      <h1>Dice Room: {room}</h1>
-      <button onClick={handleCopyToClipboard}>Copy Room Link</button>
-      <button onClick={() => roll(6)}>Roll d6</button>
-      <button onClick={() => roll(20)}>Roll d20</button>
+      <h1>
+        Room: {room} (
+        <Button onClick={handleCopyToClipboard}>Share Room Link</Button>)
+      </h1>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography variant="body1">Roll a die:</Typography>
+        {[2, 4, 6, 8, 10, 12, 20, 100].map((sides) => (
+          <Button key={sides} variant="contained" onClick={() => roll(sides)}>
+            d{sides}
+          </Button>
+        ))}
+        <Typography variant="body1">or</Typography>
+        <TextField
+          size="small"
+          type="number"
+          variant="outlined"
+          placeholder="Custom sides"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              const sides = Number((e.target as HTMLInputElement).value);
+              if (!isNaN(sides) && sides > 0) {
+                roll(sides);
+              }
+            }
+          }}
+        />
+        <Button
+          variant="contained"
+          onClick={() => {
+            const sides = Number(
+              (
+                document.querySelector(
+                  'input[type="number"]'
+                ) as HTMLInputElement
+              ).value
+            );
+            if (!isNaN(sides) && sides > 0) {
+              roll(sides);
+            }
+          }}
+        >
+          Roll
+        </Button>
+      </Box>
       {results && (
         <DiceRoller rollResult={results.roll} sides={results.sides} />
       )}

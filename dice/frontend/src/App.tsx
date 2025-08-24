@@ -2,13 +2,16 @@ import { BrowserRouter } from "react-router";
 import Router from "./components/Router";
 
 import Navigation from "./components/Navigation";
+import AppThemeProvider from "./styles/Theme";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Navigation />
-      <Router />
-    </BrowserRouter>
+    <AppThemeProvider>
+      <BrowserRouter>
+        <Navigation />
+        <Router />
+      </BrowserRouter>
+    </AppThemeProvider>
   );
 };
 

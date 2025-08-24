@@ -3,12 +3,9 @@ import { Link } from "react-router";
 const Navigation = () => {
   return (
     <nav>
-      <h1>beep boop!</h1>
-      <ul>
-        <li>
-          <Link to="/">Ditzy Dice</Link>
-        </li>
-      </ul>
+      <Link to="/" style={{ textDecoration: "none" }}>
+        <h1>Dapper Dice</h1>
+      </Link>
     </nav>
   );
 };
