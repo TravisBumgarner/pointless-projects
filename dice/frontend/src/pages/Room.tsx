@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import socket from "../services/socket";
 import { useParams } from "react-router";
+import DiceRoller from "../components/DiceRoller";
 
 interface DiceResult {
   user: string;
@@ -10,7 +11,7 @@ interface DiceResult {
 }
 
 const Room = () => {
-  const [results, setResults] = useState<DiceResult[]>([]);
+  const [results, setResults] = useState<DiceResult | null>(null);
   const { room } = useParams<{ room: string }>();
 
   const roll = (sides: number) => {
@@ -25,13 +26,13 @@ const Room = () => {
   useEffect(() => {
     socket.emit("join_room", { room });
     socket.on("dice_result", (data: DiceResult) => {
-      setResults((prev) => [...prev, data]);
+      setResults(data);
     });
     return () => {
       socket.off("dice_result");
     };
   }, [room]);
-
+  console.log("results", results);
   return (
     <div>
       <h2>Room</h2>
@@ -39,11 +40,9 @@ const Room = () => {
       <button onClick={handleCopyToClipboard}>Copy Room Link</button>
       <button onClick={() => roll(6)}>Roll d6</button>
       <button onClick={() => roll(20)}>Roll d20</button>
-      {results.map((r, i) => (
-        <li key={i}>
-          <b>{r.user.slice(0, 4)}</b>: {r.roll} (d{r.sides})
-        </li>
-      ))}
+      {results && (
+        <DiceRoller rollResult={results.roll} sides={results.sides} />
+      )}
     </div>
   );
 };
