@@ -17,6 +17,11 @@ const Room = () => {
     socket.emit("roll_dice", { room: room, sides });
   };
 
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Copied room to  clipboard!");
+  };
+
   useEffect(() => {
     socket.emit("join_room", { room });
     socket.on("dice_result", (data: DiceResult) => {
@@ -31,6 +36,7 @@ const Room = () => {
     <div>
       <h2>Room</h2>
       <h1>Dice Room: {room}</h1>
+      <button onClick={handleCopyToClipboard}>Copy Room Link</button>
       <button onClick={() => roll(6)}>Roll d6</button>
       <button onClick={() => roll(20)}>Roll d20</button>
       {results.map((r, i) => (
