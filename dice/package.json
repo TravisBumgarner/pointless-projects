@@ -3,8 +3,10 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -k -n backend,frontend -c red,blue \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
-    "build": "npm run build --prefix frontend && npm run build --prefix backend",
-    "start": "npm run start --prefix backend"
+    "build": "rm -rf ./backend/dist && mkdir ./backend/dist && npm run build --prefix frontend && npm run build --prefix backend",
+    "deploy": "cd backend && ./deploy.sh",
+    "ship-it": "npm run build && npm run deploy",
+    "start": "NODE_ENV=production npm run start --prefix backend"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

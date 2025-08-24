@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && npm run mv-to-backend",
+    "mv-to-backend": "mkdir -p ../backend/dist/frontend && cp -r dist/* ../backend/dist/frontend",
     "lint": "eslint .",
     "preview": "vite preview"
   },
