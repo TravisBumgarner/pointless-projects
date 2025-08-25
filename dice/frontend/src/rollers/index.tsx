@@ -20,28 +20,15 @@ const rollerMap: Record<RollerType, React.FC<DiceRollerProps>> = {
   "jack-in-the-box": JackInBoxDice,
 };
 
-const Roller = ({ results }: { results: DiceResult | null }) => {
-  const [selectedRoller, setSelectedRoller] =
-    useState<RollerType>("wheel-of-doom");
-
+const Roller = ({
+  results,
+  selectedRoller,
+}: {
+  results: DiceResult | null;
+  selectedRoller: RollerType;
+}) => {
   return (
     <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
-      <Typography variant="h3">How Dapper?</Typography>
-
-      <Box>
-        <Select
-          fullWidth
-          size="small"
-          value={selectedRoller}
-          onChange={(e) => setSelectedRoller(e.target.value as RollerType)}
-        >
-          <MenuItem value="wheel-of-doom">Wheel of Doom</MenuItem>
-          <MenuItem value="plinko">Plinko Board</MenuItem>
-          <MenuItem value="balloon">Balloon Pop</MenuItem>
-          <MenuItem value="jack-in-the-box">Jack in the Box</MenuItem>
-        </Select>
-      </Box>
-
       {results &&
         (() => {
           const RollerComponent = rollerMap[selectedRoller];
