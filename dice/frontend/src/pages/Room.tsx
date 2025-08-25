@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import socket from "../services/socket";
 import { useParams } from "react-router";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import Roller from "../rollers";
 import DiceSelector from "../DiceSelector";
 
@@ -15,10 +15,8 @@ interface DiceResult {
 const Room = () => {
   const [results, setResults] = useState<DiceResult | null>(null);
   const { room } = useParams<{ room: string }>();
-  const [sides, setSides] = useState(6);
 
   const roll = (sides: number) => {
-    setSides(sides);
     socket.emit("roll_dice", { room: room, sides });
   };
 
@@ -38,14 +36,17 @@ const Room = () => {
   }, [room]);
 
   return (
-    <div>
-      <h1>
-        Room: {room} (
-        <Button onClick={handleCopyToClipboard}>Share Room Link</Button>)
-      </h1>
-      <DiceSelector roll={roll} />
-      {results && <Roller results={results} />}
-    </div>
+    <Box>
+      <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
+        <DiceSelector roll={roll} />
+        <Roller results={results} />
+      </Box>
+      <Box sx={{ position: "fixed", bottom: 16, right: 16 }}>
+        <Button sx={{ fontSize: "24px" }} onClick={handleCopyToClipboard}>
+          Share Room Link
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

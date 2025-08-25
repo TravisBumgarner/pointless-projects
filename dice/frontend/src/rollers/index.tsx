@@ -1,14 +1,7 @@
 import { useState } from "react";
 
-import DiceRoller from "../rollers/DiceRoller";
-import {
-  Box,
-  Button,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import DiceRoller from "./WheelOfDoom";
+import { Box, MenuItem, Select, Typography } from "@mui/material";
 import type { DiceRollerProps, RollerType } from "../types";
 import { PlinkoDice } from "../rollers/PinkoBoard";
 import { BalloonDice } from "../rollers/BalloonPop";
@@ -21,26 +14,33 @@ interface DiceResult {
 }
 
 const rollerMap: Record<RollerType, React.FC<DiceRollerProps>> = {
-  dice: DiceRoller,
+  "wheel-of-doom": DiceRoller,
   plinko: PlinkoDice,
   balloon: BalloonDice,
   "jack-in-the-box": JackInBoxDice,
 };
 
 const Roller = ({ results }: { results: DiceResult | null }) => {
-  const [selectedRoller, setSelectedRoller] = useState<RollerType>("dice");
+  const [selectedRoller, setSelectedRoller] =
+    useState<RollerType>("wheel-of-doom");
 
   return (
-    <div>
-      <Select
-        value={selectedRoller}
-        onChange={(e) => setSelectedRoller(e.target.value)}
-      >
-        <MenuItem value="dice">Dice Roller</MenuItem>
-        <MenuItem value="plinko">Plinko Board</MenuItem>
-        <MenuItem value="balloon">Balloon Pop</MenuItem>
-        <MenuItem value="jack-in-the-box">Jack in the Box</MenuItem>
-      </Select>
+    <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
+      <Typography variant="h3">How Dapper?</Typography>
+
+      <Box>
+        <Select
+          fullWidth
+          size="small"
+          value={selectedRoller}
+          onChange={(e) => setSelectedRoller(e.target.value as RollerType)}
+        >
+          <MenuItem value="wheel-of-doom">Wheel of Doom</MenuItem>
+          <MenuItem value="plinko">Plinko Board</MenuItem>
+          <MenuItem value="balloon">Balloon Pop</MenuItem>
+          <MenuItem value="jack-in-the-box">Jack in the Box</MenuItem>
+        </Select>
+      </Box>
 
       {results &&
         (() => {
@@ -49,7 +49,7 @@ const Roller = ({ results }: { results: DiceResult | null }) => {
             <RollerComponent rollResult={results.roll} sides={results.sides} />
           );
         })()}
-    </div>
+    </Box>
   );
 };
 

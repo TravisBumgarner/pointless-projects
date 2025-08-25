@@ -1,45 +1,89 @@
-import { Box, Typography, TextField, Button } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  type SxProps,
+  Typography,
+} from "@mui/material";
+import { useState } from "react";
 
 const DiceSelector = ({ roll }: { roll: (sides: number) => void }) => {
+  const [customSides, setCustomSides] = useState<number | null>(null);
+
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Typography variant="body1">Roll a die:</Typography>
-      {[2, 4, 6, 8, 10, 12, 20, 100].map((sides) => (
-        <Button key={sides} variant="contained" onClick={() => roll(sides)}>
-          d{sides}
-        </Button>
-      ))}
-      <Typography variant="body1">or</Typography>
-      <TextField
-        size="small"
-        type="number"
-        variant="outlined"
-        placeholder="Custom sides"
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            const sides = Number((e.target as HTMLInputElement).value);
-            if (!isNaN(sides) && sides > 0) {
-              roll(sides);
+    <Box
+      sx={{
+        display: "flex",
+        gap: "10px",
+        flexDirection: "column",
+      }}
+    >
+      <Typography variant="h3">Roll a die:</Typography>
+      <Box sx={buttonWrapperSx}>
+        {[2, 4, 6, 8].map((sides) => (
+          <Button
+            sx={buttonSx}
+            key={sides}
+            variant="contained"
+            onClick={() => roll(sides)}
+          >
+            d{sides}
+          </Button>
+        ))}
+      </Box>
+      <Box sx={buttonWrapperSx}>
+        {[10, 12, 20, 100].map((sides) => (
+          <Button
+            sx={buttonSx}
+            key={sides}
+            variant="contained"
+            onClick={() => roll(sides)}
+          >
+            d{sides}
+          </Button>
+        ))}
+      </Box>
+      <Box sx={buttonWrapperSx}>
+        <TextField
+          sx={{ flexGrow: 1 }}
+          size="small"
+          type="number"
+          variant="outlined"
+          placeholder="Custom sides"
+          value={customSides}
+          onChange={(e) => {
+            const val = e.target.value;
+            setCustomSides(val === "" ? null : Number(val));
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              const sides = Number(customSides);
+              if (!isNaN(sides) && sides > 0) {
+                roll(sides);
+                setCustomSides(null);
+              }
             }
-          }
-        }}
-      />
-      <Button
-        variant="contained"
-        onClick={() => {
-          const sides = Number(
-            (document.querySelector('input[type="number"]') as HTMLInputElement)
-              .value
-          );
-          if (!isNaN(sides) && sides > 0) {
-            roll(sides);
-          }
-        }}
-      >
-        Roll
-      </Button>
+          }}
+        />
+        <Button
+          variant="contained"
+          sx={buttonSx}
+          onClick={() => {
+            roll(customSides!);
+          }}
+          disabled={customSides === null}
+        >
+          Roll
+        </Button>
+      </Box>
     </Box>
   );
 };
+
+const buttonSx: SxProps = {
+  width: "20px",
+};
+
+const buttonWrapperSx: SxProps = { width: "100%", display: "flex", gap: 1 };
 
 export default DiceSelector;
