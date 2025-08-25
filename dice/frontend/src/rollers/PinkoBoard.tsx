@@ -1,49 +1,133 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { DiceRollerProps } from "../types";
+
+
+// Dynamic Plinko board config
+const BOARD_HEIGHT = 320;
+const BALL_SIZE = 24;
+const MIN_COLS = 4;
+const MAX_COLS = 16;
+const MIN_WIDTH = 180;
+const MAX_WIDTH = 480;
+
+function getPlinkoPath(sides: number, result: number) {
+  // Simulate a path: random left/right, but force end at result
+  // Use number of sides to set columns/slots
+  const cols = Math.max(MIN_COLS, Math.min(MAX_COLS, sides));
+  const steps = Math.max(5, Math.min(10, Math.floor(cols * 0.8)));
+  let col = Math.floor(cols / 2);
+  const path = [{ row: 0, col }];
+  for (let r = 1; r < steps; r++) {
+    // Random left/right, but bias toward final slot
+    const targetCol = Math.floor(((result - 1) / (sides - 1)) * (cols - 1));
+    if (col < targetCol) col++;
+    else if (col > targetCol) col--;
+    else col += Math.random() < 0.5 ? -1 : 1;
+    col = Math.max(0, Math.min(cols - 1, col));
+    path.push({ row: r, col });
+  }
+  return { path, cols };
+}
 
 export const PlinkoDice: React.FC<DiceRollerProps> = ({
   rollResult,
   sides,
 }) => {
-  const [ballPos, setBallPos] = useState(0);
-  const [falling, setFalling] = useState(false);
+  const [ballStep, setBallStep] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const [path, setPath] = useState<{ row: number; col: number }[]>([]);
+  const [cols, setCols] = useState(MIN_COLS);
+  const [showResult, setShowResult] = useState(false);
+  const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (rollResult) {
-      setFalling(true);
-      // Animate ball toward slot
-      const target = ((rollResult - 1) / (sides - 1)) * 90 - 45; // -45..45 deg
-      setBallPos(target);
-      const timer = setTimeout(() => setFalling(false), 2500);
-      return () => clearTimeout(timer);
+      const { path: newPath, cols: newCols } = getPlinkoPath(sides, rollResult);
+      setPath(newPath);
+      setCols(newCols);
+      setBallStep(0);
+      setAnimating(true);
+      setShowResult(false);
+      // Animate ball through pegs
+      let step = 0;
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = window.setInterval(() => {
+        step++;
+        if (step < newPath.length) {
+          setBallStep(step);
+        } else {
+          setAnimating(false);
+          setShowResult(true);
+          if (timerRef.current) clearInterval(timerRef.current);
+        }
+      }, 350);
+      return () => {
+        if (timerRef.current) clearInterval(timerRef.current);
+      };
+    } else {
+      setAnimating(false);
+      setBallStep(0);
+      setPath([]);
+      setCols(Math.max(MIN_COLS, Math.min(MAX_COLS, sides)));
+      setShowResult(false);
     }
   }, [rollResult, sides]);
+
+  // Dynamic board width and slot size
+  const boardWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, cols * 40));
+  const slotWidth = boardWidth / cols;
+  const pegRows = Math.max(5, Math.min(10, Math.floor(cols * 0.8)));
+
+  // Ball position
+  const ball = path[ballStep] || path[path.length - 1] || { row: 0, col: Math.floor(cols / 2) };
+  const ballLeft = ball.col * slotWidth + slotWidth / 2 - BALL_SIZE / 2;
+  const ballTop = ball.row * (BOARD_HEIGHT / (pegRows + 1));
 
   return (
     <div style={{ textAlign: "center", margin: "2rem" }}>
       <div
         style={{
           position: "relative",
-          width: 200,
-          height: 200,
-          border: "2px solid black",
+          width: boardWidth,
+          height: BOARD_HEIGHT,
+          border: "2px solid #333",
           margin: "0 auto",
+          background: "#f5f5f5",
+          borderRadius: 16,
           overflow: "hidden",
-          background: "#fafafa",
         }}
       >
+        {/* Pegs */}
+        {Array.from({ length: pegRows }).map((_, r) =>
+          Array.from({ length: cols }).map((_, c) => (
+            <div
+              key={`peg-${r}-${c}`}
+              style={{
+                position: "absolute",
+                top: r * (BOARD_HEIGHT / (pegRows + 1)) + 12,
+                left: c * slotWidth + slotWidth / 2 - 6,
+                width: 12,
+                height: 12,
+                borderRadius: "50%",
+                background: "#888",
+                boxShadow: "0 1px 4px #aaa",
+              }}
+            />
+          ))
+        )}
         {/* Ball */}
         <div
           style={{
             position: "absolute",
-            top: falling ? "160px" : "0px",
-            left: "50%",
-            transform: `translateX(${ballPos}px)`,
-            transition: "all 2.5s cubic-bezier(.4,.2,.2,1)",
-            width: 20,
-            height: 20,
+            top: ballTop,
+            left: ballLeft,
+            width: BALL_SIZE,
+            height: BALL_SIZE,
             borderRadius: "50%",
             background: "red",
+            boxShadow: "0 2px 8px #d32f2f",
+            transition: animating ? "top 0.3s, left 0.3s" : "none",
+            zIndex: 2,
           }}
         />
         {/* Slots */}
@@ -51,20 +135,28 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
           style={{
             position: "absolute",
             bottom: 0,
-            display: "flex",
+            left: 0,
             width: "100%",
+            display: "flex",
             justifyContent: "space-between",
+            zIndex: 1,
           }}
         >
           {Array.from({ length: sides }).map((_, i) => (
             <div
               key={i}
               style={{
-                width: 20,
+                width: slotWidth,
                 height: 40,
                 border: "1px solid #333",
+                borderRadius: "0 0 8px 8px",
+                background: showResult && rollResult === i + 1 ? "#ffd180" : "#fff",
                 textAlign: "center",
-                fontSize: 12,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: showResult && rollResult === i + 1 ? "#d32f2f" : "#333",
+                boxShadow: showResult && rollResult === i + 1 ? "0 2px 8px #aaa" : "none",
+                lineHeight: "40px",
               }}
             >
               {i + 1}
@@ -72,7 +164,9 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
           ))}
         </div>
       </div>
-      <h3>{rollResult ? `Result: ${rollResult}` : "Click Roll"}</h3>
+      <h3 style={{ marginTop: 16 }}>
+        {showResult && rollResult ? `Result: ${rollResult}` : "Click Roll"}
+      </h3>
     </div>
   );
 };
