@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-
-interface DiceRollerProps {
-  rollResult: number;
-  sides: number;
-}
+import type { DiceRollerProps } from "../types";
 
 const WHEEL_SIZE = 800;
 
