@@ -1,7 +1,5 @@
-import { useState } from "react";
-
 import DiceRoller from "./WheelOfDoom";
-import { Box, MenuItem, Select, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import type { DiceRollerProps, RollerType } from "../types";
 import { PlinkoDice } from "../rollers/PinkoBoard";
 import { BalloonDice } from "../rollers/BalloonPop";

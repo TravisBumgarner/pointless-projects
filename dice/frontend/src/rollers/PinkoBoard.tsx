@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { DiceRollerProps } from "../types";
 
-
 // Dynamic Plinko board config
 const BOARD_HEIGHT = 320;
 const BALL_SIZE = 24;
@@ -11,22 +10,22 @@ const MIN_WIDTH = 180;
 const MAX_WIDTH = 480;
 
 function getPlinkoPath(sides: number, result: number) {
-  // Simulate a path: random left/right, but force end at result
-  // Use number of sides to set columns/slots
+  // For large dice, group results into ranges
   const cols = Math.max(MIN_COLS, Math.min(MAX_COLS, sides));
   const steps = Math.max(5, Math.min(10, Math.floor(cols * 0.8)));
   let col = Math.floor(cols / 2);
+  // Map result to slot
+  const slotIdx = Math.floor(((result - 1) / sides) * cols);
   const path = [{ row: 0, col }];
   for (let r = 1; r < steps; r++) {
     // Random left/right, but bias toward final slot
-    const targetCol = Math.floor(((result - 1) / (sides - 1)) * (cols - 1));
-    if (col < targetCol) col++;
-    else if (col > targetCol) col--;
+    if (col < slotIdx) col++;
+    else if (col > slotIdx) col--;
     else col += Math.random() < 0.5 ? -1 : 1;
     col = Math.max(0, Math.min(cols - 1, col));
     path.push({ row: r, col });
   }
-  return { path, cols };
+  return { path, cols, slotIdx };
 }
 
 export const PlinkoDice: React.FC<DiceRollerProps> = ({
@@ -38,13 +37,19 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
   const [path, setPath] = useState<{ row: number; col: number }[]>([]);
   const [cols, setCols] = useState(MIN_COLS);
   const [showResult, setShowResult] = useState(false);
+  const [slotIdx, setSlotIdx] = useState(0);
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (rollResult) {
-      const { path: newPath, cols: newCols } = getPlinkoPath(sides, rollResult);
+      const {
+        path: newPath,
+        cols: newCols,
+        slotIdx: newSlotIdx,
+      } = getPlinkoPath(sides, rollResult);
       setPath(newPath);
       setCols(newCols);
+      setSlotIdx(newSlotIdx);
       setBallStep(0);
       setAnimating(true);
       setShowResult(false);
@@ -69,6 +74,7 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
       setBallStep(0);
       setPath([]);
       setCols(Math.max(MIN_COLS, Math.min(MAX_COLS, sides)));
+      setSlotIdx(0);
       setShowResult(false);
     }
   }, [rollResult, sides]);
@@ -79,9 +85,29 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
   const pegRows = Math.max(5, Math.min(10, Math.floor(cols * 0.8)));
 
   // Ball position
-  const ball = path[ballStep] || path[path.length - 1] || { row: 0, col: Math.floor(cols / 2) };
+  const ball = path[ballStep] ||
+    path[path.length - 1] || { row: 0, col: Math.floor(cols / 2) };
   const ballLeft = ball.col * slotWidth + slotWidth / 2 - BALL_SIZE / 2;
   const ballTop = ball.row * (BOARD_HEIGHT / (pegRows + 1));
+
+  // For large dice, group slot labels
+  let slotLabels: string[] = [];
+  if (sides <= cols) {
+    slotLabels = Array.from({ length: sides }).map((_, i) => `${i + 1}`);
+  } else {
+    const perSlot = Math.floor(sides / cols);
+    let remainder = sides % cols;
+    let start = 1;
+    for (let i = 0; i < cols; i++) {
+      let end = start + perSlot - 1;
+      if (remainder > 0) {
+        end++;
+        remainder--;
+      }
+      slotLabels.push(`${start}-${end}`);
+      start = end + 1;
+    }
+  }
 
   return (
     <div style={{ textAlign: "center", margin: "2rem" }}>
@@ -142,7 +168,7 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
             zIndex: 1,
           }}
         >
-          {Array.from({ length: sides }).map((_, i) => (
+          {slotLabels.map((label, i) => (
             <div
               key={i}
               style={{
@@ -150,16 +176,17 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
                 height: 40,
                 border: "1px solid #333",
                 borderRadius: "0 0 8px 8px",
-                background: showResult && rollResult === i + 1 ? "#ffd180" : "#fff",
+                background: showResult && i === slotIdx ? "#ffd180" : "#fff",
                 textAlign: "center",
                 fontSize: 16,
                 fontWeight: "bold",
-                color: showResult && rollResult === i + 1 ? "#d32f2f" : "#333",
-                boxShadow: showResult && rollResult === i + 1 ? "0 2px 8px #aaa" : "none",
+                color: showResult && i === slotIdx ? "#d32f2f" : "#333",
+                boxShadow:
+                  showResult && i === slotIdx ? "0 2px 8px #aaa" : "none",
                 lineHeight: "40px",
               }}
             >
-              {i + 1}
+              {label}
             </div>
           ))}
         </div>

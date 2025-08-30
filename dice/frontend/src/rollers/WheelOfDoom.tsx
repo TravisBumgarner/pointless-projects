@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { DiceRollerProps } from "../types";
 
-const WHEEL_SIZE = 400
-;
-
+const WHEEL_SIZE = 200;
 const DiceRoller: React.FC<DiceRollerProps> = ({ rollResult, sides }) => {
   const [spinning, setSpinning] = useState(false);
   const [activeSegment, setActiveSegment] = useState<number | null>(null);

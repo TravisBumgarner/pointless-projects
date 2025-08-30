@@ -7,11 +7,10 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
 }) => {
   const [popped, setPopped] = useState<number | null>(null);
   const [animating, setAnimating] = useState(false);
-  const [pendingResult, setPendingResult] = useState<number | null>(null);
+  // Removed unused _pendingResult state
 
   useEffect(() => {
     if (rollResult) {
-      setPendingResult(rollResult);
       setPopped(null);
       setAnimating(false);
       const timer = setTimeout(() => {
@@ -24,7 +23,6 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
       }, 5000);
       return () => clearTimeout(timer);
     } else {
-      setPendingResult(null);
       setPopped(null);
       setAnimating(false);
     }
