@@ -38,7 +38,7 @@ const DiceSelector = ({ setSides }: { setSides: (sides: number) => void }) => {
           </Button>
         ))}
       </Box>
-      <Box sx={buttonWrapperSx}>
+      {/* <Box sx={buttonWrapperSx}>
         <TextField
           sx={{ flexGrow: 1 }}
           size="small"
@@ -70,7 +70,7 @@ const DiceSelector = ({ setSides }: { setSides: (sides: number) => void }) => {
         >
           Roll
         </Button>
-      </Box>
+      </Box> */}
     </Box>
   );
 };

@@ -10,13 +10,7 @@ const Solo = () => {
   const [result, setResult] = useState<number | null>(null);
   const [sides, setSides] = useState(6);
 
-  const [selectedRoller, setSelectedRoller] =
-    useState<RollerType>("wheel-of-doom");
-
-  const roll = (sides: number) => {
-    const rollValue = Math.floor(Math.random() * sides) + 1;
-    setResult({ user: "solo", roll: rollValue, sides });
-  };
+  const [selectedRoller, setSelectedRoller] = useState<RollerType>("plinko");
 
   return (
     <Box>
@@ -26,7 +20,13 @@ const Solo = () => {
           setSelectedRoller={setSelectedRoller}
         />
         <DiceSelector setSides={setSides} />
-
+        <button
+          onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}
+        >
+          Roll d{sides}
+        </button>
+      </Box>
+      <Box>
         <Roller sides={sides} result={result} selectedRoller={selectedRoller} />
       </Box>
     </Box>

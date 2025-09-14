@@ -1,17 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import type { DiceRollerProps } from "../types";
 
 // Dynamic Plinko board config
 const BOARD_HEIGHT = 320;
 const BALL_SIZE = 24;
-const MIN_COLS = 4;
-const MAX_COLS = 16;
-const MIN_WIDTH = 180;
-const MAX_WIDTH = 480;
+
+function shuffle<T>(array: T[]): T[] {
+  const arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 function getPlinkoPath(sides: number, result: number) {
   // For large dice, group results into ranges
-  const cols = Math.max(MIN_COLS, Math.min(MAX_COLS, sides));
+  const cols = sides;
   const steps = Math.max(5, Math.min(10, Math.floor(cols * 0.8)));
   let col = Math.floor(cols / 2);
   // Map result to slot
@@ -32,7 +37,7 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
   const [ballStep, setBallStep] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [path, setPath] = useState<{ row: number; col: number }[]>([]);
-  const [cols, setCols] = useState(MIN_COLS);
+  const [cols, setCols] = useState(sides);
   const [showResult, setShowResult] = useState(false);
   const [slotIdx, setSlotIdx] = useState(0);
   const timerRef = useRef<number | null>(null);
@@ -70,16 +75,16 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
       setAnimating(false);
       setBallStep(0);
       setPath([]);
-      setCols(Math.max(MIN_COLS, Math.min(MAX_COLS, sides)));
+      setCols(sides);
       setSlotIdx(0);
       setShowResult(false);
     }
   }, [result, sides]);
 
   // Dynamic board width and slot size
-  const boardWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, cols * 40));
+  const boardWidth = sides <= 20 ? cols * 40 : cols * 10;
   const slotWidth = boardWidth / cols;
-  const pegRows = Math.max(5, Math.min(10, Math.floor(cols * 0.8)));
+  const pegRows = Math.floor(cols * 0.8);
 
   // Ball position
   const ball = path[ballStep] ||
@@ -87,37 +92,19 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
   const ballLeft = ball.col * slotWidth + slotWidth / 2 - BALL_SIZE / 2;
   const ballTop = ball.row * (BOARD_HEIGHT / (pegRows + 1));
 
-  // For large dice, group slot labels
-  let slotLabels: string[] = [];
-  if (sides <= cols) {
-    slotLabels = Array.from({ length: sides }).map((_, i) => `${i + 1}`);
-  } else {
-    const perSlot = Math.floor(sides / cols);
-    let remainder = sides % cols;
-    let start = 1;
-    for (let i = 0; i < cols; i++) {
-      let end = start + perSlot - 1;
-      if (remainder > 0) {
-        end++;
-        remainder--;
-      }
-      slotLabels.push(`${start}-${end}`);
-      start = end + 1;
-    }
-  }
+  const slotLabels = useMemo(() => {
+    return shuffle(Array.from({ length: sides }, (_, i) => `${i + 1}`));
+  }, [sides, result]); // eslint-disable-line 
 
   return (
-    <div style={{ textAlign: "center", margin: "2rem" }}>
+    <div style={{ textAlign: "center" }}>
       <div
         style={{
           position: "relative",
           width: boardWidth,
           height: BOARD_HEIGHT,
           border: "2px solid #333",
-          margin: "0 auto",
           background: "#f5f5f5",
-          borderRadius: 16,
-          overflow: "hidden",
         }}
       >
         {/* Pegs */}
@@ -129,8 +116,8 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
                 position: "absolute",
                 top: r * (BOARD_HEIGHT / (pegRows + 1)) + 12,
                 left: c * slotWidth + slotWidth / 2 - 6,
-                width: 12,
-                height: 12,
+                width: 6,
+                height: 6,
                 borderRadius: "50%",
                 background: "#888",
                 boxShadow: "0 1px 4px #aaa",
@@ -188,9 +175,6 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
           ))}
         </div>
       </div>
-      <h3 style={{ marginTop: 16 }}>
-        {showResult && result ? `Result: ${result}` : "Click Roll"}
-      </h3>
     </div>
   );
 };

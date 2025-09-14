@@ -1,7 +1,6 @@
 import WheelOfDoom from "./WheelOfDoom";
-import { Box } from "@mui/material";
 import type { DiceRollerProps, RollerType } from "../types";
-import { PlinkoDice } from "../rollers/PinkoBoard";
+import { PlinkoDice } from "./Plinko";
 import { BalloonDice } from "../rollers/BalloonPop";
 import { JackInBoxDice } from "../rollers/JackInTheBox";
 
@@ -21,14 +20,8 @@ const Roller = ({
   selectedRoller: RollerType;
   sides: number;
 }) => {
-  return (
-    <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
-      {(() => {
-        const RollerComponent = rollerMap[selectedRoller];
-        return <RollerComponent sides={sides} result={result} />;
-      })()}
-    </Box>
-  );
+  const RollerComponent = rollerMap[selectedRoller];
+  return <RollerComponent sides={sides} result={result} />;
 };
 
 export default Roller;
