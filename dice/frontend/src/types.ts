@@ -1,5 +1,4 @@
 export interface DiceRollerProps {
-  result: number | null;
   sides: number;
 }
 export type RollerType =

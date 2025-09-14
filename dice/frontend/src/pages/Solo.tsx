@@ -7,7 +7,6 @@ import type { RollerType } from "../types";
 import SelectRoller from "../SelectRoller";
 
 const Solo = () => {
-  const [result, setResult] = useState<number | null>(null);
   const [sides, setSides] = useState(6);
 
   const [selectedRoller, setSelectedRoller] = useState<RollerType>("plinko");
@@ -20,14 +19,9 @@ const Solo = () => {
           setSelectedRoller={setSelectedRoller}
         />
         <DiceSelector setSides={setSides} />
-        <button
-          onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}
-        >
-          Roll d{sides}
-        </button>
       </Box>
       <Box>
-        <Roller sides={sides} result={result} selectedRoller={selectedRoller} />
+        <Roller sides={sides} selectedRoller={selectedRoller} />
       </Box>
     </Box>
   );

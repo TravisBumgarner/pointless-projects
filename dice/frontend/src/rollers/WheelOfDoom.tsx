@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { DiceRollerProps } from "../types";
 
-const WheelOfDoom: React.FC<DiceRollerProps> = ({ result, sides }) => {
+const WheelOfDoom: React.FC<DiceRollerProps> = ({ sides }) => {
   const [spinning, setSpinning] = useState(false);
   const [activeSegment, setActiveSegment] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
   const [wheelSideLength, setWheelSideLength] = useState(0);
+  const [result, setResult] = useState<number | null>(null);
 
   useEffect(() => {
     const wheel = wheelRef.current;
@@ -121,6 +122,9 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ result, sides }) => {
 
   return (
     <div>
+      <button onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}>
+        Roll
+      </button>
       <div
         ref={wheelRef}
         style={{

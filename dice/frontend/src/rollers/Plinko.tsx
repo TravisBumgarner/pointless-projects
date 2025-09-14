@@ -4,6 +4,7 @@ import type { DiceRollerProps } from "../types";
 // Dynamic Plinko board config
 const BOARD_HEIGHT = 320;
 const BALL_SIZE = 24;
+const ROWS = 10;
 
 function shuffle<T>(array: T[]): T[] {
   const arr = array.slice();
@@ -17,12 +18,11 @@ function shuffle<T>(array: T[]): T[] {
 function getPlinkoPath(sides: number, result: number) {
   // For large dice, group results into ranges
   const cols = sides;
-  const steps = Math.max(5, Math.min(10, Math.floor(cols * 0.8)));
   let col = Math.floor(cols / 2);
   // Map result to slot
   const slotIdx = Math.floor(((result - 1) / sides) * cols);
   const path = [{ row: 0, col }];
-  for (let r = 1; r < steps; r++) {
+  for (let r = 1; r < ROWS; r++) {
     // Random left/right, but bias toward final slot
     if (col < slotIdx) col++;
     else if (col > slotIdx) col--;
@@ -33,28 +33,23 @@ function getPlinkoPath(sides: number, result: number) {
   return { path, cols, slotIdx };
 }
 
-export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
+export const PlinkoDice: React.FC<DiceRollerProps> = ({ sides }) => {
   const [ballStep, setBallStep] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [path, setPath] = useState<{ row: number; col: number }[]>([]);
   const [cols, setCols] = useState(sides);
-  const [showResult, setShowResult] = useState(false);
-  const [slotIdx, setSlotIdx] = useState(0);
   const timerRef = useRef<number | null>(null);
+  const [result, setResult] = useState<number | null>(null);
+
+  const sizing = sides > 20 ? "small" : "large";
 
   useEffect(() => {
     if (result) {
-      const {
-        path: newPath,
-        cols: newCols,
-        slotIdx: newSlotIdx,
-      } = getPlinkoPath(sides, result);
+      const { path: newPath, cols: newCols } = getPlinkoPath(sides, result);
       setPath(newPath);
       setCols(newCols);
-      setSlotIdx(newSlotIdx);
       setBallStep(0);
       setAnimating(true);
-      setShowResult(false);
       // Animate ball through pegs
       let step = 0;
       if (timerRef.current) clearInterval(timerRef.current);
@@ -64,7 +59,6 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
           setBallStep(step);
         } else {
           setAnimating(false);
-          setShowResult(true);
           if (timerRef.current) clearInterval(timerRef.current);
         }
       }, 350);
@@ -76,28 +70,28 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
       setBallStep(0);
       setPath([]);
       setCols(sides);
-      setSlotIdx(0);
-      setShowResult(false);
     }
   }, [result, sides]);
 
   // Dynamic board width and slot size
-  const boardWidth = sides <= 20 ? cols * 40 : cols * 10;
+  const boardWidth = sizing === "large" ? cols * 40 : cols * 15;
   const slotWidth = boardWidth / cols;
-  const pegRows = Math.floor(cols * 0.8);
 
   // Ball position
   const ball = path[ballStep] ||
     path[path.length - 1] || { row: 0, col: Math.floor(cols / 2) };
   const ballLeft = ball.col * slotWidth + slotWidth / 2 - BALL_SIZE / 2;
-  const ballTop = ball.row * (BOARD_HEIGHT / (pegRows + 1));
+  const ballTop = ball.row * (BOARD_HEIGHT / (ROWS + 1));
 
   const slotLabels = useMemo(() => {
     return shuffle(Array.from({ length: sides }, (_, i) => `${i + 1}`));
-  }, [sides, result]); // eslint-disable-line 
+  }, [sides, result]); // eslint-disable-line
 
   return (
     <div style={{ textAlign: "center" }}>
+      <button onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}>
+        Roll
+      </button>
       <div
         style={{
           position: "relative",
@@ -108,13 +102,13 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
         }}
       >
         {/* Pegs */}
-        {Array.from({ length: pegRows }).map((_, r) =>
+        {Array.from({ length: ROWS }).map((_, r) =>
           Array.from({ length: cols }).map((_, c) => (
             <div
               key={`peg-${r}-${c}`}
               style={{
                 position: "absolute",
-                top: r * (BOARD_HEIGHT / (pegRows + 1)) + 12,
+                top: r * (BOARD_HEIGHT / (ROWS + 1)) + 12,
                 left: c * slotWidth + slotWidth / 2 - 6,
                 width: 6,
                 height: 6,
@@ -160,13 +154,9 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
                 height: 40,
                 border: "1px solid #333",
                 borderRadius: "0 0 8px 8px",
-                background: showResult && i === slotIdx ? "#ffd180" : "#fff",
                 textAlign: "center",
-                fontSize: 16,
+                fontSize: sizing === "large" ? 16 : 8,
                 fontWeight: "bold",
-                color: showResult && i === slotIdx ? "#d32f2f" : "#333",
-                boxShadow:
-                  showResult && i === slotIdx ? "0 2px 8px #aaa" : "none",
                 lineHeight: "40px",
               }}
             >
