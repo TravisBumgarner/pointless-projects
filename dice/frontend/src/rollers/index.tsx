@@ -1,39 +1,32 @@
-import DiceRoller from "./WheelOfDoom";
+import WheelOfDoom from "./WheelOfDoom";
 import { Box } from "@mui/material";
 import type { DiceRollerProps, RollerType } from "../types";
 import { PlinkoDice } from "../rollers/PinkoBoard";
 import { BalloonDice } from "../rollers/BalloonPop";
 import { JackInBoxDice } from "../rollers/JackInTheBox";
 
-interface DiceResult {
-  user: string;
-  roll: number;
-  sides: number;
-}
-
 const rollerMap: Record<RollerType, React.FC<DiceRollerProps>> = {
-  "wheel-of-doom": DiceRoller,
+  "wheel-of-doom": WheelOfDoom,
   plinko: PlinkoDice,
   balloon: BalloonDice,
   "jack-in-the-box": JackInBoxDice,
 };
 
 const Roller = ({
-  results,
+  result,
   selectedRoller,
+  sides,
 }: {
-  results: DiceResult | null;
+  result: number | null;
   selectedRoller: RollerType;
+  sides: number;
 }) => {
   return (
     <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
-      {results &&
-        (() => {
-          const RollerComponent = rollerMap[selectedRoller];
-          return (
-            <RollerComponent rollResult={results.roll} sides={results.sides} />
-          );
-        })()}
+      {(() => {
+        const RollerComponent = rollerMap[selectedRoller];
+        return <RollerComponent sides={sides} result={result} />;
+      })()}
     </Box>
   );
 };

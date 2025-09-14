@@ -28,10 +28,7 @@ function getPlinkoPath(sides: number, result: number) {
   return { path, cols, slotIdx };
 }
 
-export const PlinkoDice: React.FC<DiceRollerProps> = ({
-  rollResult,
-  sides,
-}) => {
+export const PlinkoDice: React.FC<DiceRollerProps> = ({ result, sides }) => {
   const [ballStep, setBallStep] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [path, setPath] = useState<{ row: number; col: number }[]>([]);
@@ -41,12 +38,12 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (rollResult) {
+    if (result) {
       const {
         path: newPath,
         cols: newCols,
         slotIdx: newSlotIdx,
-      } = getPlinkoPath(sides, rollResult);
+      } = getPlinkoPath(sides, result);
       setPath(newPath);
       setCols(newCols);
       setSlotIdx(newSlotIdx);
@@ -77,7 +74,7 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
       setSlotIdx(0);
       setShowResult(false);
     }
-  }, [rollResult, sides]);
+  }, [result, sides]);
 
   // Dynamic board width and slot size
   const boardWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, cols * 40));
@@ -192,7 +189,7 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
         </div>
       </div>
       <h3 style={{ marginTop: 16 }}>
-        {showResult && rollResult ? `Result: ${rollResult}` : "Click Roll"}
+        {showResult && result ? `Result: ${result}` : "Click Roll"}
       </h3>
     </div>
   );

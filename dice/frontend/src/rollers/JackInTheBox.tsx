@@ -3,13 +3,13 @@ import type { DiceRollerProps } from "../types";
 
 const BOX_SIZE = 300;
 
-export const JackInBoxDice: React.FC<DiceRollerProps> = ({ rollResult }) => {
+export const JackInBoxDice: React.FC<DiceRollerProps> = ({ result }) => {
   const [cranking, setCranking] = useState(false);
   const [popped, setPopped] = useState(false);
   const [crankAngle, setCrankAngle] = useState(0);
 
   useEffect(() => {
-    if (rollResult !== undefined) {
+    if (result !== undefined) {
       setCranking(true);
       setPopped(false);
       let frame = 0;
@@ -25,7 +25,7 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({ rollResult }) => {
       }, 40);
       return () => clearInterval(crankInterval);
     }
-  }, [rollResult]);
+  }, [result]);
 
   return (
     <div
@@ -82,7 +82,7 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({ rollResult }) => {
             >
               🤡
               <br />
-              <span style={{ fontSize: 24, color: "black" }}>{rollResult}</span>
+              <span style={{ fontSize: 24, color: "black" }}>{result}</span>
             </div>
           )}
         </div>

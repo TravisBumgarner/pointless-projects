@@ -1,31 +1,26 @@
-import {
-  Box,
-  TextField,
-  Button,
-  type SxProps,
-  Typography,
-} from "@mui/material";
+import { Box, TextField, Button, type SxProps } from "@mui/material";
 import { useState } from "react";
+import { SPACING } from "./styles/styleConsts";
 
-const DiceSelector = ({ roll }: { roll: (sides: number) => void }) => {
+const DiceSelector = ({ setSides }: { setSides: (sides: number) => void }) => {
   const [customSides, setCustomSides] = useState<number | null>(null);
 
   return (
     <Box
       sx={{
         display: "flex",
-        gap: "10px",
+        gap: SPACING.TINY.PX,
         flexDirection: "column",
+        width: "100%",
       }}
     >
-      <Typography variant="h3">Roll a die:</Typography>
       <Box sx={buttonWrapperSx}>
         {[2, 4, 6, 8].map((sides) => (
           <Button
             sx={buttonSx}
             key={sides}
             variant="contained"
-            onClick={() => roll(sides)}
+            onClick={() => setSides(sides)}
           >
             d{sides}
           </Button>
@@ -37,7 +32,7 @@ const DiceSelector = ({ roll }: { roll: (sides: number) => void }) => {
             sx={buttonSx}
             key={sides}
             variant="contained"
-            onClick={() => roll(sides)}
+            onClick={() => setSides(sides)}
           >
             d{sides}
           </Button>
@@ -59,7 +54,7 @@ const DiceSelector = ({ roll }: { roll: (sides: number) => void }) => {
             if (e.key === "Enter") {
               const sides = Number(customSides);
               if (!isNaN(sides) && sides > 0) {
-                roll(sides);
+                setSides(sides);
                 setCustomSides(null);
               }
             }
@@ -69,7 +64,7 @@ const DiceSelector = ({ roll }: { roll: (sides: number) => void }) => {
           variant="contained"
           sx={buttonSx}
           onClick={() => {
-            roll(customSides!);
+            setSides(customSides!);
           }}
           disabled={customSides === null}
         >
@@ -81,9 +76,15 @@ const DiceSelector = ({ roll }: { roll: (sides: number) => void }) => {
 };
 
 const buttonSx: SxProps = {
-  width: "20px",
+  width: "10px",
+  minWidth: "10px",
+  flexGrow: 1,
 };
 
-const buttonWrapperSx: SxProps = { width: "100%", display: "flex", gap: 1 };
+const buttonWrapperSx: SxProps = {
+  flexGrow: 1,
+  display: "flex",
+  gap: SPACING.TINY.PX,
+};
 
 export default DiceSelector;

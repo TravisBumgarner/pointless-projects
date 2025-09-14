@@ -1,5 +1,6 @@
-import { Box, MenuItem, Select, Typography } from "@mui/material";
+import { Box, MenuItem, Select } from "@mui/material";
 import type { RollerType } from "./types";
+import { SPACING } from "./styles/styleConsts";
 
 const SelectRoller = ({
   setSelectedRoller,
@@ -9,23 +10,19 @@ const SelectRoller = ({
   selectedRoller: RollerType;
 }) => {
   return (
-    <>
-      <Typography variant="h3">How Dapper?</Typography>
-
-      <Box>
-        <Select
-          fullWidth
-          size="small"
-          value={selectedRoller}
-          onChange={(e) => setSelectedRoller(e.target.value as RollerType)}
-        >
-          <MenuItem value="wheel-of-doom">Wheel of Doom</MenuItem>
-          <MenuItem value="plinko">Plinko Board</MenuItem>
-          <MenuItem value="balloon">Balloon Pop</MenuItem>
-          <MenuItem value="jack-in-the-box">Jack in the Box</MenuItem>
-        </Select>
-      </Box>
-    </>
+    <Box sx={{ width: "100%", margin: `${SPACING.TINY.PX} 0` }}>
+      <Select
+        fullWidth
+        size="small"
+        value={selectedRoller}
+        onChange={(e) => setSelectedRoller(e.target.value as RollerType)}
+      >
+        <MenuItem value="wheel-of-doom">Wheel of Doom</MenuItem>
+        <MenuItem value="plinko">Plinko Board</MenuItem>
+        <MenuItem value="balloon">Balloon Pop</MenuItem>
+        <MenuItem value="jack-in-the-box">Jack in the Box</MenuItem>
+      </Select>
+    </Box>
   );
 };
 

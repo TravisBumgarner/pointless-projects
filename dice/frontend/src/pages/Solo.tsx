@@ -6,40 +6,28 @@ import { Box } from "@mui/material";
 import type { RollerType } from "../types";
 import SelectRoller from "../SelectRoller";
 
-interface DiceResult {
-  user: string;
-  roll: number;
-  sides: number;
-}
-
 const Solo = () => {
-  const [results, setResults] = useState<DiceResult | null>(null);
+  const [result, setResult] = useState<number | null>(null);
+  const [sides, setSides] = useState(6);
+
   const [selectedRoller, setSelectedRoller] =
     useState<RollerType>("wheel-of-doom");
 
   const roll = (sides: number) => {
     const rollValue = Math.floor(Math.random() * sides) + 1;
-    setResults({ user: "solo", roll: rollValue, sides });
+    setResult({ user: "solo", roll: rollValue, sides });
   };
 
   return (
     <Box>
-      <h1>Rollin' Solo</h1>
-      <Box
-        sx={{
-          display: "flex",
-          gap: "10px",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
+      <Box sx={{ width: "250px" }}>
         <SelectRoller
           selectedRoller={selectedRoller}
           setSelectedRoller={setSelectedRoller}
         />
-        <DiceSelector roll={roll} />
+        <DiceSelector setSides={setSides} />
 
-        <Roller results={results} selectedRoller={selectedRoller} />
+        <Roller sides={sides} result={result} selectedRoller={selectedRoller} />
       </Box>
     </Box>
   );

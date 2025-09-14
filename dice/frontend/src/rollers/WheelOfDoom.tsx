@@ -2,19 +2,20 @@ import React, { useState, useEffect, useRef } from "react";
 import type { DiceRollerProps } from "../types";
 
 const WHEEL_SIZE = 200;
-const DiceRoller: React.FC<DiceRollerProps> = ({ rollResult, sides }) => {
+const WheelOfDoom: React.FC<DiceRollerProps> = ({ result, sides }) => {
   const [spinning, setSpinning] = useState(false);
   const [activeSegment, setActiveSegment] = useState<number | null>(null);
   // Track active segment during spin
   useEffect(() => {
+    if (!result) return;
+
     if (spinning) {
       const start = Date.now();
       const duration = 5000;
       const segmentAngle = 360 / sides;
       const spins = 5;
       const finalRotation =
-        spins * 360 +
-        (360 - (rollResult - 1) * segmentAngle - segmentAngle / 2);
+        spins * 360 + (360 - (result - 1) * segmentAngle - segmentAngle / 2);
       const tick = () => {
         const now = Date.now();
         const elapsed = Math.min(now - start, duration);
@@ -30,20 +31,20 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ rollResult, sides }) => {
         if (elapsed < duration) {
           requestAnimationFrame(tick);
         } else {
-          setActiveSegment(rollResult);
+          setActiveSegment(result);
         }
       };
       tick();
       return () => setActiveSegment(null);
     }
-  }, [spinning, rollResult, sides]);
+  }, [spinning, result, sides]);
   const [showResult, setShowResult] = useState(false);
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
 
   // Remove stray 'cost;' line
   useEffect(() => {
-    if (rollResult !== undefined) {
+    if (result !== undefined) {
       setSpinning(true);
       setShowResult(false);
       // Calculate the final rotation so the wheel lands on the rolled result
@@ -51,8 +52,7 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ rollResult, sides }) => {
       // The wheel spins several times, then lands on the result
       const spins = 5; // number of full spins
       const finalRotation =
-        spins * 360 +
-        (360 - (rollResult - 1) * segmentAngle - segmentAngle / 2);
+        spins * 360 + (360 - (result - 1) * segmentAngle - segmentAngle / 2);
       setRotation(finalRotation);
       const timer = setTimeout(() => {
         setSpinning(false);
@@ -60,15 +60,14 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ rollResult, sides }) => {
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [rollResult, sides]);
+  }, [result, sides]);
 
   // Generate wheel segments
   const segmentAngle = 360 / sides;
   const segments = Array.from({ length: sides }, (_, i) => {
     const angle = segmentAngle * i;
     const isWinner =
-      (spinning && activeSegment === i + 1) ||
-      (showResult && rollResult === i + 1);
+      (spinning && activeSegment === i + 1) || (showResult && result === i + 1);
     // Calculate arc end point
     const startAngle = angle;
     const endAngle = angle + segmentAngle;
@@ -167,9 +166,9 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ rollResult, sides }) => {
         />
       </div>
       {spinning && <div style={{ marginTop: 16 }}>Spinning...</div>}
-      {showResult && rollResult !== undefined && (
+      {showResult && result !== undefined && (
         <div className="dice-result">
-          <h2>Result: {rollResult}</h2>
+          <h2>Result: {result}</h2>
           <div style={{ fontSize: 18 }}>({sides}-sided die)</div>
         </div>
       )}
@@ -177,4 +176,4 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ rollResult, sides }) => {
   );
 };
 
-export default DiceRoller;
+export default WheelOfDoom;
