@@ -150,9 +150,15 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
             ? "transform 5s cubic-bezier(.17,.67,.83,.67)"
             : "none",
           transform: `rotate(${rotation}deg)`,
+          transformOrigin: "center center",
         }}
       >
-        <svg width={wheelSideLength} height={wheelSideLength}>
+        <svg
+          width={wheelSideLength}
+          height={wheelSideLength}
+          viewBox={`0 0 ${wheelSideLength} ${wheelSideLength}`}
+          style={{ display: "block" }}
+        >
           {segments}
           {/* Center circle */}
           <circle
