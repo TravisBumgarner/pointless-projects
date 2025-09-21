@@ -1,11 +1,31 @@
-import { Box, Button, type SxProps } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  type SxProps,
+} from "@mui/material";
 import { SPACING } from "./styles/styleConsts";
+import { useState } from "react";
 
 const DiceSelector = ({
   setParams,
 }: {
   setParams: ({ sides }: { sides: number }) => void;
 }) => {
+  const [lastSelectedSides, setLastSelectedSides] = useState<number | "custom">(
+    6
+  );
+  const [customSides, setCustomSides] = useState<number | "">("");
+
+  const handleSetParams = (params: { sides: number; isCustom: boolean }) => {
+    setLastSelectedSides(params.isCustom ? "custom" : params.sides);
+    if (!params.isCustom) {
+      setCustomSides("");
+    }
+    setParams(params);
+  };
+
   return (
     <Box
       sx={{
@@ -20,8 +40,8 @@ const DiceSelector = ({
           <Button
             sx={buttonSx}
             key={sides}
-            variant="contained"
-            onClick={() => setParams({ sides })}
+            variant={sides === lastSelectedSides ? "contained" : "outlined"}
+            onClick={() => handleSetParams({ sides, isCustom: false })}
           >
             d{sides}
           </Button>
@@ -32,14 +52,15 @@ const DiceSelector = ({
           <Button
             sx={buttonSx}
             key={sides}
-            variant="contained"
-            onClick={() => setParams({ sides })}
+            variant={sides === lastSelectedSides ? "contained" : "outlined"}
+            onClick={() => handleSetParams({ sides, isCustom: false })}
           >
             d{sides}
           </Button>
         ))}
       </Box>
-      {/* <Box sx={buttonWrapperSx}>
+      <Box sx={buttonWrapperSx}>
+        <Typography>d</Typography>
         <TextField
           sx={{ flexGrow: 1 }}
           size="small"
@@ -49,29 +70,19 @@ const DiceSelector = ({
           value={customSides}
           onChange={(e) => {
             const val = e.target.value;
-            setCustomSides(val === "" ? null : Number(val));
+            setCustomSides(val === "" ? "" : Number(val));
+            handleSetParams({ sides: Number(val), isCustom: true });
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               const sides = Number(customSides);
               if (!isNaN(sides) && sides > 0) {
-                setParams(sides);
-                setCustomSides(null);
+                handleSetParams({ sides, isCustom: true });
               }
             }
           }}
         />
-        <Button
-          variant="contained"
-          sx={buttonSx}
-          onClick={() => {
-            setParams(customSides!);
-          }}
-          disabled={customSides === null}
-        >
-          Roll
-        </Button>
-      </Box> */}
+      </Box>
     </Box>
   );
 };
@@ -86,6 +97,7 @@ const buttonWrapperSx: SxProps = {
   flexGrow: 1,
   display: "flex",
   gap: SPACING.TINY.PX,
+  alignItems: "center",
 };
 
 export default DiceSelector;
