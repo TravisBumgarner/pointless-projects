@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import type { DiceRollerProps } from "../types";
 import { PALETTE } from "../styles/styleConsts";
+import { Box } from "@mui/material";
 
 const WheelOfDoom: React.FC<DiceRollerProps> = ({
   params: { sides },
@@ -152,10 +153,10 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({
   }, [isRolling, roll, setIsRolling]);
 
   return (
-    <div>
-      <div
+    <Box>
+      <Box
         ref={wheelRef}
-        style={{
+        sx={{
           width: "70%",
           aspectRatio: "1 / 1",
           margin: "0 auto",
@@ -182,8 +183,8 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({
             strokeWidth={2}
           />
         </svg>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

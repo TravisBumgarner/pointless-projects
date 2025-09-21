@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Box, Typography } from "@mui/material";
 import type { DiceRollerProps } from "../types";
 import { PALETTE, SPACING } from "../styles/styleConsts";
 
@@ -98,22 +99,22 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
   const ballTop = ball.row * (BOARD_HEIGHT / (ROWS + 1));
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: "flex",
         justifyContent: "center",
       }}
     >
-      <div
-        style={{
+      <Box
+        sx={{
           width: boardWidth + SPACING.SMALL.INT * 2,
           height: BOARD_HEIGHT + SPACING.SMALL.INT * 2,
           background: PALETTE.wow.blueLight,
           padding: SPACING.SMALL.PX,
         }}
       >
-        <div
-          style={{
+        <Box
+          sx={{
             position: "relative",
             width: boardWidth,
             height: BOARD_HEIGHT,
@@ -123,9 +124,9 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
           {/* Pegs */}
           {Array.from({ length: ROWS }).map((_, r) =>
             Array.from({ length: sides }).map((_, c) => (
-              <div
+              <Box
                 key={`peg-${r}-${c}`}
-                style={{
+                sx={{
                   position: "absolute",
                   top: r * (BOARD_HEIGHT / (ROWS + 1)) + 12,
                   left: c * slotWidth + slotWidth / 2 - 3,
@@ -139,8 +140,8 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
             ))
           )}
           {/* Ball */}
-          <div
-            style={{
+          <Box
+            sx={{
               position: "absolute",
               top: ballTop,
               left: ballLeft,
@@ -154,8 +155,8 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
             }}
           />
           {/* Slots */}
-          <div
-            style={{
+          <Box
+            sx={{
               position: "absolute",
               bottom: 0,
               left: 0,
@@ -166,9 +167,9 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
             }}
           >
             {slotLabels.map((label, i) => (
-              <div
+              <Box
                 key={i}
-                style={{
+                sx={{
                   width: slotWidth,
                   height: 40,
                   border: `1px solid ${PALETTE.grayscale[600]}`,
@@ -177,14 +178,24 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
                   fontSize: sizing === "large" ? 16 : 8,
                   fontWeight: "bold",
                   lineHeight: "40px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                {label}
-              </div>
+                <Typography
+                  sx={{
+                    fontSize: sizing === "large" ? 16 : 8,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {label}
+                </Typography>
+              </Box>
             ))}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { Box, Typography } from "@mui/material";
 import type { DiceRollerProps } from "../types";
 import { PALETTE } from "../styles/styleConsts";
 import { getContrastColor } from "../utils/getContrastColor";
@@ -59,8 +60,8 @@ const Balloon: React.FC<BalloonProps> = ({
   }, [trigger, isWinner, sides]);
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         width: 30,
         height: 40,
         borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
@@ -81,8 +82,8 @@ const Balloon: React.FC<BalloonProps> = ({
       }}
     >
       {popped ? (
-        <span
-          style={{
+        <Typography
+          sx={{
             fontSize: 32,
             position: "absolute",
             left: 0,
@@ -91,20 +92,24 @@ const Balloon: React.FC<BalloonProps> = ({
           }}
         >
           💥
-        </span>
+        </Typography>
       ) : (
-        <span
-          style={{
-            fontSize: 12,
+        <Typography
+          sx={{
+            fontSize: 14,
+            top: 8,
+            position: "absolute",
+            left: 0,
+            right: 0,
             color: getContrastColor(COLORS_ARRAY[number % 4]),
           }}
         >
           {number + 1}
-        </span>
+        </Typography>
       )}
       {!popped && (
-        <div
-          style={{
+        <Box
+          sx={{
             position: "absolute",
             left: "50%",
             bottom: -18,
@@ -116,7 +121,7 @@ const Balloon: React.FC<BalloonProps> = ({
           }}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
@@ -145,8 +150,8 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
   }, [isRolling, roll, setIsRolling]);
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-end",
@@ -165,6 +170,6 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
           trigger={trigger}
         />
       ))}
-    </div>
+    </Box>
   );
 };

@@ -9,12 +9,14 @@ const AVAILABLE_TITLES = [
   "Dashing Dice",
   "Dizzying Dice",
   "Dazzling Dice",
-  "Dainty Dice",
   "Doom Dice",
   "Dreary Dice",
   "Demonic Dice",
   "Delightful Dice",
-  "Dizzy Dice",
+  "Dastardly Dice",
+  "Deceitful Dice",
+  "Diligent Dice",
+  "Downfall Dice",
 ];
 
 const Navigation = () => {

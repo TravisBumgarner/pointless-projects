@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Box, Typography } from "@mui/material";
 import type { DiceRollerProps } from "../types";
 import { PALETTE } from "../styles/styleConsts";
 
@@ -39,9 +40,9 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({
   }, [isRolling, roll, setIsRolling]);
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      <div
-        style={{
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box
+        sx={{
           textAlign: "center",
           margin: "2rem",
           width: BOX_SIZE,
@@ -55,16 +56,16 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({
         }}
       >
         {/* Box */}
-        <div
-          style={{
+        <Box
+          sx={{
             width: BOX_SIZE,
             height: BOX_SIZE,
             margin: "0 auto",
             position: "relative",
           }}
         >
-          <div
-            style={{
+          <Box
+            sx={{
               position: "absolute",
               left: "50%",
               top: "60%",
@@ -73,15 +74,15 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({
               height: 100,
               background: "#fff",
               border: `4px solid ${PALETTE.wow.blueDark}`,
-              borderRadius: 16,
+              borderRadius: "16px",
               boxShadow: "0 4px 12px #aaa",
               zIndex: 2,
             }}
           >
             {/* Jack popping out */}
             {popped && (
-              <div
-                style={{
+              <Box
+                sx={{
                   position: "absolute",
                   left: "50%",
                   top: -40,
@@ -94,14 +95,16 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({
                   zIndex: 3,
                 }}
               >
-                <div style={{ fontSize: 48 }}>🤡</div>
-                <div style={{ fontSize: 24, color: "black" }}>{result}</div>
-              </div>
+                <Typography sx={{ fontSize: 48 }}>🤡</Typography>
+                <Typography sx={{ fontSize: 24, color: "black" }}>
+                  {result}
+                </Typography>
+              </Box>
             )}
-          </div>
+          </Box>
           {/* Crank */}
-          <div
-            style={{
+          <Box
+            sx={{
               position: "absolute",
               left: "calc(50% + 60px)",
               top: "calc(60% + 40px)",
@@ -132,13 +135,13 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({
               <rect x={18} y={-2} width={4} height={24} fill="#333" rx={2} />
               <rect x={18} y={26} width={4} height={10} fill="#333" rx={2} />
             </svg>
-          </div>
-        </div>
-        <div style={{ marginTop: 16, fontSize: 20, height: 28 }}>
+          </Box>
+        </Box>
+        <Typography sx={{ marginTop: 2, fontSize: 20, height: 28 }}>
           {cranking && "Crank… crank… crank…"}
           {popped && !cranking && "POP!"}
-        </div>
-      </div>
-    </div>
+        </Typography>
+      </Box>
+    </Box>
   );
 };

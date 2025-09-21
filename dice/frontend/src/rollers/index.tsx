@@ -20,7 +20,7 @@ const Roller = ({
   selectedRoller: RollerType;
   params: { sides: number };
   isRolling: boolean;
-  setIsRolling?: (rolling: boolean) => void;
+  setIsRolling: (rolling: boolean) => void;
 }) => {
   const RollerComponent = rollerMap[selectedRoller];
   return (
