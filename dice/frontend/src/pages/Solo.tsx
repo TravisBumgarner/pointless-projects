@@ -9,7 +9,8 @@ import SelectRoller from "../SelectRoller";
 const Solo = () => {
   const [params, setParams] = useState<{ sides: number }>({ sides: 6 });
 
-  const [selectedRoller, setSelectedRoller] = useState<RollerType>("balloon");
+  const [selectedRoller, setSelectedRoller] =
+    useState<RollerType>("wheel-of-doom");
 
   return (
     <Box>

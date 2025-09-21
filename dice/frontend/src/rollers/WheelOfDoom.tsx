@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import type { DiceRollerProps } from "../types";
 
 const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
@@ -6,9 +6,10 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
   const [activeSegment, setActiveSegment] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [rotation, setRotation] = useState(0);
+  const [result, setResult] = useState<number | null>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
   const [wheelSideLength, setWheelSideLength] = useState(0);
-  const [result, setResult] = useState<number | null>(null);
+  const shouldAnimateRef = useRef(false);
 
   useEffect(() => {
     const wheel = wheelRef.current;
@@ -22,58 +23,72 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
     return () => observer.disconnect();
   }, []);
 
-  // Track active segment during spin
+  // Reset result when sides change (but don't auto-roll)
   useEffect(() => {
-    if (!result) return;
-
-    if (spinning) {
-      const start = Date.now();
-      const duration = 5000;
-      const segmentAngle = 360 / sides;
-      const spins = 5;
-      const finalRotation =
-        spins * 360 + (360 - (result - 1) * segmentAngle - segmentAngle / 2);
-      const tick = () => {
-        const now = Date.now();
-        const elapsed = Math.min(now - start, duration);
-        // Ease out
-        const progress = elapsed / duration;
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const currentRotation = eased * finalRotation;
-        // Calculate active segment
-        const normalized = ((currentRotation % 360) + 360) % 360;
-        let seg = Math.floor((360 - normalized) / segmentAngle) + 1;
-        if (seg > sides) seg = 1;
-        setActiveSegment(seg);
-        if (elapsed < duration) {
-          requestAnimationFrame(tick);
-        } else {
-          setActiveSegment(result);
-        }
-      };
-      tick();
-      return () => setActiveSegment(null);
-    }
-  }, [spinning, result, sides]);
+    setResult(null);
+    setSpinning(false);
+    setShowResult(false);
+    setActiveSegment(null);
+    setRotation(0);
+    shouldAnimateRef.current = false;
+  }, [sides]);
 
   useEffect(() => {
-    if (result !== null) {
-      setSpinning(true);
-      setShowResult(false);
-      // Calculate the final rotation so the wheel lands on the rolled result
-      const segmentAngle = 360 / sides;
-      // The wheel spins several times, then lands on the result
-      const spins = 5; // number of full spins
-      const finalRotation =
-        spins * 360 + (360 - (result - 1) * segmentAngle - segmentAngle / 2);
-      setRotation(finalRotation);
-      const timer = setTimeout(() => {
+    if (!result || !shouldAnimateRef.current) return;
+
+    setSpinning(true);
+    setShowResult(false);
+
+    // Calculate the final rotation so the wheel lands on the rolled result
+    const segmentAngle = 360 / sides;
+    const spins = 5; // number of full spins
+    const finalRotation =
+      spins * 360 + (360 - (result - 1) * segmentAngle - segmentAngle / 2);
+    setRotation(finalRotation);
+
+    // Animate the spinning wheel and track active segment
+    const start = Date.now();
+    const duration = 5000;
+
+    const tick = () => {
+      const now = Date.now();
+      const elapsed = Math.min(now - start, duration);
+      // Ease out
+      const progress = elapsed / duration;
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const currentRotation = eased * finalRotation;
+      // Calculate active segment
+      const normalized = ((currentRotation % 360) + 360) % 360;
+      let seg = Math.floor((360 - normalized) / segmentAngle) + 1;
+      if (seg > sides) seg = 1;
+      setActiveSegment(seg);
+
+      if (elapsed < duration) {
+        requestAnimationFrame(tick);
+      } else {
+        setActiveSegment(result);
         setSpinning(false);
         setShowResult(true);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
+      }
+    };
+
+    tick();
   }, [result, sides]);
+
+  const roll = useCallback(() => {
+    // Reset all state first
+    setSpinning(false);
+    setShowResult(false);
+    setActiveSegment(null);
+    setRotation(0);
+    shouldAnimateRef.current = true;
+
+    // Generate new result after a brief delay to ensure state reset
+    setTimeout(() => {
+      const newResult = Math.floor(Math.random() * sides) + 1;
+      setResult(newResult);
+    }, 50);
+  }, [sides]);
 
   // Generate wheel segments
   const segmentAngle = 360 / sides;
@@ -122,9 +137,7 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
 
   return (
     <div>
-      <button onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}>
-        Roll
-      </button>
+      <button onClick={roll}>Roll</button>
       <div
         ref={wheelRef}
         style={{
@@ -133,12 +146,8 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
           margin: "0 auto",
           transition: spinning
             ? "transform 5s cubic-bezier(.17,.67,.83,.67)"
-            : undefined,
-          transform: spinning
-            ? `rotate(${rotation}deg)`
-            : showResult
-            ? `rotate(${rotation}deg)`
-            : "rotate(0deg)",
+            : "none",
+          transform: `rotate(${rotation}deg)`,
         }}
       >
         <svg width={wheelSideLength} height={wheelSideLength}>
