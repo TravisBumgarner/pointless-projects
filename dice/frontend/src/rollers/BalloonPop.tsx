@@ -1,13 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import type { DiceRollerProps } from "../types";
 
 type BalloonProps = {
   number: number;
   isWinner: boolean;
   trigger: boolean;
+  sides: number;
 };
 
-const Balloon: React.FC<BalloonProps> = ({ number, isWinner, trigger }) => {
+const getBalloonDelay = (sides: number, getMaxDelay: boolean) => {
+  // Max delay needed for timeout to reset state.
+  const delay = 500 + sides / 20;
+  return (getMaxDelay ? 1 : Math.random()) * delay;
+};
+
+const Balloon: React.FC<BalloonProps> = ({
+  number,
+  isWinner,
+  trigger,
+  sides,
+}) => {
   const [inflating, setInflating] = useState(false);
   const [popped, setPopped] = useState(false);
 
@@ -23,7 +35,7 @@ const Balloon: React.FC<BalloonProps> = ({ number, isWinner, trigger }) => {
 
     // If not the winner, pop at a random delay
     if (!isWinner) {
-      const delay = 500 + Math.random() * 3000; // 0.3–1.1s
+      const delay = getBalloonDelay(sides, false);
       const timer = setTimeout(() => {
         setInflating(false);
         setPopped(true);
@@ -35,7 +47,7 @@ const Balloon: React.FC<BalloonProps> = ({ number, isWinner, trigger }) => {
       const timer = setTimeout(() => setInflating(false), 5000);
       return () => clearTimeout(timer);
     }
-  }, [trigger, isWinner]);
+  }, [trigger, isWinner, sides]);
 
   return (
     <div
@@ -98,17 +110,18 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
   params: { sides },
 }) => {
   const [trigger, setTrigger] = useState(false);
-  const [result, setResult] = useState<number | null>(null);
+  const [result, setResult] = useState(0);
 
   useEffect(() => {
-    if (result) {
-      setTrigger(false);
-      const t = setTimeout(() => setTrigger(true), 200); // slight delay before starting
-      return () => clearTimeout(t);
-    } else {
-      setTrigger(false);
-    }
-  }, [result]);
+    setTrigger(false);
+  }, [sides]);
+
+  const roll = useCallback(() => {
+    setTrigger(false);
+    setResult(Math.floor(Math.random() * sides) + 1);
+    const t = setTimeout(() => setTrigger(true), 200); // slight delay before starting
+    return () => clearTimeout(t);
+  }, [sides]);
 
   return (
     <div
@@ -123,11 +136,10 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
         minHeight: 120,
       }}
     >
-      <button onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}>
-        Roll
-      </button>
+      <button onClick={roll}>Roll</button>
       {Array.from({ length: sides }).map((_, i) => (
         <Balloon
+          sides={sides}
           key={`${i}-${result}-${sides}`}
           number={i}
           isWinner={result === i + 1}

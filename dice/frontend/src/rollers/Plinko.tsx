@@ -53,7 +53,6 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
     setPath(path);
     setBallStep(0);
     setSlotLabels(slotLabels);
-    return result;
   }, [sides]);
 
   useEffect(() => {
@@ -61,8 +60,7 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
   }, [createPath]);
 
   const roll = useCallback(() => {
-    const result = createPath();
-    console.log(result);
+    createPath();
     setAnimating(true);
     // Animate ball through pegs
     let step = 0;
