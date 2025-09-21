@@ -13,13 +13,13 @@ const rollerMap: Record<RollerType, React.FC<DiceRollerProps>> = {
 
 const Roller = ({
   selectedRoller,
-  sides,
+  params,
 }: {
   selectedRoller: RollerType;
-  sides: number;
+  params: { sides: number };
 }) => {
   const RollerComponent = rollerMap[selectedRoller];
-  return <RollerComponent sides={sides} />;
+  return <RollerComponent params={params} />;
 };
 
 export default Roller;

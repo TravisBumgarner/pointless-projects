@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { DiceRollerProps } from "../types";
 
-const WheelOfDoom: React.FC<DiceRollerProps> = ({ sides }) => {
+const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
   const [spinning, setSpinning] = useState(false);
   const [activeSegment, setActiveSegment] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);

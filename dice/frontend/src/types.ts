@@ -1,5 +1,5 @@
 export interface DiceRollerProps {
-  sides: number;
+  params: { sides: number };
 }
 export type RollerType =
   | "wheel-of-doom"

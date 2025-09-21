@@ -7,9 +7,10 @@ import type { RollerType } from "../types";
 import SelectRoller from "../SelectRoller";
 
 const Solo = () => {
-  const [sides, setSides] = useState(6);
+  const [params, setParams] = useState<{ sides: number }>({ sides: 6 });
 
-  const [selectedRoller, setSelectedRoller] = useState<RollerType>("plinko");
+  const [selectedRoller, setSelectedRoller] =
+    useState<RollerType>("wheel-of-doom");
 
   return (
     <Box>
@@ -18,10 +19,10 @@ const Solo = () => {
           selectedRoller={selectedRoller}
           setSelectedRoller={setSelectedRoller}
         />
-        <DiceSelector setSides={setSides} />
+        <DiceSelector setParams={setParams} />
       </Box>
       <Box>
-        <Roller sides={sides} selectedRoller={selectedRoller} />
+        <Roller params={params} selectedRoller={selectedRoller} />
       </Box>
     </Box>
   );

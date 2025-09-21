@@ -3,7 +3,9 @@ import type { DiceRollerProps } from "../types";
 
 const BOX_SIZE = 300;
 
-export const JackInBoxDice: React.FC<DiceRollerProps> = ({ sides }) => {
+export const JackInBoxDice: React.FC<DiceRollerProps> = ({
+  params: { sides },
+}) => {
   const [cranking, setCranking] = useState(false);
   const [popped, setPopped] = useState(false);
   const [crankAngle, setCrankAngle] = useState(0);

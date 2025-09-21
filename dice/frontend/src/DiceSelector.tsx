@@ -1,10 +1,11 @@
-import { Box, TextField, Button, type SxProps } from "@mui/material";
-import { useState } from "react";
+import { Box, Button, type SxProps } from "@mui/material";
 import { SPACING } from "./styles/styleConsts";
 
-const DiceSelector = ({ setSides }: { setSides: (sides: number) => void }) => {
-  const [customSides, setCustomSides] = useState<number | null>(null);
-
+const DiceSelector = ({
+  setParams,
+}: {
+  setParams: ({ sides }: { sides: number }) => void;
+}) => {
   return (
     <Box
       sx={{
@@ -20,7 +21,7 @@ const DiceSelector = ({ setSides }: { setSides: (sides: number) => void }) => {
             sx={buttonSx}
             key={sides}
             variant="contained"
-            onClick={() => setSides(sides)}
+            onClick={() => setParams({ sides })}
           >
             d{sides}
           </Button>
@@ -32,7 +33,7 @@ const DiceSelector = ({ setSides }: { setSides: (sides: number) => void }) => {
             sx={buttonSx}
             key={sides}
             variant="contained"
-            onClick={() => setSides(sides)}
+            onClick={() => setParams({ sides })}
           >
             d{sides}
           </Button>
@@ -54,7 +55,7 @@ const DiceSelector = ({ setSides }: { setSides: (sides: number) => void }) => {
             if (e.key === "Enter") {
               const sides = Number(customSides);
               if (!isNaN(sides) && sides > 0) {
-                setSides(sides);
+                setParams(sides);
                 setCustomSides(null);
               }
             }
@@ -64,7 +65,7 @@ const DiceSelector = ({ setSides }: { setSides: (sides: number) => void }) => {
           variant="contained"
           sx={buttonSx}
           onClick={() => {
-            setSides(customSides!);
+            setParams(customSides!);
           }}
           disabled={customSides === null}
         >

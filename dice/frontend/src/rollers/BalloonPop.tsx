@@ -94,7 +94,9 @@ const Balloon: React.FC<BalloonProps> = ({ number, isWinner, trigger }) => {
   );
 };
 
-export const BalloonDice: React.FC<DiceRollerProps> = ({ sides }) => {
+export const BalloonDice: React.FC<DiceRollerProps> = ({
+  params: { sides },
+}) => {
   const [trigger, setTrigger] = useState(false);
   const [result, setResult] = useState<number | null>(null);
 

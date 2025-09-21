@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { DiceRollerProps } from "../types";
 
 // Dynamic Plinko board config
@@ -30,68 +30,70 @@ function getPlinkoPath(sides: number, result: number) {
     col = Math.max(0, Math.min(cols - 1, col));
     path.push({ row: r, col });
   }
-  return { path, cols, slotIdx };
+  return { path };
 }
 
-export const PlinkoDice: React.FC<DiceRollerProps> = ({ sides }) => {
+export const PlinkoDice: React.FC<DiceRollerProps> = ({
+  params: { sides },
+}) => {
   const [ballStep, setBallStep] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [path, setPath] = useState<{ row: number; col: number }[]>([]);
-  const [cols, setCols] = useState(sides);
   const timerRef = useRef<number | null>(null);
-  const [result, setResult] = useState<number | null>(null);
+  const [slotLabels, setSlotLabels] = useState<string[]>([]);
 
   const sizing = sides > 20 ? "small" : "large";
 
+  const createPath = useCallback(() => {
+    const result = Math.floor(Math.random() * sides) + 1;
+    const { path } = getPlinkoPath(sides, result);
+    const slotLabels = shuffle(
+      Array.from({ length: sides }, (_, i) => `${i + 1}`)
+    );
+    setPath(path);
+    setBallStep(0);
+    setSlotLabels(slotLabels);
+    return result;
+  }, [sides]);
+
   useEffect(() => {
-    if (result) {
-      const { path: newPath, cols: newCols } = getPlinkoPath(sides, result);
-      setPath(newPath);
-      setCols(newCols);
-      setBallStep(0);
-      setAnimating(true);
-      // Animate ball through pegs
-      let step = 0;
-      if (timerRef.current) clearInterval(timerRef.current);
-      timerRef.current = window.setInterval(() => {
-        step++;
-        if (step < newPath.length) {
-          setBallStep(step);
-        } else {
-          setAnimating(false);
-          if (timerRef.current) clearInterval(timerRef.current);
-        }
-      }, 350);
-      return () => {
+    createPath();
+  }, [createPath]);
+
+  const roll = useCallback(() => {
+    const result = createPath();
+    console.log(result);
+    setAnimating(true);
+    // Animate ball through pegs
+    let step = 0;
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = window.setInterval(() => {
+      step++;
+      if (step < path.length) {
+        setBallStep(step);
+      } else {
+        setAnimating(false);
         if (timerRef.current) clearInterval(timerRef.current);
-      };
-    } else {
-      setAnimating(false);
-      setBallStep(0);
-      setPath([]);
-      setCols(sides);
-    }
-  }, [result, sides]);
+      }
+    }, 350);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [path.length, createPath]);
 
   // Dynamic board width and slot size
-  const boardWidth = sizing === "large" ? cols * 40 : cols * 15;
-  const slotWidth = boardWidth / cols;
+  const boardWidth = sizing === "large" ? sides * 40 : sides * 15;
+  const slotWidth = boardWidth / sides;
 
   // Ball position
   const ball = path[ballStep] ||
-    path[path.length - 1] || { row: 0, col: Math.floor(cols / 2) };
+    path[path.length - 1] || { row: 0, col: Math.floor(sides / 2) };
   const ballLeft = ball.col * slotWidth + slotWidth / 2 - BALL_SIZE / 2;
   const ballTop = ball.row * (BOARD_HEIGHT / (ROWS + 1));
 
-  const slotLabels = useMemo(() => {
-    return shuffle(Array.from({ length: sides }, (_, i) => `${i + 1}`));
-  }, [sides, result]); // eslint-disable-line
-
   return (
-    <div style={{ textAlign: "center" }}>
-      <button onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}>
-        Roll
-      </button>
+    <div style={{ textAlign: "center", justifyContent: "center" }}>
+      <button onClick={roll}>Roll</button>
       <div
         style={{
           position: "relative",
@@ -103,7 +105,7 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({ sides }) => {
       >
         {/* Pegs */}
         {Array.from({ length: ROWS }).map((_, r) =>
-          Array.from({ length: cols }).map((_, c) => (
+          Array.from({ length: sides }).map((_, c) => (
             <div
               key={`peg-${r}-${c}`}
               style={{
