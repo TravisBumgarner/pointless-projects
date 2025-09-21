@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import type { DiceRollerProps } from "../types";
 import { PALETTE } from "../styles/styleConsts";
+import Die from "../sharedComponents/Dice";
+import { Button } from "@mui/material";
 
 const BOX_SIZE = 300;
 
@@ -33,9 +35,12 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({
 
   return (
     <>
-      <button onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}>
+      <Button
+        variant="contained"
+        onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}
+      >
         Roll
-      </button>
+      </Button>
       <div
         style={{
           textAlign: "center",
