@@ -65,7 +65,12 @@ const DiceSelector = ({
         ))}
       </Box>
       <TextField
-        sx={{ flexGrow: 1, height: "100%" }}
+        sx={{
+          flexGrow: 1,
+          "& .MuiOutlinedInput-root": {
+            height: "100%",
+          },
+        }}
         size="small"
         type="number"
         variant="outlined"
