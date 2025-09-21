@@ -1,46 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import type { DiceRollerProps } from "../types";
 import { PALETTE } from "../styles/styleConsts";
-import Die from "../sharedComponents/Dice";
-import { Button } from "@mui/material";
 
 const BOX_SIZE = 300;
 
 export const JackInBoxDice: React.FC<DiceRollerProps> = ({
   params: { sides },
+  isRolling,
+  setIsRolling,
 }) => {
   const [cranking, setCranking] = useState(false);
   const [popped, setPopped] = useState(false);
   const [crankAngle, setCrankAngle] = useState(0);
   const [result, setResult] = useState<number | undefined>(undefined);
 
+  const roll = useCallback(() => {
+    const result = Math.floor(Math.random() * sides) + 1;
+    setResult(result);
+    setCranking(true);
+    setPopped(false);
+    let frame = 0;
+    const crankFrames = 40;
+    const crankInterval = setInterval(() => {
+      frame++;
+      setCrankAngle((prev) => prev + 36);
+      if (frame >= crankFrames) {
+        clearInterval(crankInterval);
+        setCranking(false);
+        setTimeout(() => setPopped(true), 400);
+      }
+    }, 40);
+    return () => clearInterval(crankInterval);
+  }, [sides]);
+
   useEffect(() => {
-    if (result !== undefined) {
-      setCranking(true);
-      setPopped(false);
-      let frame = 0;
-      const crankFrames = 40;
-      const crankInterval = setInterval(() => {
-        frame++;
-        setCrankAngle((prev) => prev + 36);
-        if (frame >= crankFrames) {
-          clearInterval(crankInterval);
-          setCranking(false);
-          setTimeout(() => setPopped(true), 400);
-        }
-      }, 40);
-      return () => clearInterval(crankInterval);
-    }
-  }, [result]);
+    if (isRolling) roll();
+    setIsRolling(false);
+  }, [isRolling, roll, setIsRolling]);
 
   return (
     <>
-      <Button
-        variant="contained"
-        onClick={() => setResult(Math.floor(Math.random() * sides) + 1)}
-      >
-        Roll
-      </Button>
       <div
         style={{
           textAlign: "center",

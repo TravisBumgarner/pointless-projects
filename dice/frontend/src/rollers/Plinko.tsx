@@ -36,6 +36,8 @@ function getPlinkoPath(sides: number, result: number) {
 
 export const PlinkoDice: React.FC<DiceRollerProps> = ({
   params: { sides },
+  isRolling,
+  setIsRolling,
 }) => {
   const [ballStep, setBallStep] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -80,6 +82,11 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
     };
   }, [path.length, createPath]);
 
+  useEffect(() => {
+    if (isRolling) roll();
+    setIsRolling(false);
+  }, [isRolling, roll, setIsRolling]);
+
   // Dynamic board width and slot size
   const boardWidth = sizing === "large" ? sides * 40 : sides * 15;
   const slotWidth = boardWidth / sides;
@@ -92,7 +99,6 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
 
   return (
     <div style={{ textAlign: "center", justifyContent: "center" }}>
-      <button onClick={roll}>Roll</button>
       <div
         style={{
           width: boardWidth + SPACING.SMALL.INT * 2,

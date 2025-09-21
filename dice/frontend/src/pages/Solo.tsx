@@ -2,14 +2,19 @@ import { useState } from "react";
 
 import Roller from "../rollers";
 import DiceSelector from "../DiceSelector";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import type { RollerType } from "../types";
 import SelectRoller from "../SelectRoller";
 
 const Solo = () => {
   const [params, setParams] = useState<{ sides: number }>({ sides: 6 });
-
+  const [isRolling, setIsRolling] = useState(false);
   const [selectedRoller, setSelectedRoller] = useState<RollerType>("balloon");
+
+  const handleSetSelectedRoller = (roller: RollerType) => {
+    setIsRolling(false);
+    setSelectedRoller(roller);
+  };
 
   return (
     <Box>
@@ -29,12 +34,20 @@ const Solo = () => {
       >
         <SelectRoller
           selectedRoller={selectedRoller}
-          setSelectedRoller={setSelectedRoller}
+          setSelectedRoller={handleSetSelectedRoller}
         />
         <DiceSelector setParams={setParams} />
       </Box>
+      <Button variant="contained" onClick={() => setIsRolling(true)}>
+        Roll
+      </Button>
       <Box>
-        <Roller params={params} selectedRoller={selectedRoller} />
+        <Roller
+          isRolling={isRolling}
+          params={params}
+          selectedRoller={selectedRoller}
+          setIsRolling={setIsRolling}
+        />
       </Box>
     </Box>
   );

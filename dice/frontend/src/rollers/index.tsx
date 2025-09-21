@@ -14,12 +14,22 @@ const rollerMap: Record<RollerType, React.FC<DiceRollerProps>> = {
 const Roller = ({
   selectedRoller,
   params,
+  isRolling,
+  setIsRolling,
 }: {
   selectedRoller: RollerType;
   params: { sides: number };
+  isRolling: boolean;
+  setIsRolling?: (rolling: boolean) => void;
 }) => {
   const RollerComponent = rollerMap[selectedRoller];
-  return <RollerComponent params={params} />;
+  return (
+    <RollerComponent
+      params={params}
+      isRolling={isRolling}
+      setIsRolling={setIsRolling}
+    />
+  );
 };
 
 export default Roller;

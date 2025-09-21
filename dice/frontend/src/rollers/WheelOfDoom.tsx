@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import type { DiceRollerProps } from "../types";
 import { PALETTE } from "../styles/styleConsts";
 
-const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
+const WheelOfDoom: React.FC<DiceRollerProps> = ({
+  params: { sides },
+  isRolling,
+  setIsRolling,
+}) => {
   const [spinning, setSpinning] = useState(false);
   const [activeSegment, setActiveSegment] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -142,9 +146,13 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
     );
   });
 
+  useEffect(() => {
+    if (isRolling) roll();
+    setIsRolling(false);
+  }, [isRolling, roll, setIsRolling]);
+
   return (
     <div>
-      <button onClick={roll}>Roll</button>
       <div
         ref={wheelRef}
         style={{

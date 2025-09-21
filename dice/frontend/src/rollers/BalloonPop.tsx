@@ -121,6 +121,8 @@ const Balloon: React.FC<BalloonProps> = ({
 
 export const BalloonDice: React.FC<DiceRollerProps> = ({
   params: { sides },
+  isRolling,
+  setIsRolling,
 }) => {
   const [trigger, setTrigger] = useState(false);
   const [result, setResult] = useState(0);
@@ -136,6 +138,11 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
     return () => clearTimeout(t);
   }, [sides]);
 
+  useEffect(() => {
+    if (isRolling) roll();
+    setIsRolling(false);
+  }, [isRolling, roll, setIsRolling]);
+
   return (
     <div
       style={{
@@ -149,7 +156,6 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
         minHeight: 120,
       }}
     >
-      <button onClick={roll}>Roll</button>
       {Array.from({ length: sides }).map((_, i) => (
         <Balloon
           sides={sides}
