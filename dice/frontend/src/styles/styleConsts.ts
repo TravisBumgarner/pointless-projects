@@ -89,3 +89,16 @@ export const SPACING = {
     INT: 48,
   },
 } as const;
+
+// // Button Styles. Used in <Button /> and Share.tsx
+export const LIGHT_BUTTON_STYLES = {
+  color: PALETTE.grayscale[50],
+  background: PALETTE.grayscale[800],
+  hoverBackground: PALETTE.grayscale[800],
+};
+
+export const DARK_BUTTON_STYLES = {
+  color: PALETTE.grayscale[900],
+  background: PALETTE.grayscale[100],
+  hoverBackground: PALETTE.grayscale[300],
+};
