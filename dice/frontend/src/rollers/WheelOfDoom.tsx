@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import type { DiceRollerProps } from "../types";
+import { PALETTE } from "../styles/styleConsts";
 
 const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
   const [spinning, setSpinning] = useState(false);
@@ -118,9 +119,13 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
           d={`M${wheelSideLength / 2},${
             wheelSideLength / 2
           } L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z`}
-          fill={isWinner ? "#ffeb3b" : i % 2 === 0 ? "#90caf9" : "#e3f2fd"}
-          stroke="#333"
-          strokeWidth={1}
+          fill={
+            isWinner
+              ? PALETTE.wow.orangeDark
+              : i % 2 === 0
+              ? PALETTE.wow.blueLight
+              : PALETTE.wow.blueDark
+          }
         />
         <text
           x={textX}
@@ -128,7 +133,7 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
           textAnchor="middle"
           alignmentBaseline="middle"
           fontSize={14}
-          fill="#333"
+          fill="white"
           transform={`rotate(${-rotation}, ${textX}, ${textY})`}
         >
           {i + 1}
@@ -165,8 +170,7 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
             cx={wheelSideLength / 2}
             cy={wheelSideLength / 2}
             r={30}
-            fill="#fff"
-            stroke="#333"
+            fill={PALETTE.grayscale[900]}
             strokeWidth={2}
           />
         </svg>

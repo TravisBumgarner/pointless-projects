@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import type { DiceRollerProps } from "../types";
+import { PALETTE } from "../styles/styleConsts";
+import { getContrastColor } from "../utils/getContrastColor";
 
 type BalloonProps = {
   number: number;
@@ -7,6 +9,13 @@ type BalloonProps = {
   trigger: boolean;
   sides: number;
 };
+
+const COLORS_ARRAY = [
+  PALETTE.wow.redLight,
+  PALETTE.wow.blueLight,
+  PALETTE.wow.purpleLight,
+  PALETTE.wow.greenLight,
+];
 
 const getBalloonDelay = (sides: number, getMaxDelay: boolean) => {
   // Max delay needed for timeout to reset state.
@@ -55,9 +64,7 @@ const Balloon: React.FC<BalloonProps> = ({
         width: 50,
         height: 70,
         borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
-        background: popped
-          ? "transparent"
-          : ["#ff8a80", "#80d8ff", "#ffd180", "#ccff90"][number % 4],
+        background: popped ? "transparent" : COLORS_ARRAY[number % 4],
         border: "2px solid #333",
         position: "relative",
         textAlign: "center",
@@ -86,7 +93,13 @@ const Balloon: React.FC<BalloonProps> = ({
           💥
         </span>
       ) : (
-        number + 1
+        <span
+          style={{
+            color: getContrastColor(COLORS_ARRAY[number % 4]),
+          }}
+        >
+          {number + 1}
+        </span>
       )}
       {!popped && (
         <div

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { DiceRollerProps } from "../types";
+import { PALETTE, SPACING } from "../styles/styleConsts";
 
 // Dynamic Plinko board config
 const BOARD_HEIGHT = 320;
@@ -94,75 +95,83 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
       <button onClick={roll}>Roll</button>
       <div
         style={{
-          position: "relative",
-          width: boardWidth,
-          height: BOARD_HEIGHT,
-          border: "2px solid #333",
-          background: "#f5f5f5",
+          width: boardWidth + SPACING.SMALL.INT * 2,
+          height: BOARD_HEIGHT + SPACING.SMALL.INT * 2,
+          background: PALETTE.wow.blueLight,
+          padding: SPACING.SMALL.PX,
         }}
       >
-        {/* Pegs */}
-        {Array.from({ length: ROWS }).map((_, r) =>
-          Array.from({ length: sides }).map((_, c) => (
-            <div
-              key={`peg-${r}-${c}`}
-              style={{
-                position: "absolute",
-                top: r * (BOARD_HEIGHT / (ROWS + 1)) + 12,
-                left: c * slotWidth + slotWidth / 2 - 6,
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: "#888",
-                boxShadow: "0 1px 4px #aaa",
-              }}
-            />
-          ))
-        )}
-        {/* Ball */}
         <div
           style={{
-            position: "absolute",
-            top: ballTop,
-            left: ballLeft,
-            width: BALL_SIZE,
-            height: BALL_SIZE,
-            borderRadius: "50%",
-            background: "red",
-            boxShadow: "0 2px 8px #d32f2f",
-            transition: animating ? "top 0.3s, left 0.3s" : "none",
-            zIndex: 2,
-          }}
-        />
-        {/* Slots */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            display: "flex",
-            justifyContent: "space-between",
-            zIndex: 1,
+            position: "relative",
+            width: boardWidth,
+            height: BOARD_HEIGHT,
+            background: PALETTE.wow.blueLight,
           }}
         >
-          {slotLabels.map((label, i) => (
-            <div
-              key={i}
-              style={{
-                width: slotWidth,
-                height: 40,
-                border: "1px solid #333",
-                borderRadius: "0 0 8px 8px",
-                textAlign: "center",
-                fontSize: sizing === "large" ? 16 : 8,
-                fontWeight: "bold",
-                lineHeight: "40px",
-              }}
-            >
-              {label}
-            </div>
-          ))}
+          {/* Pegs */}
+          {Array.from({ length: ROWS }).map((_, r) =>
+            Array.from({ length: sides }).map((_, c) => (
+              <div
+                key={`peg-${r}-${c}`}
+                style={{
+                  position: "absolute",
+                  top: r * (BOARD_HEIGHT / (ROWS + 1)) + 12,
+                  left: c * slotWidth + slotWidth / 2 - 3,
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: PALETTE.wow.blueDark,
+                  boxShadow: "0 1px 4px #aaa",
+                }}
+              />
+            ))
+          )}
+          {/* Ball */}
+          <div
+            style={{
+              position: "absolute",
+              top: ballTop,
+              left: ballLeft,
+              width: BALL_SIZE,
+              height: BALL_SIZE,
+              borderRadius: "50%",
+              background: PALETTE.wow.orangeLight,
+              boxShadow: `0 2px 8px ${PALETTE.wow.orangeDark}`,
+              transition: animating ? "top 0.3s, left 0.3s" : "none",
+              zIndex: 2,
+            }}
+          />
+          {/* Slots */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              zIndex: 1,
+            }}
+          >
+            {slotLabels.map((label, i) => (
+              <div
+                key={i}
+                style={{
+                  width: slotWidth,
+                  height: 40,
+                  border: `1px solid ${PALETTE.grayscale[600]}`,
+                  borderRadius: "0 0 8px 8px",
+                  textAlign: "center",
+                  fontSize: sizing === "large" ? 16 : 8,
+                  fontWeight: "bold",
+                  lineHeight: "40px",
+                }}
+              >
+                {label}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
