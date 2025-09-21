@@ -156,7 +156,7 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({
       <div
         ref={wheelRef}
         style={{
-          width: "100%",
+          width: "70%",
           aspectRatio: "1 / 1",
           margin: "0 auto",
           transition: spinning

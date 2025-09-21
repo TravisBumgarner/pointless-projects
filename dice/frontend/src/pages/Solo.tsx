@@ -5,6 +5,8 @@ import DiceSelector from "../DiceSelector";
 import { Box, Button } from "@mui/material";
 import type { RollerType } from "../types";
 import SelectRoller from "../SelectRoller";
+import { SPACING } from "../styles/styleConsts";
+import { COLLAPSE_WIDTH } from "../consts";
 
 const Solo = () => {
   const [params, setParams] = useState<{ sides: number }>({ sides: 6 });
@@ -21,10 +23,10 @@ const Solo = () => {
       <Box
         sx={{
           display: "flex",
-          gap: "1rem",
+          gap: SPACING.TINY.PX,
           marginBottom: "1rem",
           height: "40px",
-          "@media (max-width: 800px)": {
+          [`@media (max-width: ${COLLAPSE_WIDTH}px)`]: {
             flexDirection: "column",
             height: "auto",
             width: "250px",
@@ -37,11 +39,19 @@ const Solo = () => {
           setSelectedRoller={handleSetSelectedRoller}
         />
         <DiceSelector setParams={setParams} />
+        <Button
+          sx={{
+            width: "130px",
+            [`@media (max-width: ${COLLAPSE_WIDTH}px)`]: { width: "100%" },
+          }}
+          variant="contained"
+          onClick={() => setIsRolling(true)}
+        >
+          Roll d{params.sides}
+        </Button>
       </Box>
-      <Button variant="contained" onClick={() => setIsRolling(true)}>
-        Roll
-      </Button>
-      <Box>
+
+      <Box sx={{ marginTop: SPACING.MEDIUM.PX }}>
         <Roller
           isRolling={isRolling}
           params={params}

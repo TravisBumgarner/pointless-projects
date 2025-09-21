@@ -1,12 +1,7 @@
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  type SxProps,
-} from "@mui/material";
+import { Box, Button, TextField, type SxProps } from "@mui/material";
 import { SPACING } from "./styles/styleConsts";
 import { useState } from "react";
+import { COLLAPSE_WIDTH } from "./consts";
 
 const DiceSelector = ({
   setParams,
@@ -34,7 +29,7 @@ const DiceSelector = ({
         flexDirection: "row",
         width: "100%",
         height: "100%",
-        "@media (max-width: 800px)": {
+        [`@media (max-width: ${COLLAPSE_WIDTH}px)`]: {
           flexDirection: "column",
           height: "auto",
         },
@@ -66,15 +61,18 @@ const DiceSelector = ({
       </Box>
       <TextField
         sx={{
-          flexGrow: 1,
+          width: "140px",
           "& .MuiOutlinedInput-root": {
             height: "100%",
+          },
+          [`@media (max-width: ${COLLAPSE_WIDTH}px)`]: {
+            width: "100%",
           },
         }}
         size="small"
         type="number"
         variant="outlined"
-        placeholder="Custom sides"
+        placeholder="Custom"
         value={customSides}
         onChange={(e) => {
           const val = e.target.value;

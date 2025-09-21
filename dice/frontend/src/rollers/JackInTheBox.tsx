@@ -39,7 +39,7 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({
   }, [isRolling, roll, setIsRolling]);
 
   return (
-    <>
+    <div style={{ display: "flex", justifyContent: "center" }}>
       <div
         style={{
           textAlign: "center",
@@ -139,6 +139,6 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({
           {popped && !cranking && "POP!"}
         </div>
       </div>
-    </>
+    </div>
   );
 };

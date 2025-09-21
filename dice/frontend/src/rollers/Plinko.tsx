@@ -98,7 +98,12 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
   const ballTop = ball.row * (BOARD_HEIGHT / (ROWS + 1));
 
   return (
-    <div style={{ textAlign: "center", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
       <div
         style={{
           width: boardWidth + SPACING.SMALL.INT * 2,

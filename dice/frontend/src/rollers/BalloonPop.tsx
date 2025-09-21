@@ -19,7 +19,7 @@ const COLORS_ARRAY = [
 
 const getBalloonDelay = (sides: number, getMaxDelay: boolean) => {
   // Max delay needed for timeout to reset state.
-  const delay = 500 + sides / 20;
+  const delay = 500 + (sides / 20) * 100;
   return (getMaxDelay ? 1 : Math.random()) * delay;
 };
 
@@ -61,14 +61,14 @@ const Balloon: React.FC<BalloonProps> = ({
   return (
     <div
       style={{
-        width: 50,
-        height: 70,
+        width: 30,
+        height: 40,
         borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
         background: popped ? "transparent" : COLORS_ARRAY[number % 4],
         border: "2px solid #333",
         position: "relative",
         textAlign: "center",
-        lineHeight: "70px",
+        lineHeight: "40px",
         fontWeight: "bold",
         boxShadow: popped ? "none" : "0 4px 12px #aaa",
         transition: "all 0.4s ease",
@@ -87,7 +87,7 @@ const Balloon: React.FC<BalloonProps> = ({
             position: "absolute",
             left: 0,
             right: 0,
-            top: 10,
+            top: 16,
           }}
         >
           💥
@@ -95,6 +95,7 @@ const Balloon: React.FC<BalloonProps> = ({
       ) : (
         <span
           style={{
+            fontSize: 12,
             color: getContrastColor(COLORS_ARRAY[number % 4]),
           }}
         >
@@ -153,7 +154,6 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
         gap: "1rem",
         margin: "2rem",
         position: "relative",
-        minHeight: 120,
       }}
     >
       {Array.from({ length: sides }).map((_, i) => (

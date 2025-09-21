@@ -1,5 +1,6 @@
 import { Box, MenuItem, Select } from "@mui/material";
 import type { RollerType } from "./types";
+import { COLLAPSE_WIDTH } from "./consts";
 
 const SelectRoller = ({
   setSelectedRoller,
@@ -14,6 +15,11 @@ const SelectRoller = ({
         fullWidth
         sx={{
           height: "100%",
+          width: "180px",
+          [`@media (max-width: ${COLLAPSE_WIDTH}px)`]: {
+            height: "auto",
+            width: "250px",
+          },
         }}
         value={selectedRoller}
         onChange={(e) => setSelectedRoller(e.target.value as RollerType)}
