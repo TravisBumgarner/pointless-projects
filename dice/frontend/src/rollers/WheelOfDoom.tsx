@@ -42,6 +42,7 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
     // Calculate the final rotation so the wheel lands on the rolled result
     const segmentAngle = 360 / sides;
     const spins = 5; // number of full spins
+    // Keep the original calculation to land on the right side
     const finalRotation =
       spins * 360 + (360 - (result - 1) * segmentAngle - segmentAngle / 2);
     setRotation(finalRotation);
@@ -128,6 +129,7 @@ const WheelOfDoom: React.FC<DiceRollerProps> = ({ params: { sides } }) => {
           alignmentBaseline="middle"
           fontSize={14}
           fill="#333"
+          transform={`rotate(${-rotation}, ${textX}, ${textY})`}
         >
           {i + 1}
         </text>
