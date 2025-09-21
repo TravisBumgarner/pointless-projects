@@ -31,8 +31,13 @@ const DiceSelector = ({
       sx={{
         display: "flex",
         gap: SPACING.TINY.PX,
-        flexDirection: "column",
+        flexDirection: "row",
         width: "100%",
+        height: "100%",
+        "@media (max-width: 800px)": {
+          flexDirection: "column",
+          height: "auto",
+        },
       }}
     >
       <Box sx={buttonWrapperSx}>
@@ -59,30 +64,27 @@ const DiceSelector = ({
           </Button>
         ))}
       </Box>
-      <Box sx={buttonWrapperSx}>
-        <Typography>d</Typography>
-        <TextField
-          sx={{ flexGrow: 1 }}
-          size="small"
-          type="number"
-          variant="outlined"
-          placeholder="Custom sides"
-          value={customSides}
-          onChange={(e) => {
-            const val = e.target.value;
-            setCustomSides(val === "" ? "" : Number(val));
-            handleSetParams({ sides: Number(val), isCustom: true });
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              const sides = Number(customSides);
-              if (!isNaN(sides) && sides > 0) {
-                handleSetParams({ sides, isCustom: true });
-              }
+      <TextField
+        sx={{ flexGrow: 1, height: "100%" }}
+        size="small"
+        type="number"
+        variant="outlined"
+        placeholder="Custom sides"
+        value={customSides}
+        onChange={(e) => {
+          const val = e.target.value;
+          setCustomSides(val === "" ? "" : Number(val));
+          handleSetParams({ sides: Number(val), isCustom: true });
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            const sides = Number(customSides);
+            if (!isNaN(sides) && sides > 0) {
+              handleSetParams({ sides, isCustom: true });
             }
-          }}
-        />
-      </Box>
+          }
+        }}
+      />
     </Box>
   );
 };
@@ -91,6 +93,7 @@ const buttonSx: SxProps = {
   width: "10px",
   minWidth: "10px",
   flexGrow: 1,
+  height: "100%",
 };
 
 const buttonWrapperSx: SxProps = {

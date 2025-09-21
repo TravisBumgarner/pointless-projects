@@ -3,6 +3,7 @@ import Router from "./components/Router";
 
 import AppThemeProvider from "./styles/Theme";
 import Navigation from "./components/Navigation";
+import "./styles/global.css";
 
 const App = () => {
   return (

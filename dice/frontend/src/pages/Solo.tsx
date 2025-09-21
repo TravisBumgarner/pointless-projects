@@ -13,7 +13,20 @@ const Solo = () => {
 
   return (
     <Box>
-      <Box sx={{ width: "250px" }}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: "1rem",
+          marginBottom: "1rem",
+          height: "40px",
+          "@media (max-width: 800px)": {
+            flexDirection: "column",
+            height: "auto",
+            width: "250px",
+            margin: "0 auto",
+          },
+        }}
+      >
         <SelectRoller
           selectedRoller={selectedRoller}
           setSelectedRoller={setSelectedRoller}

@@ -1,6 +1,5 @@
 import { Box, MenuItem, Select } from "@mui/material";
 import type { RollerType } from "./types";
-import { SPACING } from "./styles/styleConsts";
 
 const SelectRoller = ({
   setSelectedRoller,
@@ -10,10 +9,12 @@ const SelectRoller = ({
   selectedRoller: RollerType;
 }) => {
   return (
-    <Box sx={{ width: "100%", margin: `${SPACING.TINY.PX} 0` }}>
+    <Box>
       <Select
         fullWidth
-        size="small"
+        sx={{
+          height: "100%",
+        }}
         value={selectedRoller}
         onChange={(e) => setSelectedRoller(e.target.value as RollerType)}
       >
