@@ -6,10 +6,12 @@ import { Box, Button } from "@mui/material";
 import type { RollerType } from "../types";
 import SelectRoller from "../SelectRoller";
 import { SPACING } from "../styles/styleConsts";
-import { COLLAPSE_WIDTH } from "../consts";
+import { COLLAPSE_WIDTH, DEFAULT_DICE } from "../consts";
 
 const Solo = () => {
-  const [params, setParams] = useState<{ sides: number }>({ sides: 6 });
+  const [params, setParams] = useState<{ sides: number }>({
+    sides: DEFAULT_DICE,
+  });
   const [isRolling, setIsRolling] = useState(false);
   const [selectedRoller, setSelectedRoller] = useState<RollerType>("balloon");
 
