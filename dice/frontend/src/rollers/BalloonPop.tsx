@@ -125,7 +125,7 @@ const Balloon: React.FC<BalloonProps> = ({
   );
 };
 
-export const BalloonDice: React.FC<DiceRollerProps> = ({
+const BalloonDice: React.FC<DiceRollerProps> = ({
   params: { sides },
   isRolling,
   setIsRolling,
@@ -173,3 +173,5 @@ export const BalloonDice: React.FC<DiceRollerProps> = ({
     </Box>
   );
 };
+
+export default BalloonDice;

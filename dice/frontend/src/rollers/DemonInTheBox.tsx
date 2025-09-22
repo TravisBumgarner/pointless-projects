@@ -5,7 +5,7 @@ import { PALETTE } from "../styles/styleConsts";
 
 const BOX_SIZE = 300;
 
-export const JackInBoxDice: React.FC<DiceRollerProps> = ({
+const JackInBoxDice: React.FC<DiceRollerProps> = ({
   params: { sides },
   isRolling,
   setIsRolling,
@@ -145,3 +145,5 @@ export const JackInBoxDice: React.FC<DiceRollerProps> = ({
     </Box>
   );
 };
+
+export default JackInBoxDice;

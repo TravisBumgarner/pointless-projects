@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import { FONT_SIZES } from "../styles/styleConsts";
 
 const AVAILABLE_TITLES = [
   "Dapper Dice",
@@ -31,7 +32,18 @@ const Navigation = () => {
   return (
     <Box sx={{ marginBottom: "1rem", textAlign: "center" }}>
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-        <Typography variant="h1">{title}</Typography>
+        <Typography variant="h1">
+          {title}
+          <sup
+            style={{
+              fontSize: FONT_SIZES.SMALL.PX,
+              position: "relative",
+              top: "-5px",
+            }}
+          >
+            Alpha
+          </sup>
+        </Typography>
       </Link>
     </Box>
   );

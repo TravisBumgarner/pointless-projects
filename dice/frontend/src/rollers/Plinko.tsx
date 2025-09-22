@@ -35,7 +35,7 @@ function getPlinkoPath(sides: number, result: number) {
   return { path };
 }
 
-export const PlinkoDice: React.FC<DiceRollerProps> = ({
+const PlinkoDice: React.FC<DiceRollerProps> = ({
   params: { sides },
   isRolling,
   setIsRolling,
@@ -199,3 +199,5 @@ export const PlinkoDice: React.FC<DiceRollerProps> = ({
     </Box>
   );
 };
+
+export default PlinkoDice;

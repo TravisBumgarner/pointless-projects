@@ -1,7 +1,7 @@
 import { Box, Button, TextField, type SxProps } from "@mui/material";
 import { SPACING } from "./styles/styleConsts";
 import { useState } from "react";
-import { COLLAPSE_WIDTH } from "./consts";
+import { COLLAPSE_WIDTH, DEFAULT_DICE } from "./consts";
 
 const DiceSelector = ({
   setParams,
@@ -9,7 +9,7 @@ const DiceSelector = ({
   setParams: ({ sides }: { sides: number }) => void;
 }) => {
   const [lastSelectedSides, setLastSelectedSides] = useState<number | "custom">(
-    6
+    DEFAULT_DICE
   );
   const [customSides, setCustomSides] = useState<number | "">("");
 

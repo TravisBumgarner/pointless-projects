@@ -27,7 +27,7 @@ const SelectRoller = ({
         <MenuItem value="wheel-of-doom">Wheel of Doom</MenuItem>
         <MenuItem value="plinko">Plinko Board</MenuItem>
         <MenuItem value="balloon">Balloon Pop</MenuItem>
-        <MenuItem value="jack-in-the-box">Jack in the Box</MenuItem>
+        <MenuItem value="demon-in-the-box">Jack in the Box</MenuItem>
       </Select>
     </Box>
   );

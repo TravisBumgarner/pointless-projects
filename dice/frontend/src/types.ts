@@ -7,4 +7,4 @@ export type RollerType =
   | "wheel-of-doom"
   | "plinko"
   | "balloon"
-  | "jack-in-the-box";
+  | "demon-in-the-box";
