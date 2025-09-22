@@ -1,9 +1,9 @@
-import { BrowserRouter } from "react-router";
-import Router from "./components/Router";
+import { BrowserRouter } from 'react-router'
+import Router from './components/Router'
 
-import AppThemeProvider from "./styles/Theme";
-import Navigation from "./components/Navigation";
-import "./styles/global.css";
+import AppThemeProvider from './styles/Theme'
+import Navigation from './components/Navigation'
+import './styles/global.css'
 
 const App = () => {
   return (
@@ -13,7 +13,7 @@ const App = () => {
         <Router />
       </BrowserRouter>
     </AppThemeProvider>
-  );
-};
+  )
+}
 
-export default App;
+export default App

@@ -1,8 +1,8 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from 'react-router-dom'
 
-import Home from "../pages/Home";
-import Room from "../pages/Room";
-import Solo from "../pages/Solo";
+import Home from '../pages/Home'
+import Room from '../pages/Room'
+import Solo from '../pages/Solo'
 
 const Router = () => {
   return (
@@ -11,7 +11,7 @@ const Router = () => {
       <Route path="/room/:room" element={<Room />} />
       <Route path="/solo" element={<Solo />} />
     </Routes>
-  );
-};
+  )
+}
 
-export default Router;
+export default Router

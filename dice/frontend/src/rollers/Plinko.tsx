@@ -1,108 +1,101 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Box, Typography } from "@mui/material";
-import type { DiceRollerProps } from "../types";
-import { PALETTE, SPACING } from "../styles/styleConsts";
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Box, Typography } from '@mui/material'
+import type { DiceRollerProps } from '../types'
+import { PALETTE, SPACING } from '../styles/styleConsts'
 
 // Dynamic Plinko board config
-const BOARD_HEIGHT = 320;
-const BALL_SIZE = 24;
-const ROWS = 10;
+const BOARD_HEIGHT = 320
+const BALL_SIZE = 24
+const ROWS = 10
 
 function shuffle<T>(array: T[]): T[] {
-  const arr = array.slice();
+  const arr = array.slice()
   for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
   }
-  return arr;
+  return arr
 }
 
 function getPlinkoPath(sides: number, result: number) {
   // For large dice, group results into ranges
-  const cols = sides;
-  let col = Math.floor(cols / 2);
+  const cols = sides
+  let col = Math.floor(cols / 2)
   // Map result to slot
-  const slotIdx = Math.floor(((result - 1) / sides) * cols);
-  const path = [{ row: 0, col }];
+  const slotIdx = Math.floor(((result - 1) / sides) * cols)
+  const path = [{ row: 0, col }]
   for (let r = 1; r < ROWS; r++) {
     // Random left/right, but bias toward final slot
-    if (col < slotIdx) col++;
-    else if (col > slotIdx) col--;
-    else col += Math.random() < 0.5 ? -1 : 1;
-    col = Math.max(0, Math.min(cols - 1, col));
-    path.push({ row: r, col });
+    if (col < slotIdx) col++
+    else if (col > slotIdx) col--
+    else col += Math.random() < 0.5 ? -1 : 1
+    col = Math.max(0, Math.min(cols - 1, col))
+    path.push({ row: r, col })
   }
-  return { path };
+  return { path }
 }
 
-const PlinkoDice: React.FC<DiceRollerProps> = ({
-  params: { sides },
-  isRolling,
-  setIsRolling,
-}) => {
-  const [ballStep, setBallStep] = useState(0);
-  const [animating, setAnimating] = useState(false);
-  const [path, setPath] = useState<{ row: number; col: number }[]>([]);
-  const timerRef = useRef<number | null>(null);
-  const [slotLabels, setSlotLabels] = useState<string[]>([]);
+const PlinkoDice: React.FC<DiceRollerProps> = ({ params: { sides }, isRolling, setIsRolling }) => {
+  const [ballStep, setBallStep] = useState(0)
+  const [animating, setAnimating] = useState(false)
+  const [path, setPath] = useState<{ row: number; col: number }[]>([])
+  const timerRef = useRef<number | null>(null)
+  const [slotLabels, setSlotLabels] = useState<string[]>([])
 
-  const sizing = sides > 20 ? "small" : "large";
+  const sizing = sides > 20 ? 'small' : 'large'
 
   const createPath = useCallback(() => {
-    const result = Math.floor(Math.random() * sides) + 1;
-    const { path } = getPlinkoPath(sides, result);
-    const slotLabels = shuffle(
-      Array.from({ length: sides }, (_, i) => `${i + 1}`)
-    );
-    setPath(path);
-    setBallStep(0);
-    setSlotLabels(slotLabels);
-  }, [sides]);
+    const result = Math.floor(Math.random() * sides) + 1
+    const { path } = getPlinkoPath(sides, result)
+    const slotLabels = shuffle(Array.from({ length: sides }, (_, i) => `${i + 1}`))
+    setPath(path)
+    setBallStep(0)
+    setSlotLabels(slotLabels)
+  }, [sides])
 
   useEffect(() => {
-    createPath();
-  }, [createPath]);
+    createPath()
+  }, [createPath])
 
   const roll = useCallback(() => {
-    createPath();
-    setAnimating(true);
+    createPath()
+    setAnimating(true)
     // Animate ball through pegs
-    let step = 0;
-    if (timerRef.current) clearInterval(timerRef.current);
+    let step = 0
+    if (timerRef.current) clearInterval(timerRef.current)
     timerRef.current = window.setInterval(() => {
-      step++;
+      step++
       if (step < path.length) {
-        setBallStep(step);
+        setBallStep(step)
       } else {
-        setAnimating(false);
-        if (timerRef.current) clearInterval(timerRef.current);
+        setAnimating(false)
+        if (timerRef.current) clearInterval(timerRef.current)
       }
-    }, 350);
+    }, 350)
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [path.length, createPath]);
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [path.length, createPath])
 
   useEffect(() => {
-    if (isRolling) roll();
-    setIsRolling(false);
-  }, [isRolling, roll, setIsRolling]);
+    if (isRolling) roll()
+    setIsRolling(false)
+  }, [isRolling, roll, setIsRolling])
 
   // Dynamic board width and slot size
-  const boardWidth = sizing === "large" ? sides * 40 : sides * 15;
-  const slotWidth = boardWidth / sides;
+  const boardWidth = sizing === 'large' ? sides * 40 : sides * 15
+  const slotWidth = boardWidth / sides
 
   // Ball position
-  const ball = path[ballStep] ||
-    path[path.length - 1] || { row: 0, col: Math.floor(sides / 2) };
-  const ballLeft = ball.col * slotWidth + slotWidth / 2 - BALL_SIZE / 2;
-  const ballTop = ball.row * (BOARD_HEIGHT / (ROWS + 1));
+  const ball = path[ballStep] || path[path.length - 1] || { row: 0, col: Math.floor(sides / 2) }
+  const ballLeft = ball.col * slotWidth + slotWidth / 2 - BALL_SIZE / 2
+  const ballTop = ball.row * (BOARD_HEIGHT / (ROWS + 1))
 
   return (
     <Box
       sx={{
-        display: "flex",
-        justifyContent: "center",
+        display: 'flex',
+        justifyContent: 'center'
       }}
     >
       <Box
@@ -110,15 +103,15 @@ const PlinkoDice: React.FC<DiceRollerProps> = ({
           width: boardWidth + SPACING.SMALL.INT * 2,
           height: BOARD_HEIGHT + SPACING.SMALL.INT * 2,
           background: PALETTE.wow.blueLight,
-          padding: SPACING.SMALL.PX,
+          padding: SPACING.SMALL.PX
         }}
       >
         <Box
           sx={{
-            position: "relative",
+            position: 'relative',
             width: boardWidth,
             height: BOARD_HEIGHT,
-            background: PALETTE.wow.blueLight,
+            background: PALETTE.wow.blueLight
           }}
         >
           {/* Pegs */}
@@ -127,14 +120,14 @@ const PlinkoDice: React.FC<DiceRollerProps> = ({
               <Box
                 key={`peg-${r}-${c}`}
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   top: r * (BOARD_HEIGHT / (ROWS + 1)) + 12,
                   left: c * slotWidth + slotWidth / 2 - 3,
                   width: 6,
                   height: 6,
-                  borderRadius: "50%",
+                  borderRadius: '50%',
                   background: PALETTE.wow.blueDark,
-                  boxShadow: "0 1px 4px #aaa",
+                  boxShadow: '0 1px 4px #aaa'
                 }}
               />
             ))
@@ -142,28 +135,28 @@ const PlinkoDice: React.FC<DiceRollerProps> = ({
           {/* Ball */}
           <Box
             sx={{
-              position: "absolute",
+              position: 'absolute',
               top: ballTop,
               left: ballLeft,
               width: BALL_SIZE,
               height: BALL_SIZE,
-              borderRadius: "50%",
+              borderRadius: '50%',
               background: PALETTE.wow.orangeLight,
               boxShadow: `0 2px 8px ${PALETTE.wow.orangeDark}`,
-              transition: animating ? "top 0.3s, left 0.3s" : "none",
-              zIndex: 2,
+              transition: animating ? 'top 0.3s, left 0.3s' : 'none',
+              zIndex: 2
             }}
           />
           {/* Slots */}
           <Box
             sx={{
-              position: "absolute",
+              position: 'absolute',
               bottom: 0,
               left: 0,
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-              zIndex: 1,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              zIndex: 1
             }}
           >
             {slotLabels.map((label, i) => (
@@ -173,20 +166,20 @@ const PlinkoDice: React.FC<DiceRollerProps> = ({
                   width: slotWidth,
                   height: 40,
                   border: `1px solid ${PALETTE.grayscale[600]}`,
-                  borderRadius: "0 0 8px 8px",
-                  textAlign: "center",
-                  fontSize: sizing === "large" ? 16 : 8,
-                  fontWeight: "bold",
-                  lineHeight: "40px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  borderRadius: '0 0 8px 8px',
+                  textAlign: 'center',
+                  fontSize: sizing === 'large' ? 16 : 8,
+                  fontWeight: 'bold',
+                  lineHeight: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
                 <Typography
                   sx={{
-                    fontSize: sizing === "large" ? 16 : 8,
-                    fontWeight: "bold",
+                    fontSize: sizing === 'large' ? 16 : 8,
+                    fontWeight: 'bold'
                   }}
                 >
                   {label}
@@ -197,7 +190,7 @@ const PlinkoDice: React.FC<DiceRollerProps> = ({
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default PlinkoDice;
+export default PlinkoDice

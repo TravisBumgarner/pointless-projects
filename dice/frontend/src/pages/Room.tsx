@@ -18,7 +18,7 @@
 // }
 
 const Room = () => {
-  return <p>Coming soon</p>;
+  return <p>Coming soon</p>
   // const [results, setResults] = useState<DiceResult | null>(null);
   // const { room } = useParams<{ room: string }>();
   // const [params, setParams] = useState<{ sides: number }>({ sides: 6 });
@@ -97,6 +97,6 @@ const Room = () => {
   //     </Box>
   //   </Box>
   // );
-};
+}
 
-export default Room;
+export default Room
