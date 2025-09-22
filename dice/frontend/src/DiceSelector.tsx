@@ -1,19 +1,22 @@
 import { Box, Button, TextField, type SxProps } from '@mui/material'
 import { SPACING } from './styles/styleConsts'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { COLLAPSE_WIDTH, DEFAULT_DICE } from './consts'
 
 const DiceSelector = ({ setParams }: { setParams: ({ sides }: { sides: number }) => void }) => {
   const [lastSelectedSides, setLastSelectedSides] = useState<number | 'custom'>(DEFAULT_DICE)
   const [customSides, setCustomSides] = useState<number | ''>('')
 
-  const handleSetParams = (params: { sides: number; isCustom: boolean }) => {
-    setLastSelectedSides(params.isCustom ? 'custom' : params.sides)
-    if (!params.isCustom) {
-      setCustomSides('')
-    }
-    setParams(params)
-  }
+  const handleSetParams = useCallback(
+    (params: { sides: number; isCustom: boolean }) => {
+      setLastSelectedSides(params.isCustom ? 'custom' : params.sides)
+      if (!params.isCustom) {
+        setCustomSides('')
+      }
+      setParams(params)
+    },
+    [setParams]
+  )
 
   return (
     <Box

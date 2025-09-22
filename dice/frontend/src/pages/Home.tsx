@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import generateRoomName from '../utils/generateRoomName'
 import socket from '../services/socket'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Button, TextField, Typography, type SxProps } from '@mui/material'
 import { SPACING } from '../styles/styleConsts'
 
@@ -9,15 +9,15 @@ export default function App() {
   const navigate = useNavigate()
   const [inputRoomName, setInputRoomName] = useState('')
 
-  const handleCreateRoom = () => {
+  const handleCreateRoom = useCallback(() => {
     const roomName = generateRoomName()
     socket.emit('create_room', { room: roomName })
     navigate(`/room/${roomName}`)
-  }
+  }, [navigate])
 
-  const handleJoinRoom = () => {
+  const handleJoinRoom = useCallback(() => {
     navigate(`/room/${inputRoomName}`)
-  }
+  }, [inputRoomName, navigate])
 
   return (
     <Box sx={wrapperSX}>

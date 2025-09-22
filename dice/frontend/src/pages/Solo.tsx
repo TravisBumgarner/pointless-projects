@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import Roller from '../rollers'
 import DiceSelector from '../DiceSelector'
@@ -15,10 +15,10 @@ const Solo = () => {
   const [isRolling, setIsRolling] = useState(false)
   const [selectedRoller, setSelectedRoller] = useState<RollerType>('balloon')
 
-  const handleSetSelectedRoller = (roller: RollerType) => {
+  const handleSetSelectedRoller = useCallback((roller: RollerType) => {
     setIsRolling(false)
     setSelectedRoller(roller)
-  }
+  }, [])
 
   return (
     <Box>
