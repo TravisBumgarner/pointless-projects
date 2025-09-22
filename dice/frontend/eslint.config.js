@@ -27,8 +27,9 @@ export default tseslint.config([
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/indent': 'off',
       'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
-      'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
-      '@typescript-eslint/space-before-function-paren': 'off'
+      '@typescript-eslint/space-before-function-paren': 'off',
+      'no-console': 'error',
+      'react-hooks/exhaustive-deps': 'warn'
     },
     languageOptions: {
       ecmaVersion: 2020,
