@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marker Color Sorter</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+    }
+    h1 {
+      margin: 0 0 20px 0;
+      color: #fff;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .left-panel {
+      flex: 1;
+      min-width: 400px;
+    }
+    .right-panel {
+      flex: 1;
+      min-width: 400px;
+    }
+    .image-container {
+      position: relative;
+      display: inline-block;
+      cursor: crosshair;
+      border: 2px solid #444;
+      border-radius: 8px;
+      overflow: hidden;
+      user-select: none;
+    }
+    #markerImage {
+      max-width: 100%;
+      display: block;
+    }
+    .persistent-overlays {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .persistent-overlay {
+      position: absolute;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 3px #000, 0 0 3px #000;
+    }
+    .selection-overlay {
+      position: absolute;
+      border: 2px solid #fff;
+      background: rgba(74, 144, 217, 0.3);
+      pointer-events: none;
+      display: none;
+    }
+    .selection-overlay.active {
+      display: block;
+    }
+    .color-preview {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 15px 0;
+      padding: 15px;
+      background: #252545;
+      border-radius: 8px;
+    }
+    .color-swatch {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      border: 2px solid #555;
+    }
+    .color-info {
+      flex: 1;
+    }
+    .color-info p {
+      margin: 5px 0;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    .add-marker {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .add-marker input {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      width: 120px;
+    }
+    .add-marker button {
+      padding: 10px 20px;
+      background: #4a90d9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .add-marker button:hover {
+      background: #3a7fc9;
+    }
+    .add-marker button:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+    .controls {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .controls label {
+      font-weight: bold;
+    }
+    .controls select, .controls button, .controls input[type="number"] {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .controls select, .controls input[type="number"] {
+      background: #333;
+      color: #fff;
+    }
+    .controls input[type="number"] {
+      width: 60px;
+    }
+    .controls button {
+      background: #e74c3c;
+      color: white;
+    }
+    .controls button:hover {
+      background: #c0392b;
+    }
+    .grid-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+    .grid-controls label {
+      font-weight: normal;
+      font-size: 13px;
+    }
+    .marker-grid {
+      display: grid;
+      gap: 5px;
+      max-height: 1000px;
+      overflow-y: auto;
+      padding: 10px;
+      background: #252545;
+      border-radius: 8px;
+    }
+    .marker-card {
+      background: #333355;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      position: relative;
+    }
+    .marker-card .color-picker {
+      width: 100%;
+      height: 50px;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      padding: 0;
+      background: none;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .marker-card .color-picker::-webkit-color-swatch-wrapper {
+      padding: 0;
+      border: none;
+      border-radius: 6px;
+    }
+    .marker-card .color-picker::-webkit-color-swatch {
+      border: none;
+      border-radius: 6px;
+    }
+    /* Firefox specific styling */
+    .marker-card .color-picker::-moz-color-swatch {
+      border: none;
+      border-radius: 6px;
+    }
+    .marker-card .label {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .marker-card .details {
+      font-size: 10px;
+      color: #aaa;
+      margin-top: 5px;
+      font-family: monospace;
+    }
+    .marker-card .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(231, 76, 60, 0.8);
+      border: none;
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .marker-card:hover .delete-btn {
+      opacity: 1;
+    }
+    .marker-card.highlighted {
+      outline: 3px solid #fff;
+      outline-offset: 2px;
+      transform: scale(1.05);
+      z-index: 10;
+    }
+    .persistent-overlay.highlighted {
+      outline: 3px solid #fff;
+      outline-offset: 2px;
+      z-index: 100;
+      transform: scale(1.1);
+    }
+    .stats {
+      margin-top: 15px;
+      padding: 10px;
+      background: #252545;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .instructions {
+      background: #252545;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    .instructions ol {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    .instructions li {
+      margin: 5px 0;
+    }
+    .image-upload {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #444;
+    }
+    .image-upload input[type="file"] {
+      font-size: 13px;
+    }
+    #canvas {
+      display: none;
+    }
+    .creator-link {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(74, 144, 217, 0.9);
+      color: white;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: background 0.2s;
+      z-index: 1000;
+    }
+    .creator-link:hover {
+      background: rgba(74, 144, 217, 1);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <a href="https://travisbumgarner.dev" target="_blank" class="creator-link">More from the creator</a>
+  <h1>Marker Color Sorter</h1>
+
+  <div class="container">
+    <div class="left-panel">
+      <div class="instructions">
+        <strong>Instructions:</strong>
+        <ol>
+          <li>Load an image of markers using the file input below</li>
+          <li>Click and drag to select a rectangle on the marker's colored cap</li>
+          <li>Enter the marker's number/text and click "Add Marker"</li>
+          <li>Click a marker card on the right to re-select its color</li>
+        </ol>
+        <div class="image-upload">
+          <label for="imageInput">Load image: </label>
+          <input type="file" id="imageInput" accept="image/*">
+        </div>
+      </div>
+
+      <div class="image-container" id="imageContainer">
+        <img id="markerImage" alt="Markers" crossorigin="anonymous" draggable="false" style="display: none;">
+        <div id="imagePlaceholder" style="display: flex; align-items: center; justify-content: center; height: 300px; background: #333; border-radius: 8px; color: #888; font-size: 16px;">Please select an image file above to get started</div>
+        <div class="persistent-overlays" id="persistentOverlays"></div>
+        <div class="selection-overlay" id="selectionOverlay"></div>
+      </div>
+
+      <canvas id="canvas"></canvas>
+
+      <div class="color-preview">
+        <div class="color-swatch" id="colorSwatch"></div>
+        <div class="color-info">
+          <p><strong>Selected Color:</strong></p>
+          <p id="rgbValue">RGB: Drag to select area</p>
+          <p id="hexValue">HEX: -</p>
+          <p id="hslValue">HSL: -</p>
+        </div>
+      </div>
+
+      <div class="add-marker">
+        <input type="text" id="markerLabel" placeholder="Marker # (e.g. 072)">
+        <button id="addBtn" disabled>Add Marker</button>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="controls">
+        <label>Sort by:</label>
+        <select id="sortSelect">
+          <option value="label">Label (Number)</option>
+          <optgroup label="HSL">
+            <option value="hue">Hue</option>
+            <option value="saturation">Saturation</option>
+            <option value="lightness">Lightness</option>
+          </optgroup>
+          <optgroup label="RGB">
+            <option value="red">Red</option>
+            <option value="green">Green</option>
+            <option value="blue">Blue</option>
+            <option value="luminance">Luminance (perceived)</option>
+          </optgroup>
+          <optgroup label="Lab (Perceptual)">
+            <option value="labL">L* (Lightness)</option>
+            <option value="labA">a* (Green-Red)</option>
+            <option value="labB">b* (Blue-Yellow)</option>
+            <option value="chroma">Chroma (Colorfulness)</option>
+            <option value="deltaE">CIEDE2000 from white</option>
+            <option value="deltaEBlack">CIEDE2000 from black</option>
+          </optgroup>
+          <optgroup label="Perceptual Gradients">
+            <option value="rainbow">Rainbow (Hue + Lightness)</option>
+            <option value="stepHue">Step by Hue Groups</option>
+          </optgroup>
+        </select>
+        <button id="clearBtn">Clear All</button>
+
+        <div class="grid-controls">
+          <label>Columns:</label>
+          <input type="number" id="colsInput" min="1" max="20" value="6">
+        </div>
+      </div>
+
+      <div class="marker-grid" id="markerGrid"></div>
+
+      <div class="stats" id="stats">
+        Total markers: 0
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let markers = [];
+    let currentColor = null;
+    let currentBounds = null;
+    let ctx = null;
+    let isDragging = false;
+    let startX, startY, endX, endY;
+    
+    const image = document.getElementById('markerImage');
+    const canvas = document.getElementById('canvas');
+    const imageContainer = document.getElementById('imageContainer');
+    const selectionOverlay = document.getElementById('selectionOverlay');
+    const persistentOverlays = document.getElementById('persistentOverlays');
+    const imageInput = document.getElementById('imageInput');
+    const colorSwatch = document.getElementById('colorSwatch');
+    const rgbValue = document.getElementById('rgbValue');
+    const hexValue = document.getElementById('hexValue');
+    const hslValue = document.getElementById('hslValue');
+    const markerLabel = document.getElementById('markerLabel');
+    const addBtn = document.getElementById('addBtn');
+    const sortSelect = document.getElementById('sortSelect');
+    const markerGrid = document.getElementById('markerGrid');
+    const clearBtn = document.getElementById('clearBtn');
+    const stats = document.getElementById('stats');
+    const colsInput = document.getElementById('colsInput');
+    const imagePlaceholder = document.getElementById('imagePlaceholder');
+
+    // Initialize interface as disabled until image is loaded
+    imageContainer.style.cursor = 'default';
+    
+    // Load saved image from localStorage
+    const savedImage = localStorage.getItem('markerImage');
+    if (savedImage) {
+      image.src = savedImage;
+      image.style.display = 'block';
+      imagePlaceholder.style.display = 'none';
+      imageContainer.style.cursor = 'crosshair';
+    }
+    
+    // Load saved markers from localStorage
+    const saved = localStorage.getItem('markers');
+    if (saved) {
+      markers = JSON.parse(saved);
+      renderMarkers();
+      // Render overlays after image loads
+      if (image.complete && image.src && !image.src.includes('./image.png')) {
+        setTimeout(renderOverlays, 50);
+      }
+    }
+
+    function renderOverlays() {
+      const rect = image.getBoundingClientRect();
+      const scaleX = rect.width / image.naturalWidth;
+      const scaleY = rect.height / image.naturalHeight;
+
+      persistentOverlays.innerHTML = markers.map(m => {
+        if (!m.bounds) return '';
+        const left = m.bounds.x * scaleX;
+        const top = m.bounds.y * scaleY;
+        const width = m.bounds.width * scaleX;
+        const height = m.bounds.height * scaleY;
+        return `<div class="persistent-overlay"
+          data-label="${m.label}"
+          style="
+            left: ${left}px;
+            top: ${top}px;
+            width: ${width}px;
+            height: ${height}px;
+            background: ${m.hex}88;
+            pointer-events: auto;
+            cursor: pointer;
+          "
+          onmouseenter="highlightMarker('${m.label}')"
+          onmouseleave="clearHighlight()"
+        >${m.label}</div>`;
+      }).join('');
+    }
+
+    // Re-render overlays when image resizes
+    window.addEventListener('resize', renderOverlays);
+    image.addEventListener('load', () => {
+      setTimeout(renderOverlays, 100);
+    });
+
+    // Load saved column count
+    const savedCols = localStorage.getItem('gridCols');
+    if (savedCols) {
+      colsInput.value = savedCols;
+    }
+    updateGridCols();
+
+    image.addEventListener('dragstart', (e) => e.preventDefault());
+
+    function initCanvas() {
+      if (!image.src || image.src.includes('./image.png')) return;
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0);
+      setTimeout(renderOverlays, 100);
+    }
+
+    image.onload = initCanvas;
+
+    // Image upload handler
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageData = event.target.result;
+          image.src = imageData;
+          image.style.display = 'block';
+          imagePlaceholder.style.display = 'none';
+          imageContainer.style.cursor = 'crosshair';
+          // Save image to localStorage
+          localStorage.setItem('markerImage', imageData);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function getScaledCoords(e) {
+      const rect = image.getBoundingClientRect();
+      const scaleX = image.naturalWidth / rect.width;
+      const scaleY = image.naturalHeight / rect.height;
+      return {
+        x: Math.floor((e.clientX - rect.left) * scaleX),
+        y: Math.floor((e.clientY - rect.top) * scaleY),
+        displayX: e.clientX - rect.left,
+        displayY: e.clientY - rect.top
+      };
+    }
+
+    imageContainer.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      if (!ctx || !image.src || image.style.display === 'none') return;
+      isDragging = true;
+      const coords = getScaledCoords(e);
+      startX = coords.x;
+      startY = coords.y;
+
+      selectionOverlay.style.left = coords.displayX + 'px';
+      selectionOverlay.style.top = coords.displayY + 'px';
+      selectionOverlay.style.width = '0px';
+      selectionOverlay.style.height = '0px';
+      selectionOverlay.classList.add('active');
+    });
+
+    imageContainer.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const coords = getScaledCoords(e);
+      const rect = image.getBoundingClientRect();
+
+      const left = Math.min(e.clientX - rect.left, (startX / image.naturalWidth) * rect.width);
+      const top = Math.min(e.clientY - rect.top, (startY / image.naturalHeight) * rect.height);
+      const width = Math.abs(e.clientX - rect.left - (startX / image.naturalWidth) * rect.width);
+      const height = Math.abs(e.clientY - rect.top - (startY / image.naturalHeight) * rect.height);
+
+      selectionOverlay.style.left = left + 'px';
+      selectionOverlay.style.top = top + 'px';
+      selectionOverlay.style.width = width + 'px';
+      selectionOverlay.style.height = height + 'px';
+    });
+
+    imageContainer.addEventListener('mouseup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      const coords = getScaledCoords(e);
+      endX = coords.x;
+      endY = coords.y;
+
+      // Calculate selection bounds
+      const x1 = Math.min(startX, endX);
+      const y1 = Math.min(startY, endY);
+      const x2 = Math.max(startX, endX);
+      const y2 = Math.max(startY, endY);
+
+      const width = x2 - x1;
+      const height = y2 - y1;
+
+      if (width < 3 || height < 3) {
+        // Too small, treat as click - sample single point
+        sampleArea(startX, startY, 1, 1);
+      } else {
+        // Sample the selected area
+        sampleArea(x1, y1, width, height);
+      }
+    });
+
+    imageContainer.addEventListener('mouseleave', () => {
+      if (isDragging) {
+        isDragging = false;
+        selectionOverlay.classList.remove('active');
+      }
+    });
+
+    function sampleArea(x, y, width, height) {
+      const imageData = ctx.getImageData(x, y, width, height);
+      const data = imageData.data;
+
+      let totalR = 0, totalG = 0, totalB = 0;
+      const pixelCount = (width * height);
+
+      for (let i = 0; i < data.length; i += 4) {
+        totalR += data[i];
+        totalG += data[i + 1];
+        totalB += data[i + 2];
+      }
+
+      const r = Math.round(totalR / pixelCount);
+      const g = Math.round(totalG / pixelCount);
+      const b = Math.round(totalB / pixelCount);
+
+      currentColor = { r, g, b };
+      currentBounds = { x, y, width, height };
+      const hex = rgbToHex(r, g, b);
+      const hsl = rgbToHsl(r, g, b);
+
+      // Update overlay color to match selection
+      selectionOverlay.style.background = `rgba(${r}, ${g}, ${b}, 0.5)`;
+      selectionOverlay.style.borderColor = hex;
+
+      colorSwatch.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+      rgbValue.textContent = `RGB: ${r}, ${g}, ${b}`;
+      hexValue.textContent = `HEX: ${hex}`;
+      hslValue.textContent = `HSL: ${hsl.h}\u00B0, ${hsl.s}%, ${hsl.l}%`;
+
+      addBtn.disabled = false;
+      markerLabel.focus();
+    }
+
+    addBtn.addEventListener('click', addMarker);
+    markerLabel.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !addBtn.disabled) {
+        addMarker();
+      }
+    });
+
+    function addMarker() {
+      if (!currentColor || !markerLabel.value.trim()) return;
+
+      const { r, g, b } = currentColor;
+      const hsl = rgbToHsl(r, g, b);
+      const hex = rgbToHex(r, g, b);
+      const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+      const lab = rgbToLab(r, g, b);
+      const chroma = Math.sqrt(lab.a * lab.a + lab.b * lab.b);
+
+      markers.push({
+        label: markerLabel.value.trim(),
+        r, g, b,
+        hex,
+        h: hsl.h,
+        s: hsl.s,
+        l: hsl.l,
+        luminance: Math.round(luminance),
+        labL: lab.L,
+        labA: lab.a,
+        labB: lab.b,
+        chroma,
+        bounds: currentBounds
+      });
+
+      saveMarkers();
+      renderMarkers();
+      renderOverlays();
+
+      markerLabel.value = '';
+      currentColor = null;
+      currentBounds = null;
+      addBtn.disabled = true;
+      colorSwatch.style.backgroundColor = '#333';
+      rgbValue.textContent = 'RGB: Drag to select area';
+      hexValue.textContent = 'HEX: -';
+      hslValue.textContent = 'HSL: -';
+      selectionOverlay.classList.remove('active');
+    }
+
+    function highlightMarker(label) {
+      document.querySelectorAll('.marker-card').forEach(card => {
+        card.classList.toggle('highlighted', card.dataset.label === label);
+      });
+      document.querySelectorAll('.persistent-overlay').forEach(overlay => {
+        overlay.classList.toggle('highlighted', overlay.dataset.label === label);
+      });
+    }
+
+    function clearHighlight() {
+      document.querySelectorAll('.marker-card.highlighted, .persistent-overlay.highlighted').forEach(el => {
+        el.classList.remove('highlighted');
+      });
+    }
+
+    sortSelect.addEventListener('change', renderMarkers);
+
+    colsInput.addEventListener('change', () => {
+      localStorage.setItem('gridCols', colsInput.value);
+      updateGridCols();
+    });
+
+    function updateGridCols() {
+      const cols = parseInt(colsInput.value) || 6;
+      markerGrid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    }
+
+    clearBtn.addEventListener('click', () => {
+      if (confirm('Clear all markers and remove the current image?')) {
+        markers = [];
+        saveMarkers();
+        renderMarkers();
+        renderOverlays();
+        // Clear stored image
+        localStorage.removeItem('markerImage');
+        // Reset image display
+        image.src = '';
+        image.style.display = 'none';
+        imagePlaceholder.style.display = 'flex';
+        imageContainer.style.cursor = 'default';
+        // Clear canvas
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx = null;
+        }
+        // Clear current selection
+        currentColor = null;
+        currentBounds = null;
+        addBtn.disabled = true;
+        colorSwatch.style.backgroundColor = '#333';
+        rgbValue.textContent = 'RGB: Drag to select area';
+        hexValue.textContent = 'HEX: -';
+        hslValue.textContent = 'HSL: -';
+        selectionOverlay.classList.remove('active');
+        markerLabel.value = '';
+      }
+    });
+
+    function saveMarkers() {
+      localStorage.setItem('markers', JSON.stringify(markers));
+    }
+
+    function renderMarkers() {
+      const sortBy = sortSelect.value;
+      const whiteLab = { L: 100, a: 0, b: 0 };
+      const blackLab = { L: 0, a: 0, b: 0 };
+
+      // Ensure Lab values exist for all markers (for older saved data)
+      markers.forEach(m => {
+        if (m.labL === undefined) {
+          const lab = rgbToLab(m.r, m.g, m.b);
+          m.labL = lab.L;
+          m.labA = lab.a;
+          m.labB = lab.b;
+          m.chroma = Math.sqrt(lab.a * lab.a + lab.b * lab.b);
+        }
+      });
+
+      const sorted = [...markers].sort((a, b) => {
+        if (sortBy === 'label') {
+          const numA = parseInt(a.label) || 0;
+          const numB = parseInt(b.label) || 0;
+          if (numA !== numB) return numA - numB;
+          return a.label.localeCompare(b.label);
+        }
+        // HSL
+        if (sortBy === 'hue') return a.h - b.h;
+        if (sortBy === 'saturation') return b.s - a.s;
+        if (sortBy === 'lightness') return b.l - a.l;
+        // RGB
+        if (sortBy === 'red') return b.r - a.r;
+        if (sortBy === 'green') return b.g - a.g;
+        if (sortBy === 'blue') return b.b - a.b;
+        if (sortBy === 'luminance') return b.luminance - a.luminance;
+        // Lab
+        if (sortBy === 'labL') return b.labL - a.labL;
+        if (sortBy === 'labA') return a.labA - b.labA;
+        if (sortBy === 'labB') return a.labB - b.labB;
+        if (sortBy === 'chroma') return b.chroma - a.chroma;
+        // CIEDE2000
+        if (sortBy === 'deltaE') {
+          const dA = ciede2000({ L: a.labL, a: a.labA, b: a.labB }, whiteLab);
+          const dB = ciede2000({ L: b.labL, a: b.labA, b: b.labB }, whiteLab);
+          return dA - dB;
+        }
+        if (sortBy === 'deltaEBlack') {
+          const dA = ciede2000({ L: a.labL, a: a.labA, b: a.labB }, blackLab);
+          const dB = ciede2000({ L: b.labL, a: b.labA, b: b.labB }, blackLab);
+          return dA - dB;
+        }
+        // Perceptual gradients
+        if (sortBy === 'rainbow') {
+          // Group by hue, then by lightness within each hue
+          const hueGroupA = Math.floor(a.h / 30);
+          const hueGroupB = Math.floor(b.h / 30);
+          if (hueGroupA !== hueGroupB) return hueGroupA - hueGroupB;
+          return b.l - a.l;
+        }
+        if (sortBy === 'stepHue') {
+          // Sort into color families, then by saturation
+          const getHueGroup = (h, s, l) => {
+            if (s < 15 || l > 90) return 0; // Whites/grays
+            if (l < 15) return 1; // Blacks
+            if (h < 15 || h >= 345) return 2; // Reds
+            if (h < 45) return 3; // Oranges
+            if (h < 70) return 4; // Yellows
+            if (h < 150) return 5; // Greens
+            if (h < 210) return 6; // Cyans
+            if (h < 270) return 7; // Blues
+            if (h < 310) return 8; // Purples
+            return 9; // Pinks
+          };
+          const groupA = getHueGroup(a.h, a.s, a.l);
+          const groupB = getHueGroup(b.h, b.s, b.l);
+          if (groupA !== groupB) return groupA - groupB;
+          return b.chroma - a.chroma;
+        }
+        return 0;
+      });
+
+      markerGrid.innerHTML = sorted.map((m, i) => `
+        <div class="marker-card"
+             data-label="${m.label}"
+             onmouseenter="highlightMarker('${m.label}')"
+             onmouseleave="clearHighlight()">
+          <button class="delete-btn" onclick="deleteMarker('${m.label}')">&times;</button>
+          <input type="color" class="color-picker" value="${m.hex}" onchange="updateMarkerColor('${m.label}', this.value)">
+          <div class="label">${m.label}</div>
+        </div>
+      `).join('');
+
+      stats.textContent = `Total markers: ${markers.length}`;
+    }
+
+    function deleteMarker(label) {
+      const index = markers.findIndex(m => m.label === label);
+      if (index > -1) {
+        markers.splice(index, 1);
+        saveMarkers();
+        renderMarkers();
+        renderOverlays();
+      }
+    }
+
+    function updateMarkerColor(label, hex) {
+      const marker = markers.find(m => m.label === label);
+      if (!marker) return;
+
+      // Parse hex to RGB
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+
+      const hsl = rgbToHsl(r, g, b);
+      const lab = rgbToLab(r, g, b);
+      const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+
+      marker.r = r; marker.g = g; marker.b = b;
+      marker.hex = hex;
+      marker.h = hsl.h; marker.s = hsl.s; marker.l = hsl.l;
+      marker.luminance = Math.round(luminance);
+      marker.labL = lab.L; marker.labA = lab.a; marker.labB = lab.b;
+      marker.chroma = Math.sqrt(lab.a * lab.a + lab.b * lab.b);
+
+      saveMarkers();
+      renderOverlays();
+    }
+
+    function rgbToHex(r, g, b) {
+      return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+    }
+
+    // RGB to XYZ (D65 illuminant)
+    function rgbToXyz(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+      g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+      b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+      r *= 100; g *= 100; b *= 100;
+      return {
+        x: r * 0.4124564 + g * 0.3575761 + b * 0.1804375,
+        y: r * 0.2126729 + g * 0.7151522 + b * 0.0721750,
+        z: r * 0.0193339 + g * 0.1191920 + b * 0.9503041
+      };
+    }
+
+    // XYZ to Lab (D65 reference white)
+    function xyzToLab(x, y, z) {
+      const refX = 95.047, refY = 100.0, refZ = 108.883;
+      x /= refX; y /= refY; z /= refZ;
+      x = x > 0.008856 ? Math.pow(x, 1/3) : (7.787 * x) + 16/116;
+      y = y > 0.008856 ? Math.pow(y, 1/3) : (7.787 * y) + 16/116;
+      z = z > 0.008856 ? Math.pow(z, 1/3) : (7.787 * z) + 16/116;
+      return {
+        L: (116 * y) - 16,
+        a: 500 * (x - y),
+        b: 200 * (y - z)
+      };
+    }
+
+    function rgbToLab(r, g, b) {
+      const xyz = rgbToXyz(r, g, b);
+      return xyzToLab(xyz.x, xyz.y, xyz.z);
+    }
+
+    // CIEDE2000 color difference
+    function ciede2000(lab1, lab2) {
+      const L1 = lab1.L, a1 = lab1.a, b1 = lab1.b;
+      const L2 = lab2.L, a2 = lab2.a, b2 = lab2.b;
+
+      const kL = 1, kC = 1, kH = 1;
+      const deg2rad = Math.PI / 180;
+      const rad2deg = 180 / Math.PI;
+
+      const C1 = Math.sqrt(a1 * a1 + b1 * b1);
+      const C2 = Math.sqrt(a2 * a2 + b2 * b2);
+      const Cab = (C1 + C2) / 2;
+
+      const G = 0.5 * (1 - Math.sqrt(Math.pow(Cab, 7) / (Math.pow(Cab, 7) + Math.pow(25, 7))));
+      const a1p = a1 * (1 + G);
+      const a2p = a2 * (1 + G);
+
+      const C1p = Math.sqrt(a1p * a1p + b1 * b1);
+      const C2p = Math.sqrt(a2p * a2p + b2 * b2);
+
+      let h1p = Math.atan2(b1, a1p) * rad2deg;
+      if (h1p < 0) h1p += 360;
+      let h2p = Math.atan2(b2, a2p) * rad2deg;
+      if (h2p < 0) h2p += 360;
+
+      const dLp = L2 - L1;
+      const dCp = C2p - C1p;
+
+      let dhp;
+      if (C1p * C2p === 0) {
+        dhp = 0;
+      } else {
+        const diff = h2p - h1p;
+        if (Math.abs(diff) <= 180) dhp = diff;
+        else if (diff > 180) dhp = diff - 360;
+        else dhp = diff + 360;
+      }
+
+      const dHp = 2 * Math.sqrt(C1p * C2p) * Math.sin(dhp * deg2rad / 2);
+
+      const Lp = (L1 + L2) / 2;
+      const Cp = (C1p + C2p) / 2;
+
+      let hp;
+      if (C1p * C2p === 0) {
+        hp = h1p + h2p;
+      } else {
+        const sum = h1p + h2p;
+        if (Math.abs(h1p - h2p) <= 180) hp = sum / 2;
+        else if (sum < 360) hp = (sum + 360) / 2;
+        else hp = (sum - 360) / 2;
+      }
+
+      const T = 1 - 0.17 * Math.cos((hp - 30) * deg2rad)
+                  + 0.24 * Math.cos(2 * hp * deg2rad)
+                  + 0.32 * Math.cos((3 * hp + 6) * deg2rad)
+                  - 0.20 * Math.cos((4 * hp - 63) * deg2rad);
+
+      const dTheta = 30 * Math.exp(-Math.pow((hp - 275) / 25, 2));
+      const RC = 2 * Math.sqrt(Math.pow(Cp, 7) / (Math.pow(Cp, 7) + Math.pow(25, 7)));
+      const SL = 1 + (0.015 * Math.pow(Lp - 50, 2)) / Math.sqrt(20 + Math.pow(Lp - 50, 2));
+      const SC = 1 + 0.045 * Cp;
+      const SH = 1 + 0.015 * Cp * T;
+      const RT = -Math.sin(2 * dTheta * deg2rad) * RC;
+
+      const dE = Math.sqrt(
+        Math.pow(dLp / (kL * SL), 2) +
+        Math.pow(dCp / (kC * SC), 2) +
+        Math.pow(dHp / (kH * SH), 2) +
+        RT * (dCp / (kC * SC)) * (dHp / (kH * SH))
+      );
+
+      return dE;
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255;
+      g /= 255;
+      b /= 255;
+
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0;
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+          case g: h = ((b - r) / d + 2) / 6; break;
+          case b: h = ((r - g) / d + 4) / 6; break;
+        }
+      }
+
+      return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+      };
+    }
+  </script>
+</body>
+</html>
