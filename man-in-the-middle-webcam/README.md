@@ -26,14 +26,26 @@ source venv/bin/activate
 python main.py
 ```
 
-A preview window opens showing your transformed feed. In Zoom/Chrome/etc., select **OBS Virtual Camera** as your camera source.
+If the feed comes through black, your real webcam isn't index 0. Probe them:
+
+```bash
+python main.py --list-devices   # then: python main.py --device N
+```
+
+Pick the index with a non-zero mean brightness — the black 1920x1080 entries
+include the OBS Virtual Camera itself, which would just loop output back in.
+
+macOS often misreports the webcam's framerate, so the app measures it at startup
+(~2s). Override with `--fps 30` if the detected rate looks wrong.
+
+No preview window opens — the transformed feed goes straight to the virtual camera. In Zoom/Chrome/etc., select **OBS Virtual Camera** as your camera source to see it.
 
 ### Controls
 
-Press keys in the **preview window** (click it first to give it focus):
+Type in the **terminal** and press Enter:
 
 - **Number/letter keys** — switch filters (see table below)
-- **q** — quit
+- **`]`** — quit (Ctrl-C also works)
 
 ## Filters
 
@@ -45,36 +57,64 @@ Press keys in the **preview window** (click it first to give it focus):
 | `4` | gameboy | 4-shade green palette, chunky pixels |
 | `5` | dither | Ordered Bayer matrix dithering |
 | `6` | glitch | Random horizontal band shifts |
-| `7` | halftone | Newspaper-style dot pattern |
+| `7` | mosaic | 20x20px blocks, each the average color of that area, 128 colors |
 | `8` | scanlines | CRT scanline darkening |
 | `9` | neon edges | Thick neon-colored edges on black |
 | `0` | old film | Sepia + grain + vignette + flicker |
 | `a` | threshold | Binary black and white |
 | `b` | time tile | 3x3 grid, each tile 0.5s further in the past |
-| `c` | split rgb | R, G, B channels shown as vertical strips |
-| `d` | tv static | B&W static with coarse grain |
-| `e` | 8-color | Each RGB channel quantized to 0 or 255 |
-| `f` | retro cga | Classic 4-color CGA palette, pixelated |
-| `g` | motion detect | Only pixels that are moving, rest goes black |
-| `h` | anaglyph 3d | Red/cyan offset — grab your 3D glasses |
-| `i` | stencil | High-contrast 3-tone street-art look |
-| `j` | old crt | Barrel distortion + scanlines + color bleed + vignette |
-| `k` | posterize | Reduced color levels per channel |
-| `l` | onion skin | Ghostly overlay of your last several positions |
-| `m` | duotone | Teal-to-magenta two-tone gradient |
-| `n` | kaleidoscope | 6-fold rotational symmetry from a single wedge |
-| `o` | noir | Film noir — crushed shadows, dramatic contrast, B&W |
-| `p` | blueprint | White edge lines on dark blue paper |
-| `r` | vaporwave | Pink/purple hue shift + glow + scanlines |
-| `s` | pencil sketch | Grayscale pencil drawing |
-| `t` | oil painting | Painterly stylization |
-| `u` | cyanotype | Sun print — deep blue shadows, white highlights |
-| `v` | woodcut | Bold black/white adaptive threshold, like a block print |
-| `w` | sepia | Classic warm vintage tone |
-| `x` | solarize | Partial inversion — overexposed darkroom look |
-| `y` | pop art | Warhol-style 2x2 posterized color grid |
+| `c` | tv static | B&W static with coarse grain |
+| `d` | 8-color | Each RGB channel quantized to 0 or 255 |
+| `e` | retro cga | Classic 4-color CGA palette, pixelated |
+| `f` | motion detect | Only pixels that are moving, in black and white |
+| `g` | anaglyph 3d | Red/cyan offset — grab your 3D glasses |
+| `h` | stencil | High-contrast 3-tone street-art look |
+| `i` | old crt | Barrel distortion + scanlines + color bleed + vignette |
+| `j` | posterize | Reduced color levels per channel |
+| `k` | onion skin | Ghostly overlay of your last several positions |
+| `l` | duotone | Teal-to-magenta two-tone gradient |
+| `m` | kaleidoscope | 6-fold rotational symmetry from a single wedge |
+| `n` | noir | Film noir — crushed shadows, dramatic contrast, B&W |
+| `o` | blueprint | White edge lines on dark blue paper |
+| `p` | vaporwave | Pink/purple hue shift + glow + scanlines |
+| `q` | pencil sketch | Grayscale pencil drawing |
+| `r` | oil painting | Painterly stylization |
+| `s` | cyanotype | Sun print — deep blue shadows, white highlights |
+| `t` | woodcut | Bold black/white adaptive threshold, like a block print |
+| `u` | sepia | Classic warm vintage tone |
+| `v` | solarize | Partial inversion — overexposed darkroom look |
+| `w` | pop art | Warhol-style 2x2 posterized color grid |
+| `x` | cartoon mosaic | Like `7`, but snapped to a 16-color comic-book palette |
+| `z` | ascii | Redrawn as colored ASCII characters |
+| `A` | slit scan | Time displacement — each band is further into the past |
+| `B` | pixel sort | Brightness-sorted pixel runs, the glitch-art melt |
+| `C` | thermal | Infrared ironbow false-color heat map |
+| `D` | night vision | Green phosphor image intensifier, grain and vignette |
+| `E` | bloom | Dreamy highlight glow bleeding over everything |
+| `F` | fisheye | Bulging fisheye lens |
+| `G` | swirl | Center twisted into a vortex |
+| `H` | tunnel | Demoscene tunnel — frame wrapped around a shaft |
+| `I` | mirror | Left half mirrored onto the right |
+| `J` | crystallize | Stained glass — Voronoi cells of flat average color |
+| `K` | low poly | Low-poly triangle mesh |
+| `L` | chromatic | Chromatic aberration, channels drifting at the edges |
+| `M` | cross hatch | Pen-and-ink hatching, more layers where darker |
+| `N` | emboss | Stamped metal relief |
+| `O` | contour map | Topographic terrain with contour lines |
+| `P` | ripple | Concentric water ripples from the center |
+| `Q` | lego | Built from plastic bricks, studs and all |
+| `R` | cross stitch | Embroidered cross-stitch on linen |
+| `S` | matrix rain | Falling green code lit by the camera |
+| `T` | zoom blur | Radial motion blur out of the center |
+| `U` | tilt shift | Fake miniature — sharp band, blurred and saturated |
+| `V` | hologram | Cyan sci-fi projection, edge-lit and flickering |
+| `W` | vhs | Worn tape — chroma bleed and a crawling tracking band |
+| `X` | echo tunnel | Video feedback, each frame zooming into the last |
+| `Y` | bitcrush | Byte rotation — wild banding from tiny value changes |
+| `Z` | sonar | Radar scope sweep lighting up edges as it passes |
 
-> `q` is reserved for quit.
+> `]` is reserved for quit. Capital letters are distinct from lowercase — `s`
+> is pencil sketch, `S` is matrix rain.
 
 ## Adding your own filter
 

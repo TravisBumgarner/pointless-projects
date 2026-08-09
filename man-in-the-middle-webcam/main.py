@@ -10,14 +10,18 @@ Requirements:
 
 Usage:
   python main.py
+  python main.py --list-devices     # see which index is your real webcam
+  python main.py --device 1         # use a specific webcam
 
-Controls (in the preview window):
-  1-0, a-y   Select transform (shown in list)
-  q           Quit
+Controls (type in the terminal, then Enter):
+  1-0, a-x, z, A-Z   Select transform (shown in list; case matters)
+  ]                  Quit
 """
 
-import time
+import argparse
 import sys
+import threading
+import time
 from collections import deque
 import cv2
 import numpy as np
@@ -94,18 +98,27 @@ def glitch(frame):
     return out
 
 
-def halftone(frame, dot_spacing=6):
-    """Halftone dot pattern."""
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    h, w = gray.shape
-    out = np.ones((h, w), dtype=np.uint8) * 255
-    for y in range(0, h, dot_spacing):
-        for x in range(0, w, dot_spacing):
-            brightness = gray[y, x]
-            radius = int((255 - brightness) / 255 * (dot_spacing // 2 + 1))
-            if radius > 0:
-                cv2.circle(out, (x, y), radius, 0, -1)
-    return cv2.cvtColor(out, cv2.COLOR_GRAY2BGR)
+def _quant_lut(levels):
+    """LUT snapping 0-255 to `levels` evenly spaced values."""
+    step = 255.0 / (levels - 1)
+    return (np.round(np.arange(256) / step) * step).clip(0, 255).astype(np.uint8)
+
+
+# 4 blues x 8 greens x 4 reds = 128 colours. Green gets the most levels — the
+# eye resolves more detail there. Channel order is BGR, as OpenCV hands it over.
+_MOSAIC_LUTS = [_quant_lut(4), _quant_lut(8), _quant_lut(4)]
+
+
+def mosaic(frame, block=20):
+    """20x20 px blocks of the area's average colour, quantized to 128 colours."""
+    h, w = frame.shape[:2]
+    # INTER_AREA averages every source pixel in each block; NEAREST blows the
+    # result back up into flat squares.
+    small = cv2.resize(frame, ((w + block - 1) // block, (h + block - 1) // block),
+                       interpolation=cv2.INTER_AREA)
+    for c in range(3):
+        small[:, :, c] = _MOSAIC_LUTS[c][small[:, :, c]]
+    return cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
 
 
 def scanlines(frame):
@@ -177,17 +190,6 @@ def time_tile(frame):
     return np.vstack(rows)
 
 
-def split_rgb(frame):
-    """Show R, G, B channels as vertical strips."""
-    w = frame.shape[1]
-    third = w // 3
-    out = np.zeros_like(frame)
-    out[:, :third, 2] = frame[:, :third, 2]
-    out[:, third:2 * third, 1] = frame[:, third:2 * third, 1]
-    out[:, 2 * third:, 0] = frame[:, 2 * third:, 0]
-    return out
-
-
 def tv_static(frame):
     """Old-timey B&W TV static with coarse grain."""
     h, w = frame.shape[:2]
@@ -227,7 +229,7 @@ def retro_cga(frame, block_size=3):
 _motion_prev = None
 
 def motion_detect(frame):
-    """Only show pixels that are moving — everything else goes black."""
+    """Only show pixels that are moving, in black and white."""
     global _motion_prev
     if _motion_prev is None or _motion_prev.shape != frame.shape:
         _motion_prev = frame.copy()
@@ -235,8 +237,8 @@ def motion_detect(frame):
     _motion_prev = frame.copy()
     gray_diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
     _, mask = cv2.threshold(gray_diff, 25, 255, cv2.THRESH_BINARY)
-    mask_3ch = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-    return cv2.bitwise_and(frame, mask_3ch)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    return cv2.cvtColor(cv2.bitwise_and(gray, mask), cv2.COLOR_GRAY2BGR)
 
 
 def anaglyph_3d(frame):
@@ -419,6 +421,52 @@ def solarize(frame, threshold=128):
     return out
 
 
+# Bright, happy cartoon colours only — no browns, greys or muted tones, since
+# those swallow everything and turn the frame to mud. BGR, as OpenCV hands
+# them over. The one dark entry is a deep violet rather than black, so shadows
+# still read as colour.
+_CARTOON_PALETTE = np.array([
+    [255, 255, 255],    # white
+    [90, 245, 255],     # lemon yellow
+    [40, 175, 255],     # orange
+    [90, 90, 255],      # coral red
+    [190, 70, 255],     # hot pink
+    [235, 70, 225],     # fuchsia
+    [245, 90, 155],     # violet
+    [255, 150, 70],     # bright blue
+    [255, 225, 90],     # sky cyan
+    [205, 235, 70],     # turquoise
+    [130, 245, 150],    # mint
+    [80, 225, 90],      # grass green
+    [200, 65, 145],     # grape purple (shadows)
+], dtype=np.uint8)
+
+_CARTOON_PALETTE_LAB = cv2.cvtColor(
+    _CARTOON_PALETTE.reshape(-1, 1, 3), cv2.COLOR_BGR2LAB
+).reshape(-1, 3).astype(np.int16)
+
+
+def cartoon_mosaic(frame, block=20):
+    """20x20 px blocks snapped to a bright cartoon palette."""
+    h, w = frame.shape[:2]
+    small = cv2.resize(frame, ((w + block - 1) // block, (h + block - 1) // block),
+                       interpolation=cv2.INTER_AREA)
+    # Crank saturation first. Real rooms are full of beige, which sits near the
+    # middle of the palette and would otherwise smear everything into one
+    # muddy tone — boosting forces each block to commit to an actual hue.
+    hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV).astype(np.float32)
+    hsv[:, :, 1] *= 3.0
+    hsv[:, :, 2] *= 1.15
+    boosted = cv2.cvtColor(np.clip(hsv, 0, 255).astype(np.uint8), cv2.COLOR_HSV2BGR)
+    # Match in Lab so each block lands on its perceptually nearest colour. The
+    # search is brute force but the image is tiny by this point (~96x54).
+    lab = cv2.cvtColor(boosted, cv2.COLOR_BGR2LAB).reshape(-1, 3).astype(np.int16)
+    delta = lab[:, None, :] - _CARTOON_PALETTE_LAB[None, :, :]
+    nearest = (delta.astype(np.int32) ** 2).sum(axis=2).argmin(axis=1)
+    quantized = _CARTOON_PALETTE[nearest].reshape(small.shape)
+    return cv2.resize(quantized, (w, h), interpolation=cv2.INTER_NEAREST)
+
+
 def pop_art(frame):
     """Pop art — Warhol-style 2x2 color grid."""
     h, w = frame.shape[:2]
@@ -468,8 +516,620 @@ def kaleidoscope(frame, segments=6):
 
 
 # ---------------------------------------------------------------------------
+# z, A-Z
+#
+# Shared machinery first. Anything that depends only on frame size gets built
+# once and cached by (h, w) — at 1080p these arrays are far too expensive to
+# rebuild 24 times a second.
+# ---------------------------------------------------------------------------
+
+_polar_cache = {}
+
+
+def _polar(h, w):
+    """Cached (xs, ys, dx, dy, radius, angle) grids for a given frame size."""
+    key = (h, w)
+    if key not in _polar_cache:
+        cx, cy = w / 2.0, h / 2.0
+        ys, xs = np.mgrid[0:h, 0:w].astype(np.float32)
+        dx, dy = xs - cx, ys - cy
+        _polar_cache[key] = (xs, ys, dx, dy,
+                             np.sqrt(dx * dx + dy * dy),
+                             np.arctan2(dy, dx))
+    return _polar_cache[key]
+
+
+_glyph_cache = {}
+
+
+def _glyph_atlas(chars, cw, ch):
+    """Pre-render each character to a (cw x ch) bitmap.
+
+    Drawing thousands of putText calls per frame is hopeless; rendering the
+    charset once lets the whole frame become a single fancy-index.
+    """
+    key = (chars, cw, ch)
+    if key not in _glyph_cache:
+        atlas = np.zeros((len(chars), ch, cw), dtype=np.uint8)
+        for i, c in enumerate(chars):
+            tile = np.zeros((ch, cw), dtype=np.uint8)
+            cv2.putText(tile, c, (1, ch - 3), cv2.FONT_HERSHEY_SIMPLEX,
+                        cw / 22.0, 255, 1, cv2.LINE_AA)
+            atlas[i] = tile
+        _glyph_cache[key] = atlas
+    return _glyph_cache[key]
+
+
+def _tile_glyphs(atlas, indices):
+    """Lay a (rows, cols) grid of glyph indices out into one image."""
+    rows, cols = indices.shape
+    ch, cw = atlas.shape[1:]
+    return atlas[indices].transpose(0, 2, 1, 3).reshape(rows * ch, cols * cw)
+
+
+_cell_cache = {}
+
+
+def _cell_maps(kind, h, w):
+    """Label maps that carve the frame into cells (Voronoi or triangles).
+
+    Returns (labels_paint, labels_small, n_labels, counts, border). Averaging
+    runs on the small map and painting on a half-res map — a full 1080p fancy
+    index per frame costs more than the entire frame budget.
+    """
+    key = (kind, h, w)
+    if key in _cell_cache:
+        return _cell_cache[key]
+
+    ph, pw = max(1, h // 2), max(1, w // 2)
+
+    if kind == "voronoi":
+        n_labels = 320
+        rng = np.random.default_rng(7)
+        lw = 400
+        lh = max(1, int(round(lw * h / w)))
+        px = rng.uniform(0, lw, n_labels).astype(np.float32)
+        py = rng.uniform(0, lh, n_labels).astype(np.float32)
+        ys, xs = np.mgrid[0:lh, 0:lw].astype(np.float32)
+        # Chunked nearest-seed search: the full (pixels x seeds) matrix would be
+        # hundreds of MB.
+        best = np.zeros((lh, lw), np.int32)
+        best_d = np.full((lh, lw), np.inf, np.float32)
+        for i in range(n_labels):
+            d = (xs - px[i]) ** 2 + (ys - py[i]) ** 2
+            closer = d < best_d
+            best_d[closer] = d[closer]
+            best[closer] = i
+        labels_paint = cv2.resize(best.astype(np.float32), (pw, ph),
+                                  interpolation=cv2.INTER_NEAREST).astype(np.int32)
+    else:  # triangles
+        cell = max(12, pw // 26)
+        ys, xs = np.mgrid[0:ph, 0:pw]
+        ncols = (pw + cell - 1) // cell
+        upper = ((xs % cell) + (ys % cell)) < cell
+        labels_paint = (((ys // cell) * ncols + (xs // cell)) * 2
+                        + upper.astype(np.int32)).astype(np.int32)
+        n_labels = int(labels_paint.max()) + 1
+
+    sw = 400
+    sh = max(1, int(round(sw * h / w)))
+    labels_small = cv2.resize(labels_paint.astype(np.float32), (sw, sh),
+                              interpolation=cv2.INTER_NEAREST).astype(np.int32)
+    counts = np.maximum(np.bincount(labels_small.ravel(), minlength=n_labels), 1)
+
+    border = np.zeros((ph, pw), bool)
+    border[1:, :] |= labels_paint[1:, :] != labels_paint[:-1, :]
+    border[:, 1:] |= labels_paint[:, 1:] != labels_paint[:, :-1]
+
+    _cell_cache[key] = (labels_paint, labels_small, n_labels, counts, border)
+    return _cell_cache[key]
+
+
+def _paint_cells(frame, kind, darken_border=True):
+    """Flat-fill every cell with its average colour."""
+    h, w = frame.shape[:2]
+    labels_paint, labels_small, n_labels, counts, border = _cell_maps(kind, h, w)
+    sh, sw = labels_small.shape
+    small = cv2.resize(frame, (sw, sh), interpolation=cv2.INTER_AREA)
+    flat = labels_small.ravel()
+    palette = np.empty((n_labels, 3), np.uint8)
+    for c in range(3):
+        total = np.bincount(flat, weights=small[:, :, c].ravel().astype(np.float64),
+                            minlength=n_labels)
+        palette[:, c] = np.clip(total / counts, 0, 255).astype(np.uint8)
+    out = palette[labels_paint]
+    if darken_border:
+        out[border] = out[border] // 3
+    return cv2.resize(out, (w, h), interpolation=cv2.INTER_NEAREST)
+
+
+# --- z: text ---
+
+_ASCII_RAMP = " .:-=+*#%@"
+
+
+def ascii_art(frame, cw=12, ch=20):
+    """The frame redrawn as coloured ASCII characters."""
+    h, w = frame.shape[:2]
+    cols, rows = max(1, w // cw), max(1, h // ch)
+    small = cv2.resize(frame, (cols, rows), interpolation=cv2.INTER_AREA)
+    gray = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY)
+    idx = (gray.astype(np.int32) * (len(_ASCII_RAMP) - 1)) // 255
+    mask = _tile_glyphs(_glyph_atlas(_ASCII_RAMP, cw, ch), idx)
+    colour = cv2.resize(small, (cols * cw, rows * ch),
+                        interpolation=cv2.INTER_NEAREST)
+    # Characters cover only a fraction of each cell, so the frame reads far
+    # darker than the source unless the surviving pixels are pushed hard.
+    colour = np.clip(colour.astype(np.int16) * 5 // 2 + 40, 0, 255).astype(np.uint8)
+    out = (colour * (mask[:, :, None] > 0)).astype(np.uint8)
+    return cv2.resize(out, (w, h), interpolation=cv2.INTER_NEAREST)
+
+
+# --- A-B: time and glitch ---
+
+_slit_buffer = deque(maxlen=48)
+
+
+def slit_scan(frame):
+    """Time displacement — each horizontal band is further into the past."""
+    h, w = frame.shape[:2]
+    _slit_buffer.append(cv2.resize(frame, (480, 270)))
+    n = len(_slit_buffer)
+    out = np.empty((270, 480, 3), np.uint8)
+    for i in range(n):
+        y0, y1 = int(i * 270 / n), int((i + 1) * 270 / n)
+        out[y0:y1] = _slit_buffer[n - 1 - i][y0:y1]
+    return cv2.resize(out, (w, h), interpolation=cv2.INTER_LINEAR)
+
+
+def pixel_sort(frame, chunk=64):
+    """Brightness-sorted pixel runs — the classic glitch-art melt."""
+    h, w = frame.shape[:2]
+    small = cv2.resize(frame, (w // 2, h // 2))
+    sh, sw = small.shape[:2]
+    usable = (sw // chunk) * chunk
+    part = small[:, :usable]
+    gray = cv2.cvtColor(part, cv2.COLOR_BGR2GRAY).reshape(sh, -1, chunk)
+    order = np.argsort(gray, axis=2)[:, :, :, None]
+    sorted_part = np.take_along_axis(part.reshape(sh, -1, chunk, 3), order, axis=2)
+    small[:, :usable] = sorted_part.reshape(sh, usable, 3)
+    return cv2.resize(small, (w, h), interpolation=cv2.INTER_LINEAR)
+
+
+# --- C-E: false colour and light ---
+
+def thermal(frame):
+    """Infrared camera — ironbow false-colour heat map."""
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (7, 7), 0)
+    return cv2.applyColorMap(gray, cv2.COLORMAP_INFERNO)
+
+
+_nightvision_cache = {}
+
+
+def night_vision(frame):
+    """Image intensifier — green phosphor, grain and a hard vignette."""
+    h, w = frame.shape[:2]
+    if (h, w) not in _nightvision_cache:
+        _, _, _, _, radius, _ = _polar(h, w)
+        _nightvision_cache[(h, w)] = radius > min(h, w) * 0.52
+    outside = _nightvision_cache[(h, w)]
+    gray = cv2.equalizeHist(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
+    # Grain generated at quarter res and scaled up: sampling 2M gaussians per
+    # frame costs more than every other step combined, and coarser grain reads
+    # better anyway.
+    noise = np.random.normal(0, 18, (h // 4, w // 4)).astype(np.float32)
+    noise = cv2.resize(noise, (w, h), interpolation=cv2.INTER_LINEAR)
+    g = np.clip(gray + noise, 0, 255).astype(np.uint8)
+    out = np.zeros((h, w, 3), np.uint8)
+    out[:, :, 1] = g
+    out[:, :, 0] = g // 7
+    out[:, :, 2] = g // 7
+    out[::3, :] = out[::3, :] // 2
+    out[outside] = 0
+    return out
+
+
+def bloom(frame):
+    """Dreamy highlight bloom — blown-out light bleeding over everything."""
+    h, w = frame.shape[:2]
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    highlights = frame * (gray > 175)[:, :, None]
+    # Blur small then scale up: a sigma-15 blur at full res is far too slow.
+    small = cv2.resize(highlights, (w // 4, h // 4), interpolation=cv2.INTER_AREA)
+    glow = cv2.resize(cv2.GaussianBlur(small, (0, 0), 6), (w, h))
+    return cv2.addWeighted(frame, 0.85, glow, 0.9, 0)
+
+
+# --- F-I: lens and geometry ---
+
+_warp_cache = {}
+
+
+def _warp_maps(kind, h, w):
+    key = (kind, h, w)
+    if key not in _warp_cache:
+        xs, ys, dx, dy, radius, angle = _polar(h, w)
+        cx, cy = w / 2.0, h / 2.0
+        if kind == "fisheye":
+            norm = np.clip(radius / (min(cx, cy)), 0, None)
+            scale = np.where(norm < 1e-6, 1.0, norm ** 0.55 / np.maximum(norm, 1e-6))
+            mx, my = cx + dx * scale, cy + dy * scale
+        elif kind == "swirl":
+            strength = 2.6
+            twist = angle + strength * np.clip(1 - radius / (min(cx, cy) * 1.1), 0, 1)
+            mx, my = cx + radius * np.cos(twist), cy + radius * np.sin(twist)
+        else:  # tunnel
+            r = np.maximum(radius, 1.0)
+            mx = ((angle / (2 * np.pi)) * w * 2.0) % w
+            my = ((min(cx, cy) * 26.0) / r) % h
+        _warp_cache[key] = (mx.astype(np.float32), my.astype(np.float32))
+    return _warp_cache[key]
+
+
+def fisheye(frame):
+    """Bulging fisheye lens."""
+    h, w = frame.shape[:2]
+    mx, my = _warp_maps("fisheye", h, w)
+    return cv2.remap(frame, mx, my, cv2.INTER_LINEAR,
+                     borderMode=cv2.BORDER_REFLECT)
+
+
+def swirl(frame):
+    """Twist the centre of the frame into a vortex."""
+    h, w = frame.shape[:2]
+    mx, my = _warp_maps("swirl", h, w)
+    return cv2.remap(frame, mx, my, cv2.INTER_LINEAR,
+                     borderMode=cv2.BORDER_REFLECT)
+
+
+def tunnel(frame):
+    """Demoscene tunnel — the frame wrapped around an infinite shaft."""
+    h, w = frame.shape[:2]
+    mx, my = _warp_maps("tunnel", h, w)
+    return cv2.remap(frame, mx, my, cv2.INTER_LINEAR,
+                     borderMode=cv2.BORDER_WRAP)
+
+
+def mirror(frame):
+    """Mirror the left half onto the right — everyone looks symmetrical."""
+    half = frame.shape[1] // 2
+    out = frame.copy()
+    out[:, half:] = np.fliplr(frame[:, :half])[:, :frame.shape[1] - half]
+    return out
+
+
+# --- J-K: tessellation ---
+
+def crystallize(frame):
+    """Stained glass — Voronoi cells flat-filled with their average colour."""
+    return _paint_cells(frame, "voronoi")
+
+
+def low_poly(frame):
+    """Low-poly triangle mesh."""
+    return _paint_cells(frame, "triangles")
+
+
+# --- L-O: print and relief ---
+
+def chromatic(frame):
+    """Chromatic aberration — colour channels drifting apart toward the edges."""
+    h, w = frame.shape[:2]
+    xs, ys, dx, dy, _, _ = _polar(h, w)
+    cx, cy = w / 2.0, h / 2.0
+    out = frame.copy()
+    for channel, scale in ((2, 1.012), (0, 0.988)):
+        mx = (cx + dx * scale).astype(np.float32)
+        my = (cy + dy * scale).astype(np.float32)
+        out[:, :, channel] = cv2.remap(frame[:, :, channel], mx, my,
+                                       cv2.INTER_LINEAR,
+                                       borderMode=cv2.BORDER_REFLECT)
+    return out
+
+
+_hatch_cache = {}
+
+
+def cross_hatch(frame):
+    """Pen-and-ink cross-hatching — darker areas get more layers of lines."""
+    h, w = frame.shape[:2]
+    key = (h, w)
+    if key not in _hatch_cache:
+        ys, xs = np.mgrid[0:h, 0:w]
+        # Spacing scales with frame width — fixed pixel spacing turns into
+        # unreadable noise at 1080p.
+        wide = max(10, w // 130)
+        tight = max(8, w // 165)
+        _hatch_cache[key] = [
+            ((xs + ys) % wide) < 2,
+            ((xs - ys) % wide) < 2,
+            (ys % tight) < 2,
+            (xs % tight) < 2,
+        ]
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    out = np.full((h, w), 240, np.uint8)
+    for threshold, layer in zip((205, 160, 110, 60), _hatch_cache[key]):
+        out[(gray < threshold) & layer] = 25
+    return cv2.cvtColor(out, cv2.COLOR_GRAY2BGR)
+
+
+_EMBOSS_KERNEL = np.array([[-2, -1, 0],
+                           [-1, 1, 1],
+                           [0, 1, 2]], dtype=np.float32)
+
+
+def emboss(frame):
+    """Stamped metal relief."""
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    out = np.clip(cv2.filter2D(gray, -1, _EMBOSS_KERNEL) + 128, 0, 255)
+    return cv2.cvtColor(out.astype(np.uint8), cv2.COLOR_GRAY2BGR)
+
+
+def contour_map(frame, bands=11):
+    """Topographic map — luminance as terrain, with contour lines drawn in."""
+    gray = cv2.GaussianBlur(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), (9, 9), 0)
+    q = (gray.astype(np.int32) * bands // 256).astype(np.uint8)
+    out = cv2.applyColorMap(q * (255 // (bands - 1)), cv2.COLORMAP_SUMMER)
+    edge = np.zeros(q.shape, bool)
+    edge[1:, :] |= q[1:, :] != q[:-1, :]
+    edge[:, 1:] |= q[:, 1:] != q[:, :-1]
+    out[edge] = (25, 25, 25)
+    return out
+
+
+# --- P-R: surfaces ---
+
+_ripple_phase = [0.0]
+
+
+def ripple(frame):
+    """Concentric water ripples spreading out from the centre."""
+    h, w = frame.shape[:2]
+    small = cv2.resize(frame, (w // 2, h // 2))
+    sh, sw = small.shape[:2]
+    xs, ys, dx, dy, radius, angle = _polar(sh, sw)
+    _ripple_phase[0] += 0.4
+    disp = np.sin(radius / 8.0 - _ripple_phase[0]) * 6.0
+    mx = (xs + disp * np.cos(angle)).astype(np.float32)
+    my = (ys + disp * np.sin(angle)).astype(np.float32)
+    warped = cv2.remap(small, mx, my, cv2.INTER_LINEAR,
+                       borderMode=cv2.BORDER_REFLECT)
+    return cv2.resize(warped, (w, h), interpolation=cv2.INTER_LINEAR)
+
+
+_tile_cache = {}
+
+
+def _lego_tile(block):
+    if ("lego", block) not in _tile_cache:
+        yy, xx = np.mgrid[0:block, 0:block].astype(np.float32)
+        tile = np.ones((block, block), np.float32)
+        tile[(xx < 2) | (yy < 2)] = 1.28          # bevel highlight
+        tile[(xx >= block - 2) | (yy >= block - 2)] = 0.72
+        centre = block / 2.0 - 0.5
+        rr = np.sqrt((xx - centre) ** 2 + (yy - centre) ** 2)
+        tile[rr < block * 0.30] = 1.12            # stud face
+        tile[(rr >= block * 0.30) & (rr < block * 0.35)] = 0.78   # stud edge
+        tile[(rr < block * 0.22) & (yy < centre)] = 1.34          # stud gloss
+        _tile_cache[("lego", block)] = tile
+    return _tile_cache[("lego", block)]
+
+
+def lego(frame, block=24):
+    """Built out of plastic bricks, studs and all."""
+    h, w = frame.shape[:2]
+    small = cv2.resize(frame, ((w + block - 1) // block, (h + block - 1) // block),
+                       interpolation=cv2.INTER_AREA)
+    up = cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
+    tile = _lego_tile(block)
+    reps = ((h + block - 1) // block, (w + block - 1) // block)
+    shade = np.tile(tile, reps)[:h, :w]
+    return np.clip(up.astype(np.float32) * shade[:, :, None], 0, 255).astype(np.uint8)
+
+
+def _stitch_tile(block):
+    if ("stitch", block) not in _tile_cache:
+        yy, xx = np.mgrid[0:block, 0:block]
+        # Thread thickness scales with the stitch, otherwise the canvas shows
+        # through and the whole frame washes out.
+        thick = max(1, block // 6)
+        tile = ((np.abs(xx - yy) <= thick) |
+                (np.abs(xx + yy - (block - 1)) <= thick))
+        _tile_cache[("stitch", block)] = tile
+    return _tile_cache[("stitch", block)]
+
+
+def cross_stitch(frame, block=18):
+    """Embroidered cross-stitch on linen."""
+    h, w = frame.shape[:2]
+    small = cv2.resize(frame, ((w + block - 1) // block, (h + block - 1) // block),
+                       interpolation=cv2.INTER_AREA)
+    # Thread reads as washed-out against the pale canvas without a saturation
+    # lift and a slight darkening.
+    hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV).astype(np.float32)
+    hsv[:, :, 1] *= 1.8
+    hsv[:, :, 2] *= 0.82
+    small = cv2.cvtColor(np.clip(hsv, 0, 255).astype(np.uint8), cv2.COLOR_HSV2BGR)
+    up = cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
+    reps = ((h + block - 1) // block, (w + block - 1) // block)
+    mask = np.tile(_stitch_tile(block), reps)[:h, :w]
+    canvas = np.full((h, w, 3), (214, 219, 227), np.uint8)
+    return np.where(mask[:, :, None], up, canvas)
+
+
+# --- S-U: optics and screens ---
+
+_MATRIX_CHARS = "01<>*+=|/\\#$%&"
+_matrix_state = {}
+
+
+def matrix_rain(frame, cw=10, ch=16):
+    """Falling green code, lit by whatever the camera sees."""
+    h, w = frame.shape[:2]
+    cols, rows = max(1, w // cw), max(1, h // ch)
+    st = _matrix_state
+    if st.get("shape") != (rows, cols):
+        st["shape"] = (rows, cols)
+        st["head"] = np.random.uniform(-rows, 0, cols)
+        st["speed"] = np.random.uniform(0.35, 1.3, cols)
+        st["chars"] = np.random.randint(0, len(_MATRIX_CHARS), (rows, cols))
+    st["head"] += st["speed"]
+    spent = st["head"] > rows * 1.5
+    st["head"][spent] = np.random.uniform(-rows * 0.6, 0, int(spent.sum()))
+    churn = np.random.rand(rows, cols) < 0.04
+    st["chars"][churn] = np.random.randint(0, len(_MATRIX_CHARS), int(churn.sum()))
+
+    distance = st["head"][None, :] - np.arange(rows)[:, None]
+    trail = np.clip(1.0 - distance / 24.0, 0, 1)
+    trail[distance < 0] = 0
+    lum = cv2.cvtColor(cv2.resize(frame, (cols, rows), interpolation=cv2.INTER_AREA),
+                       cv2.COLOR_BGR2GRAY).astype(np.float32) / 255.0
+    # Ambient term keeps the scene faintly readable between the rain columns —
+    # without it the frame is almost entirely black.
+    amp = np.clip(trail * (0.35 + 0.65 * lum) + 0.42 * lum, 0, 1).astype(np.float32)
+
+    mask = _tile_glyphs(_glyph_atlas(_MATRIX_CHARS, cw, ch), st["chars"])
+    lit = mask.astype(np.float32) * cv2.resize(
+        amp, (cols * cw, rows * ch), interpolation=cv2.INTER_NEAREST)
+    heads = mask.astype(np.float32) * cv2.resize(
+        (np.abs(distance) < 1.0).astype(np.float32),
+        (cols * cw, rows * ch), interpolation=cv2.INTER_NEAREST)
+    out = np.zeros((rows * ch, cols * cw, 3), np.uint8)
+    out[:, :, 1] = np.clip(lit, 0, 255).astype(np.uint8)
+    out[:, :, 0] = np.clip(heads * 0.75, 0, 255).astype(np.uint8)
+    out[:, :, 2] = np.clip(heads * 0.75, 0, 255).astype(np.uint8)
+    return cv2.resize(out, (w, h), interpolation=cv2.INTER_NEAREST)
+
+
+def zoom_blur(frame, steps=8):
+    """Radial motion blur streaking out of the centre."""
+    h, w = frame.shape[:2]
+    small = cv2.resize(frame, (w // 2, h // 2))
+    sh, sw = small.shape[:2]
+    acc = np.zeros((sh, sw, 3), np.float32)
+    for i in range(steps):
+        scale = 1.0 + 0.16 * i / (steps - 1)
+        matrix = cv2.getRotationMatrix2D((sw / 2, sh / 2), 0, scale)
+        acc += cv2.warpAffine(small, matrix, (sw, sh),
+                              borderMode=cv2.BORDER_REFLECT)
+    return cv2.resize((acc / steps).astype(np.uint8), (w, h))
+
+
+_tilt_cache = {}
+
+
+def tilt_shift(frame):
+    """Fake miniature — sharp band across the middle, blurred and saturated."""
+    h, w = frame.shape[:2]
+    if (h, w) not in _tilt_cache:
+        ys = np.abs(np.linspace(-1, 1, h, dtype=np.float32))
+        band = np.clip((ys - 0.28) / 0.42, 0, 1)[:, None, None]
+        _tilt_cache[(h, w)] = band
+    band = _tilt_cache[(h, w)]
+    small = cv2.resize(frame, (w // 4, h // 4), interpolation=cv2.INTER_AREA)
+    blurred = cv2.resize(cv2.GaussianBlur(small, (0, 0), 4), (w, h))
+    out = (frame.astype(np.float32) * (1 - band)
+           + blurred.astype(np.float32) * band).astype(np.uint8)
+    # Push saturation by pulling away from grey — much cheaper than a full-res
+    # round trip through HSV.
+    grey = cv2.cvtColor(cv2.cvtColor(out, cv2.COLOR_BGR2GRAY), cv2.COLOR_GRAY2BGR)
+    return cv2.addWeighted(out, 1.5, grey, -0.5, 0)
+
+
+# --- V-Z: broadcast and feedback ---
+
+def hologram(frame):
+    """Sci-fi projection — cyan, edge-lit, scanned and flickering."""
+    h, w = frame.shape[:2]
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    glow = cv2.dilate(cv2.Canny(gray, 60, 160), None).astype(np.int16)
+    out = np.zeros((h, w, 3), np.uint8)
+    out[:, :, 0] = np.clip(gray.astype(np.int16) * 9 // 10 + glow, 0, 255)
+    out[:, :, 1] = np.clip(gray.astype(np.int16) * 7 // 10 + glow, 0, 255)
+    out[:, :, 2] = gray // 5
+    out[::3, :] = out[::3, :] // 2
+    out = np.roll(out, np.random.randint(-2, 3), axis=1)
+    return np.clip(out * np.random.uniform(0.82, 1.05), 0, 255).astype(np.uint8)
+
+
+_vhs_state = {"y": 0.0}
+
+
+def vhs(frame):
+    """Worn VHS tape — chroma bleed and a tracking band crawling up the screen."""
+    h, w = frame.shape[:2]
+    ycc = cv2.cvtColor(frame, cv2.COLOR_BGR2YCrCb)
+    ycc[:, :, 1] = np.roll(ycc[:, :, 1], 7, axis=1)
+    ycc[:, :, 2] = np.roll(ycc[:, :, 2], -7, axis=1)
+    out = cv2.cvtColor(ycc, cv2.COLOR_YCrCb2BGR)
+    _vhs_state["y"] = (_vhs_state["y"] + 11) % (h + 160)
+    y0 = int(_vhs_state["y"]) - 80
+    y1 = min(h, y0 + 55)
+    y0 = max(0, y0)
+    if y1 > y0:
+        band = np.roll(out[y0:y1], np.random.randint(-35, 35), axis=1)
+        noise = np.random.randint(0, 70, (y1 - y0, w, 1), dtype=np.uint8)
+        out[y0:y1] = np.clip(band.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+    out[::2, :] = (out[::2, :].astype(np.int16) * 9 // 10).astype(np.uint8)
+    return out
+
+
+_echo_prev = None
+
+
+def echo_tunnel(frame):
+    """Video feedback — each frame zooms and rotates into the last."""
+    global _echo_prev
+    h, w = frame.shape[:2]
+    if _echo_prev is None or _echo_prev.shape != frame.shape:
+        _echo_prev = frame.astype(np.float32)
+    matrix = cv2.getRotationMatrix2D((w / 2, h / 2), 1.6, 1.07)
+    zoomed = cv2.warpAffine(_echo_prev, matrix, (w, h),
+                            borderMode=cv2.BORDER_REFLECT)
+    out = np.clip(frame.astype(np.float32) * 0.42 + zoomed * 0.63, 0, 255)
+    _echo_prev = out
+    return out.astype(np.uint8)
+
+
+def bitcrush(frame):
+    """Rotate every byte one bit left — wild banding out of tiny value changes."""
+    return ((frame << 1) | (frame >> 7)).astype(np.uint8)
+
+
+_sonar_state = {"angle": 0.0}
+
+
+def sonar(frame):
+    """Radar scope — a sweep that lights up edges as it passes."""
+    h, w = frame.shape[:2]
+    sw, sh = w // 2, h // 2
+    small = cv2.resize(frame, (sw, sh))
+    _, _, _, _, radius, angle = _polar(sh, sw)
+    _sonar_state["angle"] = (_sonar_state["angle"] + 0.08) % (2 * np.pi)
+    behind = (_sonar_state["angle"] - angle) % (2 * np.pi)
+    sweep = np.clip(1.0 - behind / 1.0, 0, 1) ** 2
+
+    gray = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(gray, 60, 150).astype(np.float32) / 255.0
+    base = edges * 0.6 + gray.astype(np.float32) / 255.0 * 0.16
+    lit = np.clip(base * (0.45 + 2.2 * sweep) + sweep * 0.16, 0, 1)
+    scope = min(sw, sh) * 0.5
+    rings = np.abs((radius / scope * 4) % 1.0 - 0.5) < 0.03
+    lit = np.clip(lit + rings * 0.14, 0, 1)
+    lit[radius > scope] = 0
+
+    out = np.zeros((sh, sw, 3), np.uint8)
+    out[:, :, 1] = (lit * 255).astype(np.uint8)
+    out[:, :, 0] = (lit * 70).astype(np.uint8)
+    out[:, :, 2] = (lit * 55).astype(np.uint8)
+    return cv2.resize(out, (w, h), interpolation=cv2.INTER_LINEAR)
+
+
+# ---------------------------------------------------------------------------
 # Registry
-# Keys: 1-9, 0, then a-y (skipping q which is quit)
+# Keys: 1-9, 0, then a-x, z, A-Z
 # ---------------------------------------------------------------------------
 
 TRANSFORMS = [
@@ -480,41 +1140,66 @@ TRANSFORMS = [
     ("4: gameboy",        gameboy),
     ("5: dither",         dither),
     ("6: glitch",         glitch),
-    ("7: halftone",       halftone),
+    ("7: mosaic",         mosaic),
     ("8: scanlines",      scanlines),
     ("9: neon edges",     neon_edges),
     ("0: old film",       old_film),
-    # a-d
+    # a-w (contiguous; 'q' is free now that quit is ']')
     ("a: threshold",      binary_threshold),
     ("b: time tile",      time_tile),
-    ("c: split rgb",      split_rgb),
-    ("d: tv static",      tv_static),
-    # e-l: kept
-    ("e: 8-color",        eight_color),
-    ("f: retro cga",      retro_cga),
-    ("g: motion detect",  motion_detect),
-    ("h: anaglyph 3d",    anaglyph_3d),
-    ("i: stencil",        stencil),
-    ("j: old crt",        old_crt),
-    ("k: posterize",      posterize),
-    ("l: onion skin",     onion_skin),
-    # m-n: kept
-    ("m: duotone",        duotone),
-    ("n: kaleidoscope",   kaleidoscope),
-    # o-p: kept
-    ("o: noir",           noir),
-    ("p: blueprint",      blueprint),
-    # r-t: kept
-    ("r: vaporwave",      vaporwave),
-    ("s: pencil sketch",  pencil_sketch),
-    ("t: oil painting",   oil_painting),
-    # u-y: new
-    ("u: cyanotype",      cyanotype),
-    ("v: woodcut",        woodcut),
-    ("w: sepia",          sepia),
-    ("x: solarize",       solarize),
-    ("y: pop art",        pop_art),
+    ("c: tv static",      tv_static),
+    ("d: 8-color",        eight_color),
+    ("e: retro cga",      retro_cga),
+    ("f: motion detect",  motion_detect),
+    ("g: anaglyph 3d",    anaglyph_3d),
+    ("h: stencil",        stencil),
+    ("i: old crt",        old_crt),
+    ("j: posterize",      posterize),
+    ("k: onion skin",     onion_skin),
+    ("l: duotone",        duotone),
+    ("m: kaleidoscope",   kaleidoscope),
+    ("n: noir",           noir),
+    ("o: blueprint",      blueprint),
+    ("p: vaporwave",      vaporwave),
+    ("q: pencil sketch",  pencil_sketch),
+    ("r: oil painting",   oil_painting),
+    ("s: cyanotype",      cyanotype),
+    ("t: woodcut",        woodcut),
+    ("u: sepia",          sepia),
+    ("v: solarize",       solarize),
+    ("w: pop art",        pop_art),
+    ("x: cartoon mosaic", cartoon_mosaic),
+    # z, A-Z
+    ("z: ascii",          ascii_art),
+    ("A: slit scan",      slit_scan),
+    ("B: pixel sort",     pixel_sort),
+    ("C: thermal",        thermal),
+    ("D: night vision",   night_vision),
+    ("E: bloom",          bloom),
+    ("F: fisheye",        fisheye),
+    ("G: swirl",          swirl),
+    ("H: tunnel",         tunnel),
+    ("I: mirror",         mirror),
+    ("J: crystallize",    crystallize),
+    ("K: low poly",       low_poly),
+    ("L: chromatic",      chromatic),
+    ("M: cross hatch",    cross_hatch),
+    ("N: emboss",         emboss),
+    ("O: contour map",    contour_map),
+    ("P: ripple",         ripple),
+    ("Q: lego",           lego),
+    ("R: cross stitch",   cross_stitch),
+    ("S: matrix rain",    matrix_rain),
+    ("T: zoom blur",      zoom_blur),
+    ("U: tilt shift",     tilt_shift),
+    ("V: hologram",       hologram),
+    ("W: vhs",            vhs),
+    ("X: echo tunnel",    echo_tunnel),
+    ("Y: bitcrush",       bitcrush),
+    ("Z: sonar",          sonar),
 ]
+
+QUIT_KEY = "]"
 
 
 # Build key -> index lookup
@@ -523,39 +1208,229 @@ for _i, (_label, _) in enumerate(TRANSFORMS):
     KEY_MAP[ord(_label[0])] = _i
 
 
-def main():
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        print("ERROR: Could not open webcam.", file=sys.stderr)
-        sys.exit(1)
+def _handle_char(ch, state):
+    """Apply one typed character. Returns False if it was the quit key."""
+    if ch == QUIT_KEY:
+        state["quit"] = True
+        return False
+    key = ord(ch)
+    if key in KEY_MAP:
+        state["current"] = KEY_MAP[key]
+        print(f"Switched to: {TRANSFORMS[state['current']][0]}")
+    elif ch.strip():
+        print(f"Unknown key: {ch}")
+    return True
 
-    ret, test_frame = cap.read()
+
+def _key_reader(state):
+    """Read commands from stdin on a background thread, one line at a time."""
+    for line in sys.stdin:
+        line = line.strip()
+        if line and not _handle_char(line[0], state):
+            return
+    # stdin closed (piped/redirected input, or Ctrl-D). Keep streaming — only an
+    # explicit quit key or Ctrl-C should tear the virtual camera down.
+
+
+def open_webcam(index):
+    """Open a webcam by index, returning (cap, first_frame) or (None, None)."""
+    cap = cv2.VideoCapture(index)
+    if not cap.isOpened():
+        cap.release()
+        return None, None
+    ret, frame = cap.read()
     if not ret:
-        print("ERROR: Could not read from webcam.", file=sys.stderr)
+        cap.release()
+        return None, None
+    return cap, frame
+
+
+# A colour a real camera will essentially never produce as a flat field. During
+# a reconnect we push this to the virtual camera; any device that reads it back
+# IS the virtual camera, i.e. our own output looping around.
+_PROBE_COLOR = (37, 211, 102)  # BGR
+
+
+def _is_own_output(frame):
+    """True if `frame` is the probe colour we just sent to the virtual camera."""
+    small = cv2.resize(frame, (32, 18)).astype(np.int16)
+    target = np.array(_PROBE_COLOR, dtype=np.int16)
+    return np.abs(small - target).mean() < 6.0
+
+
+def reconnect_webcam(cam, preferred, h, w, max_index=6):
+    """Find a real webcam again, skipping our own virtual-camera output.
+
+    Device indices shuffle once another app (Zoom) opens a camera, so the index
+    we started on can end up pointing at the virtual camera. Returns
+    (cap, index) or (None, preferred).
+    """
+    marker = np.full((h, w, 3), _PROBE_COLOR, dtype=np.uint8)
+    for _ in range(3):
+        cam.send(cv2.cvtColor(marker, cv2.COLOR_BGR2RGB))
+        cam.sleep_until_next_frame()
+
+    candidates = [preferred] + [i for i in range(max_index) if i != preferred]
+    fallback = None
+    for index in candidates:
+        cap, frame = open_webcam(index)
+        if cap is None:
+            continue
+        # First frame after open can be stale; take another.
+        ret, frame2 = cap.read()
+        if ret:
+            frame = frame2
+        if _is_own_output(frame):
+            cap.release()
+            continue
+        if frame.mean() < 1.0:
+            # All-black: a dead/covered device. Keep looking, but remember it in
+            # case nothing better turns up (the room really might be dark).
+            if fallback is None:
+                fallback = (cap, index)
+            else:
+                cap.release()
+            continue
+        return cap, index
+    return fallback if fallback else (None, preferred)
+
+
+def measure_fps(cap, frames=40):
+    """Time actual frame delivery.
+
+    macOS/AVFoundation often reports a bogus CAP_PROP_FPS (5.0 on hardware that
+    really delivers 24), and that number paces our whole output loop.
+    """
+    for _ in range(5):  # warm up — the first frames come at an uneven rate
+        cap.read()
+    start = time.perf_counter()
+    count = 0
+    for _ in range(frames):
+        ret, _frame = cap.read()
+        if not ret:
+            break
+        count += 1
+    elapsed = time.perf_counter() - start
+    if count < 2 or elapsed <= 0:
+        return None
+    return count / elapsed
+
+
+def list_devices(max_index=6):
+    """Probe camera indices so you can tell the real webcam from OBS's."""
+    print("Probing camera indices (this takes a few seconds)...\n")
+    for i in range(max_index):
+        cap, frame = open_webcam(i)
+        if cap is None:
+            print(f"  {i}: (no camera)")
+            continue
+        h, w = frame.shape[:2]
+        print(f"  {i}: {w}x{h}  mean brightness {frame.mean():5.1f}")
+        cap.release()
+    print(
+        "\nPick the index matching your real webcam and pass it with --device N.\n"
+        "A near-zero brightness is usually the OBS Virtual Camera (feeding back\n"
+        "into itself) or a lens-covered camera — don't use that one as the source."
+    )
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--device", type=int, default=0,
+                        help="webcam index to capture from (default: 0)")
+    parser.add_argument("--fps", type=int, default=None,
+                        help="override output fps (default: auto-detect)")
+    parser.add_argument("--list-devices", action="store_true",
+                        help="probe camera indices and exit")
+    args = parser.parse_args()
+
+    if args.list_devices:
+        list_devices()
+        return
+
+    device = args.device
+    cap, test_frame = open_webcam(device)
+    if cap is None:
+        print(f"ERROR: Could not open webcam at index {device}. "
+              f"Try: python main.py --list-devices", file=sys.stderr)
         sys.exit(1)
 
     h, w = test_frame.shape[:2]
-    fps = int(cap.get(cv2.CAP_PROP_FPS)) or 30
 
-    current = 0
+    if args.fps:
+        fps = args.fps
+    else:
+        reported = cap.get(cv2.CAP_PROP_FPS)
+        if 15 <= reported <= 120:
+            fps = int(round(reported))
+        else:
+            print(f"Driver reports {reported:g} fps — measuring actual rate...")
+            measured = measure_fps(cap)
+            fps = int(round(measured)) if measured else 30
+            fps = max(5, min(fps, 60))
 
-    print(f"Webcam: {w}x{h} @ {fps}fps")
+    state = {"current": 0, "quit": False}
+
+    print(f"Webcam: device {device}, {w}x{h} @ {fps}fps")
     print("Opening virtual camera...")
     print("Available transforms:")
     for name, _ in TRANSFORMS:
         print(f"  {name}")
-    print("\nPress the key shown before each name to switch. 'q' to quit.")
+    try:
+        cam_ctx = pyvirtualcam.Camera(width=w, height=h, fps=fps)
+    except RuntimeError as e:
+        print(
+            f"ERROR: Could not open a virtual camera backend.\n{e}\n\n"
+            "On macOS: install OBS Studio (https://obsproject.com), then enable\n"
+            "  System Settings > General > Login Items & Extensions > Camera Extensions\n"
+            "  > OBS Virtual Camera, and click 'Start Virtual Camera' in OBS once.\n"
+            "  A reboot is often required after first approving the extension.\n"
+            "On Linux: install v4l2loopback.\n"
+            "On Windows: install OBS with its virtual camera.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    print(f"\nType the key shown before each name (then Enter) to switch. "
+          f"'{QUIT_KEY}' to quit.")
+
+    threading.Thread(target=_key_reader, args=(state,), daemon=True).start()
+
+    last_out = np.zeros((h, w, 3), dtype=np.uint8)
+    fail_streak = 0
 
     try:
-        with pyvirtualcam.Camera(width=w, height=h, fps=fps) as cam:
+        with cam_ctx as cam:
             print(f"Virtual camera: {cam.device}")
 
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    break
+            while not state["quit"]:
+                ret, frame = (False, None) if cap is None else cap.read()
 
-                _, transform_fn = TRANSFORMS[current]
+                if not ret:
+                    # macOS interrupts the capture session when another app
+                    # (Zoom, Chrome, ...) switches cameras. Don't die — hold the
+                    # last frame on the virtual camera and reconnect.
+                    fail_streak += 1
+                    if fail_streak == 1:
+                        print("Webcam read failed — reconnecting...")
+                    if cap is not None:
+                        cap.release()
+                        cap = None
+                    cam.send(cv2.cvtColor(last_out, cv2.COLOR_BGR2RGB))
+                    cam.sleep_until_next_frame()
+                    if fail_streak % fps == 0:  # retry roughly once a second
+                        cap, found = reconnect_webcam(cam, device, h, w)
+                        if cap is not None:
+                            if found != device:
+                                print(f"Device index shifted: {device} -> {found}")
+                                device = found
+                            print("Webcam reconnected.")
+                            fail_streak = 0
+                    continue
+
+                fail_streak = 0
+
+                _, transform_fn = TRANSFORMS[state["current"]]
                 out = transform_fn(frame)
 
                 if out.shape[:2] != (h, w):
@@ -563,35 +1438,15 @@ def main():
                 if len(out.shape) == 2:
                     out = cv2.cvtColor(out, cv2.COLOR_GRAY2BGR)
 
+                last_out = out
                 cam.send(cv2.cvtColor(out, cv2.COLOR_BGR2RGB))
-
-                label = TRANSFORMS[current][0]
-                preview = out.copy()
-                cv2.putText(preview, label, (10, 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
-                cv2.imshow("Man-in-the-Middle Webcam", preview)
-
-                key = cv2.waitKey(1) & 0xFF
-                if key == ord('q'):
-                    break
-                elif key in KEY_MAP:
-                    current = KEY_MAP[key]
-                    print(f"Switched to: {TRANSFORMS[current][0]}")
-
                 cam.sleep_until_next_frame()
 
-    except pyvirtualcam.RegistryError:
-        print(
-            "ERROR: No virtual camera backend found.\n"
-            "On macOS, install OBS Studio: https://obsproject.com\n"
-            "On Linux, install v4l2loopback.\n"
-            "On Windows, install OBS with its virtual camera.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+    except KeyboardInterrupt:
+        pass
     finally:
-        cap.release()
-        cv2.destroyAllWindows()
+        if cap is not None:
+            cap.release()
 
 
 if __name__ == "__main__":
